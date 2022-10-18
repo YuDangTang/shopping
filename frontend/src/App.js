@@ -1,13 +1,13 @@
-import { 
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  // Link
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from 'react-router-dom'; 
 import React, { useEffect,useState } from 'react';
 
 import styled from 'styled-components';
-import Admin from "./pages/admin/Admin.js";
+
+//컴포넌트
+// import MainNavigation from './components/MainNavigation';
+
+
+//페이지
 import Main from './pages/Main';
 import QnA from './pages/board/QnA';
 import Category from './pages/category/Category';
@@ -17,10 +17,13 @@ import MyShop from './pages/myshop/MyShop';
 import Order from './pages/myshop/Order';
 import Basket from './pages/order/Basket';
 import OrderForm from './pages/order/OrderForm';
-import RegisterProName from "./pages/admin/RegisterProName.js";
-import RegisterProSize from "./pages/admin/RegisterProSize.js";
-import RegisterProMat from "./pages/admin/RegisterProMat.js";
+
+
+
+
 function App() {
+
+
   // 로그인 상태 관리
   const [isLogin, setIsLogin] = useState(false)
 
@@ -34,10 +37,11 @@ function App() {
       setIsLogin(true)
       console.log('isLogin ?? :: ', isLogin)
     }
-  }, []);
+  })
+
   return (
-    //<Container>
-      <Router>
+    <Container>
+      <BrowserRouter>
         {/* <MainNavigation isLogin={isLogin}/> */}
           <Routes >
             <Route path='/' element={<Main />} />
@@ -49,15 +53,13 @@ function App() {
             <Route path='/order' element={<Order />} />
             <Route path='/basket' element={<Basket />} />
             <Route path='/orderform' element={<OrderForm />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/regProName" element={<RegisterProName />}></Route>
-            <Route path="/admin/regProSzie" element={<RegisterProSize />}></Route>
-            <Route path="/admin/regProDetail" element={<RegisterProMat />}></Route>
           </Routes>
-      </Router>
-    //</Container>  
+      </BrowserRouter>
+    </Container>
   );
-};
+}
+export default App;
+
 
 const Container = styled.div`
   width: auto;
@@ -65,5 +67,3 @@ const Container = styled.div`
   max-width: 1280px;
   margin:auto;
 `
-
-export default App;
