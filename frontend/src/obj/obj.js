@@ -4,8 +4,8 @@ export const ProductObj = {
     proMaterial: [],
     proSizeArr: [],
     proSize: [{
-        proSize_ID: "",
-        proColor: [{
+        size: "",
+        colorAmout: [{
             color: "",
             amout: 0,
         }],

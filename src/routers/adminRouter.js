@@ -4,6 +4,6 @@ import Product from "../models/Product.js";
 
 const adminRouter = express.Router();
 
-adminRouter.post("/regProduct", postRegProduct);
+adminRouter.post("/regProDetail", postRegProduct);
 
 export default adminRouter;

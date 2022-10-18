@@ -2,6 +2,7 @@ import Table from "../../components/Table.js";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ProductObj } from "../../obj/obj.js";
+import axios from "axios";
 // import ReactDOM from 'react-dom/client';
 function RegisterProMat(){
     const location = useLocation();
@@ -27,10 +28,12 @@ function RegisterProMat(){
         ProductObj.proMaterial = proMaterial;
 
         console.log("obj: " , ProductObj);
-        
-        // 해당 주소로 데이터 넘기기
-        //data('/admin/regProSzie', { state: {ProductObj} });
+
+        await axios.post('http://localhost:4000/admin/regProDetail', { ProductObj });
     };
+    function handleClick(e){
+        window.location.href = "/admin/regProName";
+    }
     return(
         <form onSubmit={onSubmitHandler}>
             <table align ="center" border={1} cellSpacing={1}>
@@ -56,7 +59,9 @@ function RegisterProMat(){
                         );
                     })}</div></td>
                 </tr>
-                <Table type={"button"}/>
+                <td align ="center" colSpan = "2">
+                    <button type="button" onClick={handleClick}>이전</button><button type="submit">다음</button>
+                </td>
             </table>
         </form>
     );

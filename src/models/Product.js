@@ -6,9 +6,12 @@ const productSchema = new mongoose.Schema({
     proMaterial: [{ type: String }],
     proSize: [{
         proSize_ID: {type:String, required: true, unique: true},
-        proColor: [{
-            color: { type: String, required: true },
-            amout: { type: Number, required: true },
+        proColor: [{   
+            size: { type: String, required: true },
+            colorAmout: [{
+                color: { type: String, required: true },
+                amout: { type: Number, required: true },
+            }],
         }],
     }],
     proImg: [{ type: String }],

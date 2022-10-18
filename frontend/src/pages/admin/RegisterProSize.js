@@ -57,13 +57,13 @@ function RegisterProSize(){
         var k = 0;
         for(var i = 0; i < proSize.length; i++){
             var obj = {
-                proSize_ID: "",
+                size: "",
                 proColor: [{
                     color: "",
                     amout: 0,
                 }],
             };
-            obj.proSize_ID = proSize[i];
+            obj.size = proSize[i];
             const colorAmount = [];
             for(var j = 0; j < arr.length/proSize.length; j++){
                 const objColor = {
@@ -75,7 +75,7 @@ function RegisterProSize(){
                 colorAmount.push(objColor);
                 k++;
             }
-            obj.proColor = colorAmount;
+            obj.colorAmout = colorAmount;
             color.push(obj);
         }
         
@@ -87,6 +87,9 @@ function RegisterProSize(){
         // 해당 주소로 데이터 넘기기
         data('/admin/regProDetail', { state: {ProductObj} });
     };
+    function handleClick(e){
+        window.location.href = "/admin/regProName";
+    }
     return(
         <form onSubmit={onSubmitHandler}>
             <table align ="center" border={1} 
@@ -173,7 +176,9 @@ function RegisterProSize(){
                             </tr>
                         );
                     })}
-                <Table type={"button"}/>
+                <td align ="center" colSpan = "2">
+                    <button type="button" onClick={handleClick}>이전</button><button type="submit">다음</button>
+                </td>
             </table>
         </form>
     );
