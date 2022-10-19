@@ -1,4 +1,4 @@
-import Table from "../../components/Table.js";
+import {Table} from "../../components/Table.js";
 import { useNavigate } from "react-router-dom";
 import { ProductObj } from "../../obj/obj.js";
 // import ReactDOM from 'react-dom/client';
@@ -14,6 +14,10 @@ function RegisterProName(){
         ProductObj.proDetail = proDetail;
         ProductObj.proPrice.cost = Number(proCost);
         ProductObj.proPrice.price = Number(proPrice);
+        if(Number.isNaN(ProductObj.proPrice.price) || Number.isNaN(ProductObj.proPrice.cost)){
+            alert("가격은 숫자만 입력해주세요");
+            return;
+        }
         ProductObj.proPrice.profit =  proPrice - proCost;
         // 해당 주소로 데이터 넘기기
         data('/admin/regProSzie', { state: {ProductObj} });
@@ -31,8 +35,8 @@ function RegisterProName(){
                     }}>{"가격"}</td>
                     <td align ="center" style={{
                         padding: "0px 16px",
-                    }}>원가: <input type="text" name="proCost"/>
-                       판매가: <input type="text" name="proPrice"/>
+                    }}>원가: <input type="number" name="proCost" required/>
+                       판매가: <input type="number" name="proPrice" required/>
                     </td>
                 </tr>
                 <Table type={"button"}/>

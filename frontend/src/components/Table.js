@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Checkbox from "./Checkbox.js";
 
-function Table(props){
+export function Table(props){
     let [values, setValue] = useState(props.value);
     if(props.type === "checkbox"){
         return(

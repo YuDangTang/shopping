@@ -1,13 +1,15 @@
 import Table from "../../components/Table.js";
 import Option from "../../components/Option.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ProductObj } from "../../obj/obj.js";
 // import ReactDOM from 'react-dom/client';
 function RegisterProSize(){
     const location = useLocation();
-    console.log("도착한 데이터: " ,location.state.ProductObj);
+    useEffect(() => {
+        console.log("도착한 데이터: " ,location.state.ProductObj);
+    }, []);
 
     const Clothes = ["Free", "XS", "S", "M", "L", "XL"];
     const Shoes = ["220", "225", "230", "235", "240", "245", "250", "255", "260"];
@@ -52,7 +54,18 @@ function RegisterProSize(){
         const size = document.querySelectorAll("#proSize");
         const arr = document.getElementsByName("proColor");
         const proSize = checkedInputs;
-
+        if(colors.length == 0){
+            alert('색상을 선택해주세요');
+            return;
+        }
+        if(proSize.length ==0){
+            alert('사이즈를 선택해주세요');
+            return;
+        }
+        if(arr.length == 0){
+            alert('수량을 입력해주세요');
+            return;
+        }
         const color = [];
         var k = 0;
         for(var i = 0; i < proSize.length; i++){
