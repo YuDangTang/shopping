@@ -13,4 +13,5 @@ export default MainBanner;
 
 let Main = styled.div`
     
+    
 `

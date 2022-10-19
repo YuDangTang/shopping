@@ -14,11 +14,11 @@ function Header(){
         return <>{catNameList}</>
     }
 
-
+    
     return(
         <>
             <TopBoxStyle >
-                <p>공지사항</p>
+                <p>★상품 폐기처분 및 반품상품 포장 안내</p>
                 <Remote >
                     <Link to='/member/login'>LOGIN</Link>
                     <Link to='/member/Join'>JOIN US</Link>
@@ -58,10 +58,11 @@ export default Header;
 //탑 박스 리모콘
 let TopBoxStyle = styled.div`
     background : #f8ece6;
-    height : 75px;
+    height : 50px;
     display:flex;
     justify-content: space-between;
     align-items:center;
+    
 
 
 
@@ -71,7 +72,7 @@ let Remote = styled.div`
 
     display: flex;
     background : #f8ece6;
-    gap : 6px;
+    gap : 20px;
     text-align : right;
     margin-right : 30px;
     margin-left : 30px;
@@ -85,10 +86,9 @@ let Main = styled.div`
 font-family: 'Old Standard TT',serif;
 display:flex;
 flex-direction:row;
-justify-content : space-between
-margin
+justify-content : space-between;
 font-family: Roboto,맑은 고딕,맑은고딕,Malgun Gothic,nanum gothic,dotum,돋움,Verdana,Dotum,AppleGothic,Old Standard TT,sans-serif;
-
+position : relative;
 
 
 `
@@ -98,7 +98,6 @@ float:left;
 font-size:32px;
 text-align:center;
 margin:60px 0;
-position : relative;
 letter-spacing:2px;
 
 `
@@ -107,7 +106,7 @@ let SearchContaner = styled.span`
 display:flex;
 gap:10px;
 position:absolute;
-top:-4.6px;
+top:64px;
 right:50px
 
 `
@@ -123,3 +122,4 @@ margin: 20px;
 
 
 `
+
