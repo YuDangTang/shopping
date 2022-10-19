@@ -114,7 +114,7 @@ const Wrap = styled.div`
     line-height: 20px;
     color : white;
     position: absolute;
-    top: -60px;
+    top: -40px;
     left: 0;
     content: '•';
     text-align: center;

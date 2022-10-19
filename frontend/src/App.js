@@ -25,7 +25,7 @@ import MyShop from "./pages/myshop/MyShop";
 function App() {
   return (
     <>
-        <GlobalStyles/>
+      <GlobalStyles/>
       <Router>
       <TopBox/>
           <Routes>
