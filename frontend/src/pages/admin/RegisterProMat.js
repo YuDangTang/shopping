@@ -5,13 +5,22 @@ import { ProductObj } from "../../obj/obj.js";
 import axios from "axios";
 // import ReactDOM from 'react-dom/client';
 function RegisterProMat(){
+    const [matArr, setMatArr] = useState([]);
+    const getData = async () => {
+        const respnose = await axios.get('http://localhost:4000/admin/regProDetail');
+        const datas = respnose.data;
+        console.log(datas);
+        const arr = [];
+        for(var i = 0; i < datas.length; i++){
+            arr.push(datas[i].material);
+        }
+        setMatArr(arr);
+    }; 
     const location = useLocation();
     useEffect(() => {
+        getData();
         console.log("도착한 데이터: " ,location.state.ProductObj);
     }, []);
-    const Materials = ["면", "폴리에스테르", "레이온", "기모", "텐셀", "아크릴",
-                        "울", "캐시미어", "앙고라", "린넨", "쭈리", "쉬폰", "나일론", 
-                        "코듀로이", "옥스포드", "트위드", "스웨이드"];
     const [checkedInputs, setCheckedInputs] = useState([]);
     const changeHandler = (checked, value) => {
         if (checked) {
@@ -65,7 +74,7 @@ function RegisterProMat(){
                     }}>{"소재"}</td>
                     <td align ="center" style={{
                         padding: "0px 16px",
-                    }}><div>{Materials.map(value => {
+                    }}><div>{matArr.map(value => {
                         return(
                             <>
                                 <input type={"checkbox"}

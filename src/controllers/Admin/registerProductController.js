@@ -1,8 +1,8 @@
-import Product from "../models/Product.js";
-import Bottom from "../models/size/Bottom.js";
-import Shoes from "../models/size/Shoes.js";
-import Top from "../models/size/Top.js";
-import Obj from "../models/Obj.js";
+import Product from "../../models/Product.js";
+import Bottom from "../../models/size/Bottom.js";
+import Shoes from "../../models/size/Shoes.js";
+import Top from "../../models/size/Top.js";
+import Obj from "../../models/Obj.js";
 
 export const postRegProduct = async (req, res) => {
     const ProductObj  = req.body;
