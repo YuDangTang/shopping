@@ -1,21 +1,33 @@
 import Table from "../../components/Table.js";
 import Option from "../../components/Option.js";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ProductObj } from "../../obj/obj.js";
+import axios from "axios";
 // import ReactDOM from 'react-dom/client';
 function RegisterProSize(){
+    const [colorArr, setColorArr] = useState([]);
+    const getData = async () => {
+        const respnose = await axios.get('http://localhost:4000/admin/regProSzie');
+        const datas = respnose.data;
+        const code = []
+        for(var i = 0; i < datas.length; i++){
+            const arr = [];
+            arr.push(datas[i].color);
+            arr.push(datas[i].colorCode);
+            code.push(arr);
+        }
+        setColorArr(code);
+        console.log(code);
+    }; 
     const location = useLocation();
-    console.log("도착한 데이터: " ,location.state.ProductObj);
+    useEffect(() => {
+        getData();
+        console.log("도착한 데이터: " ,location.state.ProductObj);
+    }, []);
 
     const Clothes = ["Free", "XS", "S", "M", "L", "XL"];
     const Shoes = ["220", "225", "230", "235", "240", "245", "250", "255", "260"];
-
-    const Colors = ["블랙", "아이보리", "베이지", "네이비",
-                    "라이트베이지", "진청", "중청",
-                    "연청", "레드", "오렌지", "퍼플", "옐로우", "그레이", "핑크",
-                    "소라", "브라운", "블루", "그린"];
 
     const [values, setValue] = useState(Clothes);
     const [checkedInputs, setCheckedInputs] = useState([]);
@@ -52,7 +64,18 @@ function RegisterProSize(){
         const size = document.querySelectorAll("#proSize");
         const arr = document.getElementsByName("proColor");
         const proSize = checkedInputs;
-
+        if(colors.length == 0){
+            alert('색상을 선택해주세요');
+            return;
+        }
+        if(proSize.length ==0){
+            alert('사이즈를 선택해주세요');
+            return;
+        }
+        if(arr.length == 0){
+            alert('수량을 입력해주세요');
+            return;
+        }
         const color = [];
         var k = 0;
         for(var i = 0; i < proSize.length; i++){
@@ -90,10 +113,11 @@ function RegisterProSize(){
     function handleClick(e){
         window.location.href = "/admin/regProName";
     }
+    let count = 0;
     return(
         <form onSubmit={onSubmitHandler}>
             <table align ="center" border={1} 
-                cellSpacing={1} style={{width: "800px",}}>
+                cellSpacing={1} style={{maxWidth: "1000px"}}>
                 <tr><td align ="center" colSpan = "2">상품 등록</td></tr>
                 <tr>
                     <td style={{
@@ -116,19 +140,26 @@ function RegisterProSize(){
                         textAlign: "center",
                         padding: "0px 60px",
                     }}>색상</td>
-                    <td><div>
-                            {Colors.map(color => {
+                    <td><div style={{}}>
+                            {colorArr.map(color => {
                                 return(
-                                    <>
+                                    <div style={{display: "flex", flexDirection:"row", 
+                                    width:"120px"}}>
                                         <input type={"checkbox"}
-                                            value={color}
+                                            value={color[0]}
                                             onChange={(e)=>{
                                                 changeColor(e.currentTarget.checked, color)
                                             }} style={{
                                                 margin: "0px 0px 0px 10px",
                                             }}/>
-                                        {color}
-                                    </>
+                                        {color[0]}
+                                        {
+                                            color[1] != ""
+                                            ? <div style={{backgroundColor: `${color[1]}`, 
+                                            width: "30px", height: "30px"}}></div>
+                                            : null
+                                        }
+                                    </div>
                                 );
                             })}
                         </div></td>
@@ -165,7 +196,7 @@ function RegisterProSize(){
                                 }}>{colors.map(color => {
                                         return(
                                             <div>
-                                                <span id="proSize" className={color}>{color}: </span>
+                                                <span id="proSize" className={color[0]}>{color[0]}: </span>
                                                 <input type={"text"} name={"proColor"} style={{
                                                     width: "30px",
                                                 }} maxLength="3" required/>

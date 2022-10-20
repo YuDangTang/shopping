@@ -107,13 +107,13 @@ display:flex;
 gap:10px;
 position:absolute;
 top:64px;
-right:50px
+right:50px;
 
 `
 //카테고리
 let CategoryCss = styled.div`
 display: flex;
-align-item:center;
+align-items:center;
 justify-content: center;
 flex-direction: row;
 list-style:none;
@@ -122,4 +122,3 @@ margin: 20px;
 
 
 `
-
