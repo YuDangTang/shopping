@@ -29,5 +29,9 @@ const productSchema = new mongoose.Schema({
     proDate: { type: Date, required: true, default: Date.now },
 });
 
+productSchema.pre('save', async function(){
+    this.profit = this.price - this.cost;
+});
+
 const Product = mongoose.model("Product", productSchema);
 export default Product;

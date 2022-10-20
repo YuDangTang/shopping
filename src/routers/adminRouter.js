@@ -2,8 +2,8 @@ import express, { application } from "express";
 import multer from "multer";
 import fs from "fs"; 
 import { postRegProduct } from "../controllers/Admin/registerProductController.js";
-import { postRegColor, getRegColor, getRegMat, postRegMat,
-	getRegSize, postRegSize, getRegProduct} from "../controllers/Admin/adminRegiserProductController.js";
+import { postRegProductName, postRegColor, postRegMat, getRegSize,
+	getRegProduct, getRegMat} from "../controllers/Admin/adminRegiserProductController.js";
 const adminRouter = express.Router();
 try {
     fs.readdirSync('frontend/public/img'); // 폴더 확인 
@@ -27,10 +27,11 @@ const upload = multer({
 	}),
     limits: { fieldSize: 10 * 1024 * 1024 },
 });
-adminRouter.route("/regProSzie").get(getRegSize).post(postRegSize);
-adminRouter.get("/regProDetail", getRegProduct);
-adminRouter.post("/regProDetail", upload.array("proImage"),postRegProduct);
-adminRouter.route("/regProColor").get(getRegColor).post(postRegColor);
-adminRouter.route("/regProMaterial").get(getRegMat).post(postRegMat);
+adminRouter.route("/regProSzie").get(getRegSize);
+adminRouter.post("/regProName", postRegProductName);
+adminRouter.get("/regProDetail", getRegMat);
+adminRouter.post("/regProDetail", upload.array("proImage"), postRegProduct);
+adminRouter.route("/regProColor").post(postRegColor);
+adminRouter.route("/regProMaterial").post(postRegMat);
 
 export default adminRouter;

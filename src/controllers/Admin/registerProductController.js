@@ -68,7 +68,6 @@ export const postRegProduct = async (req, res) => {
             colorObj.proSize_ID = Latest[0].id; 
             const newColorArr = [];
             for(var i = 0; i < Latest[0].detail.length; i++){
-                console.log(Latest[0].detail[i].size);
                 const newColorObj = {
                     size: Latest[0].detail[i].size,
                     colorAmout: [],

@@ -9,12 +9,7 @@ function RegisterProMat(){
     const getData = async () => {
         const respnose = await axios.get('http://localhost:4000/admin/regProDetail');
         const datas = respnose.data;
-        console.log(datas);
-        const arr = [];
-        for(var i = 0; i < datas.length; i++){
-            arr.push(datas[i].material);
-        }
-        setMatArr(arr);
+        setMatArr(datas);
     }; 
     const location = useLocation();
     useEffect(() => {
@@ -48,11 +43,15 @@ function RegisterProMat(){
         await axios.post('http://localhost:4000/admin/regProDetail', 
             formData
         );
-        await axios.post('http://localhost:4000/admin/regProDetail', 
-            ProductObj
-        );
+        await axios.post('http://localhost:4000/admin/regProDetail',  ProductObj)
+        .then((response) => {
+            if(response.data == "success"){
+                alert("상품이 등록되었습니다.");
+                window.location.href = "/admin/regProName";
+            }
+        });
     };
-    function handleClick(e){
+    function handleClick(e){ 
         window.location.href = "/admin/regProSize";
     }
     return(
@@ -74,18 +73,20 @@ function RegisterProMat(){
                     }}>{"소재"}</td>
                     <td align ="center" style={{
                         padding: "0px 16px",
-                    }}><div>{matArr.map(value => {
+                    }}>
+                    <div>{matArr.map((value) => {
                         return(
                             <>
                                 <input type={"checkbox"}
-                                    value={value}
-                                    onChange={(e)=>{
-                                        changeHandler(e.currentTarget.checked, value)
-                                    }}/>
+                                value={value}
+                                onChange={(e)=>{
+                                    changeHandler(e.currentTarget.checked, value)
+                                }}/>
                                 {value}
                             </>
                         );
-                    })}</div></td>
+                    })}</div>
+                    </td>
                 </tr>
                 <td align ="center" colSpan = "2">
                     <button type="button" onClick={handleClick}>이전</button><button type="submit">다음</button>
