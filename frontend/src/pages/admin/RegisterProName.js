@@ -16,6 +16,7 @@ function RegisterProName(){
         ProductObj.proDetail = proDetail;
         ProductObj.proPrice.cost = Number(proCost);
         ProductObj.proPrice.price = Number(proPrice);
+        ProductObj.proPrice.profit = ProductObj.proPrice.price - ProductObj.proPrice.cost;
         if(Number.isNaN(ProductObj.proPrice.price) || Number.isNaN(ProductObj.proPrice.cost)){
             alert("가격은 숫자만 입력해주세요");
             return;
