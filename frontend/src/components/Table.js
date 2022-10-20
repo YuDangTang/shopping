@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Checkbox from "./Checkbox.js";
 
 export function Table(props){
@@ -39,4 +39,14 @@ export function Table(props){
         );
     }
 };
+export function Td(props){
+    return(
+        <>
+            <td style={{
+                    width: "8%",
+                    textAlign: "center",
+                }}>{props.td}</td>
+        </>
+    );
+}
 export default Table;
