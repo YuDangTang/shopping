@@ -27,6 +27,7 @@ import Join from "./pages/member/Join";
 import Basket from "./pages/order/Basket";
 import Order from "./pages/myshop/Order";
 import MyShop from "./pages/myshop/MyShop";
+import Product from "./pages/product/product.js";
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
               <Route path="/order/Basket" element={<Basket />} />
               <Route path="/myshop/Order" element={<Order />} />
               <Route path="/myshop/MyShop" element={<MyShop />} />
+              <Route path="/product/:id" element={<Product />} />
  
 
               <Route path="/admin" element={<Admin />} />

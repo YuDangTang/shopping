@@ -10,12 +10,12 @@ function ItemCard(){
 
     return(
         <ICContanel>
-        <ICContanerl2>
+        <ICContanerl2 href='/product/title'>
             <img style={{width:'100%'}} src= '/assets/testgif.webp'/>
         </ICContanerl2>
         
   
-                <ICATag href=''>
+                <ICATag href='/product/title'>
                     {/* id.타이틀 값 가지고와 */}[La belle rose]베이글 스퀘어 셔링 롱원피스 (골반메이드)
                 </ICATag>
     
@@ -54,7 +54,7 @@ let ICContanel = styled.div`
 
 `
 
-let ICContanerl2 = styled.div`
+let ICContanerl2 = styled.a`
     position: relative;
     margin:  0 0 15px;
     text-align: center;

@@ -60,11 +60,11 @@ function Bottom(){
                                     *고객센터로 접수 후 상품을 보내주셔야하며 지정택배사를 이용해주시기 바랍니다.*
                                 </span><br></br><br></br>
                                 <span>
-                                    <img src="assets\bot1.gif"></img>
+                                    <img src="assets\bot.gif"></img>
                                     &nbsp;
                                     <img src='assets/bot2.gif'></img>
                                     &nbsp;
-                                    <img src='assets/bot3.gif'></img>
+                                    <img src='\assets\bot2.gif'></img>
                                 </span>
                             </div>
                             <div class="xans-element- xans-layout xans-layout-boardinfo footer_info">
