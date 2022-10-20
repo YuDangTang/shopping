@@ -40,13 +40,18 @@ export function Table(props){
     }
 };
 export function Td(props){
-    return(
-        <>
-            <td style={{
-                    width: "8%",
-                    textAlign: "center",
-                }}>{props.td}</td>
-        </>
-    );
+    if(props.type == "checkbox"){
+        return(
+            <>
+                <td style={{textAlign: "center"}}><input type={"checkbox"} /></td>
+            </>
+        );
+    }else{
+        return(
+            <>
+                <td style={props.styled} rowSpan={props.row} >{props.td}</td>
+            </>
+        );
+    }
 }
 export default Table;

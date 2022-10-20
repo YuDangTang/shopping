@@ -23,7 +23,6 @@ function Stocks(){
             }
         });
     };
-    const s = document.querySelector(".search");
     const onSubmitHandler = async (e) => { 
         e.preventDefault(); // 기본동작 막기
         getData();
@@ -33,32 +32,36 @@ function Stocks(){
     return(
         <>
             <form onSubmit={onSubmitHandler}
-                style={{marginBottom: "10px"}}>
+                style={{marginBottom: "20px", marginTop: "20px"}}>
                 상품명 검색: <input type="text" className="search" name="search" placeholder="상품명"/>
                 <input type="submit" value="검색" />
             </form>
             <table align ="center" border={1} cellSpacing={0}
                     style={{maxWidth: "1500px"}}>
-                    <tr>
+                    <tr style={{backgroundColor: "#3182b7"}}>
                         {arr.map(a => {
                             return(
                                 <>
-                                    <Td td={a} />
+                                    <Td td={a} styled={                 
+                                        {width: "8%",
+                                        textAlign: "center",
+                                        color: "white"}      
+                                    }/>
                                 </>
                             );
                         })}
                     </tr>
-                    <tr>
+                    <tr style={{backgroundColor: "#bce1fb"}}>
                         {
                             products.map(value => {
                                 return(
                                     <>
-                                        <td rowSpan={
-                                            value.proSize[0].proColor[0].colorAmout.length * value.proSize[0].proColor.length +1
-                                        }>{value._id}</td>
-                                        <td rowSpan={
-                                            value.proSize[0].proColor[0].colorAmout.length * value.proSize[0].proColor.length +1
-                                        }>{value.proName}</td>
+                                        <Td styled={{textAlign: "center"}} 
+                                            row={value.proSize[0].proColor[0].colorAmout.length * value.proSize[0].proColor.length +1} 
+                                            td={value._id}/>
+                                        <Td styled={{textAlign: "center"}} 
+                                            row={value.proSize[0].proColor[0].colorAmout.length * value.proSize[0].proColor.length +1} 
+                                            td={value.proName}/>
                                     </>
                                 );
                             })
@@ -66,47 +69,43 @@ function Stocks(){
                     </tr>
                     {
                         products.map(value => {
-                            // console.log(value.proSize[0].proColor);
-                            // console.log(value.proSize[0].proColor[0]);
                             return(
                                 <>
                                     {
                                         value.proSize[0].proColor.map(color => {
-                                            console.log("COLOR: ", color);
                                             return(
                                                 <>
                                                     <tr>
-                                                        <td rowSpan={color.colorAmout.length}>
-                                                            {color.size}
-                                                        </td>
-                                                        <td>{color.colorAmout[0].color}</td>
-                                                        <td>{color.colorAmout[0].amout}</td>
-                                                        <td>{color.colorAmout[0].orderQuan}</td>
-                                                        <td>{color.colorAmout[0].amout - color.colorAmout[0].orderQuan}</td>
+                                                        <Td styled={{textAlign: "center"}} row={color.colorAmout.length} 
+                                                        td={color.size}/>
+                                                        <Td styled={{textAlign: "center"}} td={color.colorAmout[0].color}/>
+                                                        <Td styled={{textAlign: "center"}} td={color.colorAmout[0].amout}/>
+                                                        <Td styled={{textAlign: "center"}} td={color.colorAmout[0].orderQuan} />
+                                                        <Td styled={{textAlign: "center"}} 
+                                                            td={color.colorAmout[0].amout - color.colorAmout[0].orderQuan}/>
                                                         <td><input type={"text"} /></td>
-                                                        <td>{color.colorAmout[0].notiQuan}</td>
-                                                        <td><input type={"checkbox"} /></td>
-                                                        <td><input type={"checkbox"} /></td>
-                                                        <td><input type={"checkbox"} /></td>
+                                                        <Td styled={{textAlign: "center"}} td={color.colorAmout[0].notiQuan}/>
+                                                        <Td type={"checkbox"} />
+                                                        <Td type={"checkbox"} />
+                                                        <Td type={"checkbox"} />
                                                         <td>수정</td>
                                                     </tr>
                                                     {
                                                         color.colorAmout.map((c, index) => {
-                                                            console.log("C: " ,c);
                                                             return(
                                                                 <>
                                                                     {
                                                                         index != 0
                                                                         ? <tr>
-                                                                            <td>{c.color}</td>
-                                                                            <td>{c.amout}</td>
-                                                                            <td>{c.orderQuan}</td>
-                                                                            <td>{c.amout - c.orderQuan}</td>
+                                                                            <Td styled={{textAlign: "center"}} td={c.color}/>
+                                                                            <Td styled={{textAlign: "center"}} td={c.amout}/>
+                                                                            <Td styled={{textAlign: "center"}} td={c.orderQuan}/>
+                                                                            <Td styled={{textAlign: "center"}} td={c.amout - c.orderQuan}/>
                                                                             <td><input type={"text"} /></td>
-                                                                            <td>{c.notiQuan}</td>
-                                                                            <td><input type={"checkbox"} /></td>
-                                                                            <td><input type={"checkbox"} /></td>
-                                                                            <td><input type={"checkbox"} /></td>
+                                                                            <Td styled={{textAlign: "center"}} td={c.notiQuan}/>
+                                                                            <Td type={"checkbox"} />
+                                                                            <Td type={"checkbox"} />
+                                                                            <Td type={"checkbox"} />
                                                                             <td>수정</td>
                                                                         </tr>
                                                                         : null
