@@ -11,6 +11,9 @@ const productSchema = new mongoose.Schema({
             colorAmout: [{
                 color: { type: String, required: true },
                 amout: { type: Number, required: true },
+                orderQuan: { type: Number, required: true, default: 0 },
+                notiQuan: { type: Number, required: true, default: 0 },
+                salesStatus: { type: String, required: true, default: "판매" },
             }],
         }],
     }],
@@ -19,18 +22,10 @@ const productSchema = new mongoose.Schema({
     proPrice: { 
         cost: { type: Number, required: true },
         price: { type: Number, required: true },
-        profit: { type: Number, required: true },
+        profit: { type: Number, required: true},
      },
-    proStatus: { 
-        orderQuan: { type: Number, required: true, default: 0 },
-        notiQuan: { type: Number, required: true, default: 0 },
-        salesStatus: { type: String, required: true, default: "판매" },
-     },
+    proStatus: { type: String, required: true, default: "판매"},
     proDate: { type: Date, required: true, default: Date.now },
-});
-
-productSchema.pre('save', async function(){
-    this.profit = this.price - this.cost;
 });
 
 const Product = mongoose.model("Product", productSchema);

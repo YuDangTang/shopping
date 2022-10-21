@@ -11,6 +11,7 @@ import RegisterProSize from "./pages/admin/RegisterProSize.js";
 import RegisterProMat from "./pages/admin/RegisterProMat.js";
 import RegisterMaterial from "./pages/admin/material/RegisterMaterial.js";
 import RegisterColor from "./pages/admin/material/RegisterColor.js";
+import Stocks from "./pages/admin/Stocks";
 
 //conmponent importing
 import TopBox from './components/TopBox';
@@ -29,7 +30,6 @@ import Order from "./pages/myshop/Order";
 import MyShop from "./pages/myshop/MyShop";
 import Product from "./pages/product/product.js";
 
-
 function App() {
   return (
     <>
@@ -46,14 +46,15 @@ function App() {
               <Route path="/myshop/Order" element={<Order />} />
               <Route path="/myshop/MyShop" element={<MyShop />} />
               <Route path="/product/:id" element={<Product />} />
- 
+
 
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/regProName" element={<RegisterProName />}></Route>
               <Route path="/admin/regProSzie" element={<RegisterProSize />}></Route>
               <Route path="/admin/regProDetail" element={<RegisterProMat />}></Route>
-              <Route path="/admin/regProMaterial" element={<RegisterMaterial />}></Route>
-              <Route path="/admin/regProColor" element={<RegisterColor/>}></Route>
+              <Route path="/admin/material/regProMaterial" element={<RegisterMaterial />}></Route>
+              <Route path="/admin/material/regProColor" element={<RegisterColor/>}></Route>
+              <Route path="/admin/stocks" element={<Stocks/>}></Route>
           </Routes>
           <Botbox/>
     </Router>

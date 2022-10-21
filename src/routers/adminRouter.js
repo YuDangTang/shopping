@@ -3,7 +3,8 @@ import multer from "multer";
 import fs from "fs"; 
 import { postRegProduct } from "../controllers/Admin/registerProductController.js";
 import { postRegProductName, postRegColor, postRegMat, getRegSize,
-	getRegProduct, getRegMat} from "../controllers/Admin/adminRegiserProductController.js";
+	getRegProduct, getRegMat, getStocks, postStocks
+} from "../controllers/Admin/adminRegiserProductController.js";
 const adminRouter = express.Router();
 try {
     fs.readdirSync('frontend/public/img'); // 폴더 확인 
@@ -33,5 +34,6 @@ adminRouter.get("/regProDetail", getRegMat);
 adminRouter.post("/regProDetail", upload.array("proImage"), postRegProduct);
 adminRouter.route("/regProColor").post(postRegColor);
 adminRouter.route("/regProMaterial").post(postRegMat);
+adminRouter.route("/stocks").get(getStocks).post(postStocks);
 
 export default adminRouter;

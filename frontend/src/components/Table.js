@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Checkbox from "./Checkbox.js";
 
 export function Table(props){
@@ -39,4 +39,19 @@ export function Table(props){
         );
     }
 };
+export function Td(props){
+    if(props.type == "checkbox"){
+        return(
+            <>
+                <td style={{textAlign: "center"}}><input type={"checkbox"} /></td>
+            </>
+        );
+    }else{
+        return(
+            <>
+                <td style={props.styled} rowSpan={props.row} >{props.td}</td>
+            </>
+        );
+    }
+}
 export default Table;

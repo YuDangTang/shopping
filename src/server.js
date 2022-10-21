@@ -27,3 +27,25 @@ app.get("/", function(req, res){
 app.use("/admin", adminRouter);
 
 app.listen(PORT, handelListening);
+
+//회원가입 -> 추후 파일 따로 만들어 관리할 것
+const join = async (req, res) => {
+    const { joinId,
+        joinPw,
+        joinName,
+        joinTel,
+        joinFullAddress, joinBirth } = req.body;
+    try {
+        await User.create({
+            userId: joinId,
+            userPw: joinPw,
+            userName: joinName,
+            userTel: joinTel,
+            userAddress: joinFullAddress,
+            userBirth: joinBirth,
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
+app.post("/join", join);

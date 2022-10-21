@@ -40,3 +40,15 @@ export const getRegProduct = async(req, res) => {
     const showMat = await Material.find({});
     return res.send(showMat);
 }
+export const getStocks = async(req, res) => {
+
+}
+export const postStocks = async(req, res) => {
+    const search = req.body.search;
+    console.log(search);
+    const find = await Product.findOne({"proName": search});
+    if(find == null){
+        return res.send("fail");
+    }
+    res.send(find);
+}
