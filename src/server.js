@@ -49,3 +49,28 @@ const join = async (req, res) => {
     }
 };
 app.post("/join", join);
+
+//로그인 -> 추후 파일 따로 만들어 관리할 것
+const login = async (req, res) => {
+    const {
+        loginId,
+        loginPw
+    } = req.body;
+    console.log(loginId, loginPw);
+    try {
+        const pw = await User.findOne({ "userId": loginId });
+        const checkPW = pw.userPw;
+        const byID = await bcrypt.compare(loginPw, checkPW);
+        if (byID) {
+            req.session.user = loginId;
+            // const user = req.session.user;
+            // console.log("user: ", user);
+            return res.send("sucess");
+        }
+        return res.send("fail");
+    }
+    catch (err) {
+        console.log(err);
+    }
+};
+app.post("/login", login);
