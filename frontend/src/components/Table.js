@@ -49,7 +49,7 @@ export function Td(props){
     }else{
         return(
             <>
-                <td style={props.styled} rowSpan={props.row} >{props.td}</td>
+                <td style={props.styled} name={props.name} rowSpan={props.row} >{props.td}</td>
             </>
         );
     }

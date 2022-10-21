@@ -44,11 +44,26 @@ export const getStocks = async(req, res) => {
 
 }
 export const postStocks = async(req, res) => {
-    const search = req.body.search;
-    console.log(search);
-    const find = await Product.findOne({"proName": search});
-    if(find == null){
-        return res.send("fail");
+    console.log(req.body);
+    if(req.body.data != null){
+        const data = req.body;
+        console.log(data.proName);  // 상품명
+        console.log(data.data);     // colorData
+        try{
+            await Product.updateOne({"proName": data.proName}, {"$set": {"proSize": data.data}});
+        }catch(error){
+            console.log(error)
+            return res.send("fail");
+        };
+        const find = await Product.findOne({"proName": data.proName});
+        return res.send(find);
+    }else if(req.body.search != null){
+        const search = req.body.search;
+        console.log(search);
+        const find = await Product.findOne({"proName": search});
+        if(find == null){
+            return res.send("fail");
+        }
+        res.send(find);
     }
-    res.send(find);
 }
