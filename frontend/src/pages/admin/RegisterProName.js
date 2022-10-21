@@ -21,11 +21,20 @@ function RegisterProName(){
             alert("가격은 숫자만 입력해주세요");
             return;
         }
+        if(ProductObj.proPrice.price < 0 || ProductObj.proPrice.cost < 0){
+            alert("0 이상의 숫자만 입력해주세요");
+            return;
+        }
+        if(ProductObj.proPrice.price < ProductObj.proPrice.cost){
+            if (!window.confirm("원가보다 낮은 가격에 판매하시겠습니까?")) {
+                return;
+            } 
+        }
         const obj = {
             proName
         };
         await axios.post('http://localhost:4000/admin/regProName', obj)
-        .then((response) => {
+        .then(async (response) => {
             console.log(response.data);
             if(response.data == "fail"){
                 alert("이미 존재하는 상품명입니다.");
@@ -33,7 +42,8 @@ function RegisterProName(){
                 return;
             }else{
                 // 해당 주소로 데이터 넘기기
-                data('/admin/regProSzie', { state: {ProductObj} });
+                await axios.post('http://localhost:4000/admin/regProName', ProductObj);
+                //data('/admin/regProSzie', { state: {ProductObj} });
             }
         });
     };

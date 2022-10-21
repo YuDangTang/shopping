@@ -3,10 +3,15 @@ import Material from "../../models/material/Material.js";
 import Product from "../../models/Product.js";
 
 export const postRegProductName = async(req, res) =>{
-    const name = req.body.proName;
-    const find = await Product.findOne({"proName": name});
-    if(find != null){
-        return res.send("fail");
+    if(req.body.proDetail == null){
+        const name = req.body.proName;
+        const find = await Product.findOne({"proName": name});
+        if(find != null){
+            return res.send("fail");
+        }
+    }else{
+        req.session.obj = req.body;
+        console.log("세션: ",req.session.obj);
     }
     return res.send("sucess");
 }
@@ -44,11 +49,11 @@ export const getStocks = async(req, res) => {
 
 }
 export const postStocks = async(req, res) => {
-    console.log(req.body);
     if(req.body.data != null){
         const data = req.body;
-        console.log(data.proName);  // 상품명
-        console.log(data.data);     // colorData
+        // console.log(data.proName);  // 상품명
+        // console.log(data.data);     // colorData
+        //console.log(data.data[0].proColor[0].colorAmout);
         try{
             await Product.updateOne({"proName": data.proName}, {"$set": {"proSize": data.data}});
         }catch(error){
@@ -59,7 +64,6 @@ export const postStocks = async(req, res) => {
         return res.send(find);
     }else if(req.body.search != null){
         const search = req.body.search;
-        console.log(search);
         const find = await Product.findOne({"proName": search});
         if(find == null){
             return res.send("fail");

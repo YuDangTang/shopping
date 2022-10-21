@@ -40,6 +40,17 @@ export function Table(props){
     }
 };
 export function Td(props){
+    if(props.input == "input"){
+        return(
+            <>
+                <td style={{textAlign: "center"}}>
+                <input type={props.InputType} style={{textAlign: "right", width:"80px"}}
+                        name={props.InputName}
+                        Value={props.InputValue}/>
+                </td>
+            </>
+        );
+    }
     if(props.type == "checkbox"){
         return(
             <>

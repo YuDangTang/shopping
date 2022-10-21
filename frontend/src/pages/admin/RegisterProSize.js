@@ -89,6 +89,10 @@ function RegisterProSize(){
             obj.size = proSize[i];
             const colorAmount = [];
             for(var j = 0; j < arr.length/proSize.length; j++){
+                if(Number.isNaN(Number(arr[k].value)) || arr[k].value < 0){
+                    alert("수량은 0 이상의 숫자만 입력해주세요");
+                    return;
+                }
                 const objColor = {
                     color: "",
                     amout: 0,
@@ -198,7 +202,7 @@ function RegisterProSize(){
                                             <div>
                                                 <span id="proSize" className={color[0]}>{color[0]}: </span>
                                                 <input type={"text"} name={"proColor"} style={{
-                                                    width: "30px",
+                                                    width: "30px", textAlign: "right"
                                                 }} maxLength="3" required/>
                                                 개
                                             </div>

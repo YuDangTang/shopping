@@ -25,31 +25,40 @@ function Stocks(){
     };
     const onSubmitHandler = async (e) => { 
         e.preventDefault(); // 기본동작 막기
+        setProducts([]);    // 수정한 input값 뷰 초기화
         getData();
     }; 
     const onStockHandler = async (e) => { 
         e.preventDefault(); // 기본동작 막기
         const size = document.getElementsByName("proSize");
         const color = document.getElementsByName("proColor");
-        // console.log("사이즈 : ", document.getElementsByName("proSize"));
-        // console.log("컬러: ", document.getElementsByName("proColor"));
         const order = document.getElementsByName("proOrder");
         const noti = document.getElementsByName("proNoti");
         const proAmount = document.getElementsByName("proAmout");
-        // console.log(noti);
-        // console.log(proAmount);
         const proSize = []; // proSize.push(obj)
         const obj = {       // proColor.push(proColorObj);
+            proSize_ID: products[0].proSize[0].proSize_ID,
             proColor: [],
         };
         let k = 0;
         for(var i = 0; i < size.length; i++){
-            // console.log(size[i].innerHTML);
             const proColorObj = {  // colorAmout.push(amount);
                 size : size[i].innerHTML,
                 colorAmout : [],
             };
             for(var j = 0; j < color.length/size.length; j++){
+                if(proAmount[i].value === "" || noti[k].value === ""){
+                    alert("수량을 입력해주세요.");
+                    return;
+                }
+                if(Number.isNaN(Number(proAmount[i].value)) || Number.isNaN(Number(noti[k].value))){
+                    alert("수량은 숫자만 입력해주세요");
+                    return;
+                }
+                if(proAmount[i].value < 0 || noti[k].value < 0){
+                    alert("0 이상의 숫자만 입력해주세요");
+                    return;
+                }
                 const amount = {
                     color: color[k].innerHTML,
                     amout: proAmount[k].value,
@@ -70,11 +79,13 @@ function Stocks(){
             proName: products[0].proName,
             data: proSize
         };
+        console.log("수정: ", datas);
+        console.log("수정: ", datas.data);
         await axios.post('http://localhost:4000/admin/stocks', datas)
         .then((response) => {
             const datas = response.data;
             if(datas == "fail"){
-                alert("숫자만 입력해주세요");
+                alert("재고 수정에 실패하였습니다.");
                 return;
             }else{
                 alert("재고 수정이 완료되었습니다.");
@@ -91,8 +102,8 @@ function Stocks(){
         <>
             <form onSubmit={onSubmitHandler}
                 style={{marginBottom: "20px", marginTop: "20px"}}>
-                상품명 검색: <input type="text" className="search" name="search" placeholder="상품명"/>
-                <input type="submit" value="검색" />
+                상품명 검색: <input type="text" className="search" name="search" placeholder="상품명" required/>
+                <input type="submit" value="검색"/>
             </form>
             <form onSubmit={onStockHandler}>
                 <table align ="center" border={1} cellSpacing={0}
@@ -149,12 +160,8 @@ function Stocks(){
                                                             <Td styled={{textAlign: "center"}} 
                                                                 td={color.colorAmout[0].amout - color.colorAmout[0].orderQuan}/>
                                                             <Td styled={{textAlign: "center"}} td={color.colorAmout[0].notiQuan}/>
-                                                            <td><input type={"number"} style={{textAlign: "right", width:"80px"}}
-                                                                name="proAmout"
-                                                                defaultValue={color.colorAmout[0].amout} required/></td>
-                                                            <td><input type={"number"} style={{textAlign: "right", width:"80px"}}
-                                                                name="proNoti"
-                                                                defaultValue={color.colorAmout[0].notiQuan} required/></td>
+                                                            <Td input={"input"} InputType={"number"} InputName={"proAmout"} InputValue={color.colorAmout[0].amout}/>
+                                                            <Td input={"input"} InputType={"number"} InputName={"proNoti"} InputValue={color.colorAmout[0].notiQuan}/>
                                                         </tr>
                                                         {
                                                             color.colorAmout.map((c, index) => {
@@ -172,12 +179,10 @@ function Stocks(){
                                                                                 <td style={{textAlign: "center"}} name={"proOrder"}>{c.orderQuan}</td>
                                                                                 <Td styled={{textAlign: "center"}} td={c.amout - c.orderQuan}/>
                                                                                 <Td styled={{textAlign: "center"}} td={c.notiQuan}/>
-                                                                                <td><input type={"number"} style={{textAlign: "right", width:"80px"}}
-                                                                                    name="proAmout"
-                                                                                    defaultValue={c.amout} required/></td>
-                                                                                <td><input type={"number"} style={{textAlign: "right", width:"80px"}}
-                                                                                    name="proNoti"
-                                                                                    defaultValue={c.notiQuan} required/></td>
+                                                                                <Td input={"input"} InputType={"number"} InputName={"proAmout"} 
+                                                                                    InputValue={c.amout}/>
+                                                                                <Td input={"input"} InputType={"number"} InputName={"proNoti"} 
+                                                                                    InputValue={c.notiQuan}/>
                                                                             </tr>
                                                                             : null
                                                                         }
