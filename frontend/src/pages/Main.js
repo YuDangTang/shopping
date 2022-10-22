@@ -8,8 +8,6 @@ function Main(){
         <>
             <Imgslide></Imgslide>
             <Category></Category>
-            
-            
         </>
     )
 }
