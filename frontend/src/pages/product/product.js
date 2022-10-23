@@ -125,6 +125,9 @@ function Product(){
     const [showing2, setShowing2] = useState(false);
     const toggleShowing2 = () => setShowing2(prevShowing2 => !prevShowing2);
 
+
+
+
         return(
             <Contents>
                 <Lilpath>
@@ -133,7 +136,14 @@ function Product(){
                 <ProductDetail>
                 <ImgArea>
                 <Imgcontent>
-                    <img style={{maxWidth:"100%"}}src='/assets/detail1.webp' />
+                {datas.map(function(_id,i) {
+                    if(datas[i]._id===param){
+                        const proImg = `/${datas[i].proImg[0]}`;
+                        return(
+                        <img style={{maxWidth:"100"}} src={proImg}/>
+                        )   
+                    }
+                    })}
                 </Imgcontent>
                 </ImgArea>
                 <Info>  
@@ -211,16 +221,25 @@ function Product(){
                         </th>
                         </InfoDetailth>
                         
-                        {                           //item  색상값 가져오기
-                            datas.map(function(_id,i) {
+ 
+                        <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color:"#767479"}}>
+
+                        {
+                            datas.map(function(_id,i){
                                 if(datas[i]._id===param){
                                     const proColor = datas[i].proSize[0].proColor
-                                    console.log(proColor);
+                                    console.log(proColor); //컬러들 
                                 }
-                                })
-                        }}
-                        <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color:"#767479"}}>
-                        <Buttonbutton>아이보리</Buttonbutton><Buttonbutton>블랙</Buttonbutton><br></br>
+                                return 
+
+                                
+                            })
+
+                        }
+
+                        {/* <Buttonbutton>아이보리</Buttonbutton><Buttonbutton>블랙</Buttonbutton> */}
+                        
+                        <br></br>
                         [필수]색상을 반드시 선택해 주세요
                         </td>
                     </tr>

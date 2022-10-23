@@ -1,15 +1,17 @@
-import axios from 'axios';
-import { useEffect, useState  } from "react";
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 
 //상품의 객체를 받아온다.
 function ItemCard(props){
-    console.log(props.product._id)
-
+    console.log(props.product._id);
+    console.log(props.product.proImg[0]);
+    console.log(`/${props.product.proImg[0]}`)
+    //img 넣기
+    const proImg = `/${props.product.proImg[0]}`
+    
     return(
         <ICContanel>
-            <ICContanerl2 href='/product/title'>
-                <img style={{width:'100%'}} src= '/assets/testgif.webp'/>
+            <ICContanerl2 href= {` /product/${props.product._id}`}>
+                <img style={{width:'100%'}} src= {proImg}/>
             </ICContanerl2>
 
 
