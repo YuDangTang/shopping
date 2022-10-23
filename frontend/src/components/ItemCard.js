@@ -1,25 +1,25 @@
+import axios from 'axios';
+import { useEffect, useState  } from "react";
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 
-
-
-
-
-
-//id값을 받아와서 그에맞는 id 정보를 출력하게 만든다.
-function ItemCard(){
+//상품의 객체를 받아온다.
+function ItemCard(props){
+    console.log(props.product._id)
 
     return(
         <ICContanel>
-        <ICContanerl2 href='/product/title'>
-            <img style={{width:'100%'}} src= '/assets/testgif.webp'/>
-        </ICContanerl2>
-        
+            <ICContanerl2 href='/product/title'>
+                <img style={{width:'100%'}} src= '/assets/testgif.webp'/>
+            </ICContanerl2>
+
+
+          
+            {/* id.타이틀 값 가지고와 */}
+            <ICATag href =  {` /product/${props.product._id}`}  >
+                <p>{props.product.proName}</p>
+            </ICATag>
   
-                <ICATag href='/product/title'>
-                    {/* id.타이틀 값 가지고와 */}[La belle rose]베이글 스퀘어 셔링 롱원피스 (골반메이드)
-                </ICATag>
-    
-            
+
             <hr/>
 
         <ul>
@@ -27,13 +27,13 @@ function ItemCard(){
                 {/* item spec */}아이템 스펙입니다아이템 스펙입니다아이템 스펙입니다아이템 스펙입니다아이템 스펙입니다아이템 스펙입니다아이템 스펙입니다아이템 스펙입니다
             </ICkeyword>
             <Icprice>
-                {/* 원래가격 */}25000원
+                {/* 원래가격 */}{props.product.proPrice.price}
             </Icprice>
             <li>
-                {/* 할인가격 */} 23800원 
+                {/* 할인가격 */} {props.product.proPrice.profit} 
             </li>
             <li>
-                {/* 키워드 */} 2
+                {/* 키워드 */}{props.product.proKindName}
             </li>
         </ul>
 
@@ -47,7 +47,7 @@ export default ItemCard;
 let ICContanel = styled.div`
     display: flex ;
     flex-direction: column;
-    width: 24.24%;
+    width: 80%;
     margin-right: 2%;
     font-size:12px;
     line-height: 18px;

@@ -4,7 +4,7 @@ function Register(props){
     const onSubmitHandler = async (e) => { 
         e.preventDefault(); // 기본동작 막기
         const mat = e.target.mat.value;
-        if(nums == 1){
+        if(nums === 1){
             const colorCode = e.target.colorCode.value;
             console.log(mat, colorCode);
             await axios.post('http://localhost:4000/admin/regProColor', 

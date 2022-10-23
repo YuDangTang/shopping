@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 function Login() {
     const onSubmitHandler = async (e) => {
         e.preventDefault(); // 기본동작 막기
@@ -8,7 +7,7 @@ function Login() {
         const loginPw = e.target.loginPw.value;
         await axios.post('http://localhost:4000/login', { loginId, loginPw })
             .then((response) => {
-                if (response.data == "fail") {
+                if (response.data === "fail") {
                     alert("아이디 혹은 비밀번호를 확인해 주세요");
                     e.target.loginId.value = "";
                     e.target.loginPw.value = "";

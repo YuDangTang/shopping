@@ -87,7 +87,6 @@ font-family: 'Old Standard TT',serif;
 display:flex;
 flex-direction:row;
 justify-content : space-between;
-font-family: Roboto,맑은 고딕,맑은고딕,Malgun Gothic,nanum gothic,dotum,돋움,Verdana,Dotum,AppleGothic,Old Standard TT,sans-serif;
 position : relative;
 
 

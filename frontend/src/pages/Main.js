@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import Imgslide from '../components/ImgSlide'
 import Category from './category/Category';
 // import '../css/reset.css';
@@ -6,7 +7,7 @@ function Main(){
     //광고 페이지네이션
     return(
         <>
-            <Imgslide></Imgslide>
+            <ImgSlideDiv></ImgSlideDiv><Imgslide></Imgslide>
             <Category></Category>
             
             
@@ -14,3 +15,7 @@ function Main(){
     )
 }
 export default Main;
+
+let ImgSlideDiv = styled.div`
+    text-align: center;
+`

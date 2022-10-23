@@ -67,12 +67,12 @@ function Bottom(){
                                     <img src='\assets\bot2.gif'></img>
                                 </span>
                             </div>
-                            <div class="xans-element- xans-layout xans-layout-boardinfo footer_info">
+                            <div className="xans-element- xans-layout xans-layout-boardinfo footer_info">
                                 <h2>OTHER LINK</h2>
-                                <a href="#" class="xans-record-">NOTICE</a>
-                                <br></br><a href="#" class="xans-record-">Q&amp;A</a>
-                                <br></br><a href="#" class="xans-record-">REVIEW</a>
-                                <br></br><a href="#" class="xans-record-">EVENT</a>
+                                <a href="#" className="xans-record-">NOTICE</a>
+                                <br></br><a href="#" className="xans-record-">Q&amp;A</a>
+                                <br></br><a href="#" className="xans-record-">REVIEW</a>
+                                <br></br><a href="#" className="xans-record-">EVENT</a>
                                 <br></br><br></br><br></br><a href="#" >DELIVERY</a>
                                 <br></br><a href="#" >INSTAGRAM</a>
                                 <br></br><a href="#" >FACEBOOK</a>
@@ -80,7 +80,7 @@ function Bottom(){
                         </div>
                     </div>
                 </div>
-            <div class="copyright" id="footer_copy">
+            <div className="copyright" id="footer_copy">
                 <span>COPYRIGHT (C) ALL RIGHTS RESERVED. <a href="#">DESIGN BY DAYDESIGN.</a></span>
             </div>
         </div>
