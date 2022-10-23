@@ -26,14 +26,14 @@ export default class SimpleSlider extends Component {
       <Wrap>
       <div>
         <Slider {...settings}>      
-          <div>
-            <h3><img src='/assets/aa.jpg' /></h3>
+          <div className="ImgSlide">
+            <img src='/assets/aa.jpg' />
           </div>
-          <div>
-            <h3><img src='/assets/bb.jpg' /></h3>
+          <div className="ImgSlide">
+            <img src='/assets/bb.jpg' />
           </div>
-          <div>
-            <h3><img src='/assets/ee.jpg' /></h3>
+          <div className="ImgSlide">
+            <img src='/assets/ee.jpg' />
           </div>
           </Slider>
       </div>
@@ -54,20 +54,13 @@ const Wrap = styled.div`
   $pt :#ffc0cb;
   margin: 5% auto;
   width: 100%;
+  
+  .ImgSlide{
+width: 80%;
+  }
 
-  // .slick-arrow{     //화살표 공통으로 수정
-  //   background: transeparent;   
-  //   width:40px;
-  //   height:40px;
-  //   border: 0;  
-  //   top:50%;    
-  //   transform:translateY(-50%);
-  //   position: absolute;
-  //   cursor: pointer;
-  //   font-size: 0; 
-  //   z-index: 1;  
-  //   overflow: hidden;
-  // } 
+ 
+
 
   .slick-arrow {
     z-index: 10;

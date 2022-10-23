@@ -58,7 +58,7 @@ function App() {
               <Route path="/order/Basket" element={<Basket />} />
               <Route path="/myshop/Order" element={<Order />} />
               <Route path="/myshop/MyShop" element={<MyShop />} />
-              <Route path="/product/:id" element={<Product />} />
+              <Route path="/product/:id" element={<Product />} /> 
 
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/regProName" element={<RegisterProName />}></Route>
