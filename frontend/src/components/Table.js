@@ -34,7 +34,8 @@ export function Table(props){
                 }}>{props.td}</td>
                 <td align ="center" style={{
                     padding: "0px 30px",
-                }}><input type={props.type} className={props.class} name={props.name} required /></td>
+                }}><input type={props.type} className={props.class} name={props.name} 
+                    style={props.style} defaultValue={props.defaultValue} required /></td>
             </tr>
         );
     }

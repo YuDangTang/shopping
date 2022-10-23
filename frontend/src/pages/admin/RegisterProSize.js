@@ -6,7 +6,7 @@ import { ProductObj } from "../../obj/obj.js";
 import axios from "axios";
 // import ReactDOM from 'react-dom/client';
 function RegisterProSize(){
-    const [colorArr, setColorArr] = useState([]);
+    const [colorArr, setColorArr] = useState([]);   // select option
     const getData = async () => {
         const respnose = await axios.get('http://localhost:4000/admin/regProSzie');
         const datas = respnose.data;
@@ -29,32 +29,42 @@ function RegisterProSize(){
     const Clothes = ["Free", "XS", "S", "M", "L", "XL"];
     const Shoes = ["220", "225", "230", "235", "240", "245", "250", "255", "260"];
 
-    const [values, setValue] = useState(Clothes);
-    const [checkedInputs, setCheckedInputs] = useState([]);
-    const [colors, setColor] = useState([]);
-    // const [checkedSizes, setCheckedSizes] = useState([]);
+    const [values, setValue] = useState(Clothes);   // select option
+    const [checkSize, setCheckSize] = useState([]);     // 선택된 사이즈 값
+    const [checkColor, setCheckColor] = useState([]);                    // 선택된 색상 값
     const handleChange = (e) => {
         if(e.target.value === "SHOES"){
             setValue(Shoes);
         }else{
             setValue(Clothes);
         }
+        // 종류 바꾸면 사이즈 체크박스 전부 해제
+        const sizeCheckbox = document.getElementsByName("sizeCheck");
+        for(var i = 0; i < sizeCheckbox.length; i++){
+            sizeCheckbox[i].checked = false;
+        }
+        const ColorCheckbox = document.getElementsByName("colorCheckbox");
+        for(var i = 0; i < ColorCheckbox.length; i++){
+            ColorCheckbox[i].checked = false;
+        }
+        setCheckSize([]);
+        setCheckColor([]);
     }
 
     const changeHandler = (checked, value) => {
         if (checked) {
-            setCheckedInputs([...checkedInputs, value]);
+            setCheckSize([...checkSize, value]);
         } else {
             // 체크 해제
-            setCheckedInputs(checkedInputs.filter((el) => el !== value));
+            setCheckSize(checkSize.filter((el) => el !== value));
         }
     };
     const changeColor = (checked, value) => {
         if (checked) {
-            setColor([...colors, value]);
+            setCheckColor([...checkColor, value]);
         } else {
             // 체크 해제
-            setColor(colors.filter((el) => el !== value));
+            setCheckColor(checkColor.filter((el) => el !== value));
         }
     };
     const data = useNavigate();
@@ -63,8 +73,8 @@ function RegisterProSize(){
         const proKindName = e.target.proKindName.value;
         const size = document.querySelectorAll("#proSize");
         const arr = document.getElementsByName("proColor");
-        const proSize = checkedInputs;
-        if(colors.length == 0){
+        const proSize = checkSize;
+        if(checkColor.length == 0){
             alert('색상을 선택해주세요');
             return;
         }
@@ -109,14 +119,8 @@ function RegisterProSize(){
         ProductObj.proSizeArr = proSize;
         ProductObj.proKindName = proKindName;  
         ProductObj.proSize = color;
-        console.log(ProductObj);
-        //console.log("data: " , proKindName,  proSize, proColor, proColorAmount);
-        // 해당 주소로 데이터 넘기기
         data('/admin/regProDetail', { state: {ProductObj} });
     };
-    function handleClick(e){
-        window.location.href = "/admin/regProName";
-    }
     let count = 0;
     return(
         <form onSubmit={onSubmitHandler}>
@@ -150,6 +154,7 @@ function RegisterProSize(){
                                     <div style={{display: "flex", flexDirection:"row", 
                                     width:"120px"}}>
                                         <input type={"checkbox"}
+                                            name="colorCheckbox"
                                             value={color[0]}
                                             onChange={(e)=>{
                                                 changeColor(e.currentTarget.checked, color)
@@ -179,6 +184,7 @@ function RegisterProSize(){
                         return(
                             <>
                                 <input type={"checkbox"}
+                                    name={"sizeCheck"}
                                     value={value}
                                     onChange={(e)=>{
                                         changeHandler(e.currentTarget.checked, value)
@@ -188,7 +194,7 @@ function RegisterProSize(){
                         );
                     })}</div></td>
                 </tr>
-                {checkedInputs.map(check => {
+                {checkSize.map(check => {
                         return(
                             <tr>
                                 <td style={{
@@ -197,7 +203,7 @@ function RegisterProSize(){
                                 }}>{check}</td>
                                 <td style={{
                                         textAlign: "center",
-                                }}>{colors.map(color => {
+                                }}>{checkColor.map(color => {
                                         return(
                                             <div>
                                                 <span id="proSize" className={color[0]}>{color[0]}: </span>
@@ -212,7 +218,7 @@ function RegisterProSize(){
                         );
                     })}
                 <td align ="center" colSpan = "2">
-                    <button type="button" onClick={handleClick}>이전</button><button type="submit">다음</button>
+                    <button type="submit">다음</button>
                 </td>
             </table>
         </form>

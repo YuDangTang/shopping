@@ -3,7 +3,8 @@ import multer from "multer";
 import fs from "fs"; 
 import { postRegProduct } from "../controllers/Admin/registerProductController.js";
 import { postRegProductName, postRegColor, postRegMat, getRegSize,
-	getRegProduct, getRegMat, getStocks, postStocks
+	getRegProduct, getRegMat, getStocks, postStocks, getRegProductName,
+	getAdmin, postAdmin, getUpdate, postUpdate, getUpdate2, postUpdate2
 } from "../controllers/Admin/adminRegiserProductController.js";
 const adminRouter = express.Router();
 try {
@@ -28,12 +29,16 @@ const upload = multer({
 	}),
     limits: { fieldSize: 10 * 1024 * 1024 },
 });
+
+adminRouter.route("/").get(getAdmin).post(postAdmin);
 adminRouter.route("/regProSzie").get(getRegSize);
-adminRouter.post("/regProName", postRegProductName);
+adminRouter.route("/regProName").get(getRegProductName).post(postRegProductName);
 adminRouter.get("/regProDetail", getRegMat);
 adminRouter.post("/regProDetail", upload.array("proImage"), postRegProduct);
-adminRouter.route("/regProColor").post(postRegColor);
-adminRouter.route("/regProMaterial").post(postRegMat);
-adminRouter.route("/stocks").get(getStocks).post(postStocks);
+// adminRouter.route("/regProColor").post(postRegColor);
+adminRouter.route("/regMatTotal").post(postRegMat);
+adminRouter.route("/:id/stocks").get(getStocks).post(postStocks);
+adminRouter.route("/:id/update").get(getUpdate).post(postUpdate);
+adminRouter.route("/:id/update2").get(getUpdate2).post(postUpdate2);
 
 export default adminRouter;

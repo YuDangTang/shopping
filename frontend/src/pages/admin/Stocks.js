@@ -1,18 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react"; 
-import ReactDOM from 'react-dom/client';
+import { useParams } from "react-router-dom";
 import { Td } from "../../components/Table";
 function Stocks(){
+    const params = useParams();
     const [products, setProducts] = useState([]);
-    const getData = async () => {
-        const search = {
-            search: document.querySelector(".search").value,
-        };
-        await axios.post('http://localhost:4000/admin/stocks', search)
+    const getData = async (params) => {
+        await axios.post(`http://localhost:4000/admin/${params.id}/stocks`, params)
         .then((response) => {
             if(response.data == "fail"){
                 alert("해당 상품은 존재하지 않습니다.");
-                document.querySelector(".search").value = "";
                 setProducts([]);
                 return;
             }else{
@@ -23,11 +20,12 @@ function Stocks(){
             }
         });
     };
-    const onSubmitHandler = async (e) => { 
-        e.preventDefault(); // 기본동작 막기
-        setProducts([]);    // 수정한 input값 뷰 초기화
-        getData();
-    }; 
+    useEffect(() => {
+        getData(params);
+    }, [])
+    const onClickHandler = () => {
+        window.location.href = "/admin";
+    }
     const onStockHandler = async (e) => { 
         e.preventDefault(); // 기본동작 막기
         const size = document.getElementsByName("proSize");
@@ -79,9 +77,7 @@ function Stocks(){
             proName: products[0].proName,
             data: proSize
         };
-        console.log("수정: ", datas);
-        console.log("수정: ", datas.data);
-        await axios.post('http://localhost:4000/admin/stocks', datas)
+        await axios.post(`http://localhost:4000/admin/${params.id}/stocks`, datas)
         .then((response) => {
             const datas = response.data;
             if(datas == "fail"){
@@ -96,18 +92,13 @@ function Stocks(){
             }
         });
     };
-    const arr = ["상품코드", "상품명", "사이즈", "색상", "창고재고", "주문대기", "가재고",
+    const arr = ["이미지", "상품명", "사이즈", "색상", "창고재고", "주문대기", "가재고",
     "통보수량", "재고수정", "통보수량수정"];
     return(
         <>
-            <form onSubmit={onSubmitHandler}
-                style={{marginBottom: "20px", marginTop: "20px"}}>
-                상품명 검색: <input type="text" className="search" name="search" placeholder="상품명" required/>
-                <input type="submit" value="검색"/>
-            </form>
             <form onSubmit={onStockHandler}>
                 <table align ="center" border={1} cellSpacing={0}
-                        style={{maxWidth: "1500px"}}>
+                        style={{maxWidth: "1500px", marginTop: "40px"}}>
                         <tr style={{backgroundColor: "#3182b7"}}>
                             {arr.map(a => {
                                 return(
@@ -198,7 +189,10 @@ function Stocks(){
                                 );
                             })
                         }
-                        <tr><td td align ="center" colSpan = "13"><input type={"submit"} value={"제출"}/></td></tr>
+                        <tr><td td align ="center" colSpan = "13">
+                            <input type={"button"} onClick={onClickHandler} value={"목록"}/>
+                            <input type={"submit"} value={"수정"}/>
+                            </td></tr>
                 </table>
             </form>
         </> 

@@ -13,6 +13,8 @@ import RegisterProMat from "./pages/admin/RegisterProMat.js";
 import RegisterMaterial from "./pages/admin/material/RegisterMaterial.js";
 import RegisterColor from "./pages/admin/material/RegisterColor.js";
 import Stocks from "./pages/admin/Stocks.js";
+import Update from "./pages/admin/update/Update.js";
+import UpdateSize from "./pages/admin/update/UpdateSize.js"; 
 function App() {
   return (
       <Router>
@@ -24,7 +26,9 @@ function App() {
               <Route path="/admin/regProDetail" element={<RegisterProMat />}></Route>
               <Route path="/admin/regProMaterial" element={<RegisterMaterial />}></Route>
               <Route path="/admin/regProColor" element={<RegisterColor/>}></Route>
-              <Route path="/admin/stocks" element={<Stocks/>}></Route>
+              <Route path="/admin/:id/stocks" element={<Stocks/>}></Route>
+              <Route path="/admin/:id/update" element={<Update/>}></Route>
+              <Route path="/admin/:id/update2" element={<UpdateSize/>}></Route>
           </Routes>
     </Router>
   );
