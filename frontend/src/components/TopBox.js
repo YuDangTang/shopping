@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 //모든 페이지 최 상단 리모콘
 
 
-function Header(){
-
+function Header(props){
     //카테고리 리스트 출력
     const category = () =>{
         const catNames =["Home","best50","상의","하의"];
@@ -14,37 +13,73 @@ function Header(){
         return <>{catNameList}</>
     }
 
+    const onLogout = () => {
+        sessionStorage.clear();
+        document.location.href = '/'
+    }
     
-    return(
-        <>
-            <TopBoxStyle >
-                <p>★상품 폐기처분 및 반품상품 포장 안내</p>
-                <Remote >
-                    <Link to='/member/login'>LOGIN</Link>
-                    <Link to='/member/Join'>JOIN US</Link>
-                    <Link to='/order/basket'>CART</Link>
-                    <Link to='/myshop/Order'>ORDER</Link>
-                    <Link to='/myshop/MyShop'>MY PAGE</Link>
-                </Remote>
-            </TopBoxStyle>
-            
-            <Main>
-                <div></div>
-                <Banner href='/'>mieummieum</Banner>
-                <SearchContaner>
-                    <p>마이</p>
-                    <p>장바구니</p>
-                    <input type={'input'}></input>
-                </SearchContaner>
-            </Main>
-            <hr></hr>
-            <CategoryCss>
-            
+    const isLogin = props.isLogin  //App.js로부터 프로퍼티를 받아서 true,false 확인
+    const isLogin2 = sessionStorage.getItem("id");
+
+    if (isLogin2) { //로그인 성공 시
+        return (
+            <>
+                <TopBoxStyle >
+                    <p>★상품 폐기처분 및 반품상품 포장 안내</p>
+                    <Remote >
+                        <Link to='/' onClick={onLogout}>LOGOUT</Link>
+                        <Link to='/order/basket'>CART</Link>
+                        <Link to='/myshop/Order'>ORDER</Link>
+                        <Link to='/myshop/MyShop'>MY PAGE</Link>
+                    </Remote>
+                </TopBoxStyle>
+
+                <Main>
+                    <div></div>
+                    <Banner href='/'>mieummieum</Banner>
+                    <SearchContaner>
+                        <p>마이</p>
+                        <p>장바구니</p>
+                        <input type={'input'}></input>
+                    </SearchContaner>
+                </Main>
+                <hr></hr>
+                <CategoryCss>
                     {category()}
-            
-            </CategoryCss>
-        </>
-    )
+                </CategoryCss>
+            </>
+        )
+    }
+    else {
+        return (
+            <>
+                <TopBoxStyle >
+                    <p>★상품 폐기처분 및 반품상품 포장 안내</p>
+                    <Remote >
+                        <Link to='/member/login'>LOGIN</Link>
+                        <Link to='/member/Join'>JOIN US</Link>
+                        <Link to='/order/basket'>CART</Link>
+                        <Link to='/myshop/Order'>ORDER</Link>
+                        <Link to='/myshop/MyShop'>MY PAGE</Link>
+                    </Remote>
+                </TopBoxStyle>
+
+                <Main>
+                    <div></div>
+                    <Banner href='/'>mieummieum</Banner>
+                    <SearchContaner>
+                        <p>마이</p>
+                        <p>장바구니</p>
+                        <input type={'input'}></input>
+                    </SearchContaner>
+                </Main>
+                <hr></hr>
+                <CategoryCss>
+                    {category()}
+                </CategoryCss>
+            </>
+        )
+    }
 }
 export default Header;
 

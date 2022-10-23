@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { 
   BrowserRouter as Router,
   Routes,
@@ -17,7 +18,6 @@ import Stocks from "./pages/admin/Stocks";
 import TopBox from './components/TopBox';
 import GlobalStyles from './css/GlobalStyles';
 
-
 import Botbox from "./components/Botbox.js";
 
 //page importing
@@ -31,13 +31,26 @@ import MyShop from "./pages/myshop/MyShop";
 import Product from "./pages/product/product.js";
 
 function App() {
+  // 로그인 상태 관리
+  const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem('id') === null) {
+      // sessionStorage 에 user_id 라는 key 값으로 저장된 값이 없다면
+      console.log('isLogin ?? :: ', isLogin)
+    } else {
+      // sessionStorage 에 user_id 라는 key 값으로 저장된 값이 있다면
+      // 로그인 상태 변경
+      setIsLogin(true)
+      console.log('isLogin ?? :: ', isLogin)
+    }
+  })
+
   return (
     <>
-
       <Router>
         <GlobalStyles/>
         <TopBox/>
-     
           <Routes>
               <Route path="/" element={<Main />} />
               <Route path="/member/login" element={<Login />} />
@@ -46,7 +59,6 @@ function App() {
               <Route path="/myshop/Order" element={<Order />} />
               <Route path="/myshop/MyShop" element={<MyShop />} />
               <Route path="/product/:id" element={<Product />} /> 
-
 
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/regProName" element={<RegisterProName />}></Route>

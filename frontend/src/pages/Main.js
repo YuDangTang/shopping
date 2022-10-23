@@ -9,8 +9,6 @@ function Main(){
         <>
             <ImgSlideDiv></ImgSlideDiv><Imgslide></Imgslide>
             <Category></Category>
-            
-            
         </>
     )
 }
