@@ -41,10 +41,16 @@ export const postUpdate = async(req, res) =>{
     }
 }
 export const getUpdate2 = async(req, res) =>{
-
+    const showColor = await Color.find({});
+    return res.send(showColor);
 }
 export const postUpdate2 = async(req, res) =>{
-    
+    const search = req.body.id;
+    const find = await Product.findOne({"_id": search});
+    if(find == null){
+        return res.send("fail");
+    }
+    return res.send(find);    
 }
 export const postRegProductName = async(req, res) =>{
     if(req.body.proDetail == null){
