@@ -5,6 +5,7 @@ import session from "express-session";
 import adminRouter from "./routers/adminRouter.js";
 import User from "./models/User.js"
 import bcrypt from 'bcrypt'
+import Product from "./models/Product.js";
 
 const PORT = 4000;	
 const app = express();
@@ -21,9 +22,31 @@ app.use(session({
 const handelListening = () => 
     console.log("서버 시작 " + `http://localhost:${PORT}`);
 
-app.get("/", function(req, res){
-    res.send("Hello World");
-});
+// app.get("/", function(req, res){
+//     res.send("Hello World");
+// });
+
+const getMain = async(req,res) =>{
+    const products = await Product.find({});//상품 모든것을 긁어와 await에 저장해라
+    try{
+    console.log(" 나는 서버: ", products); //상품이 있다면 콘솔창에 뜰것이다.
+    }catch(error){console.log(error)};
+    return res.send(products);
+
+    }
+
+
+
+app.get("/",getMain);
+
+// app.get("/", function(req, res){
+//     // res.send("Hello World");
+
+// });
+
+
+
+
 
 app.use("/admin", adminRouter);
 

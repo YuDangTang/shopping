@@ -26,7 +26,7 @@ function RegisterProName(){
         await axios.post('http://localhost:4000/admin/regProName', obj)
         .then((response) => {
             console.log(response.data);
-            if(response.data == "fail"){
+            if(response.data === "fail"){
                 alert("이미 존재하는 상품명입니다.");
                 e.target.proName.value = "";
                 return;
