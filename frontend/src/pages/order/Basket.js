@@ -32,11 +32,12 @@ function Basket(){
                             <InfoTh scope='col'>배송구분</InfoTh>
                             <InfoTh scope='col'>배송비</InfoTh>
                             <InfoTh scope='col'>합계</InfoTh>
+                            <InfoTh scope='col'>선택</InfoTh>
                         </tr>
                     </thead>
                     <tfoot style={{textalign: "right"}}>
                         <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit", verticalalign:"middle"}}>
-                            <InfoTd colSpan={8}>
+                            <InfoTd colSpan={9}>
                                 <span style={{    float: "left", margin: "6px 0 0"}}>[기본배송]</span>
                                 <Tdcontentstext>상품구매금액</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold"}}> 20,000</Tdcontentstext>
@@ -62,9 +63,57 @@ function Basket(){
                         <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>기본배송</Tdcontentstext></InfoTd2>
                         <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>조건</Tdcontentstext></InfoTd2>
                         <InfoTd2 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",textAlign:"right"}}><Tdcontentstext style={{fontWeight:"bold"}}>22,500</Tdcontentstext><Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext></InfoTd2>
+                        <InfoTd2 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", paddingRight: 0,width:"98px"}}><BlackButton>주문하기</BlackButton><WhiteButton>상품삭제</WhiteButton></InfoTd2>
                     </tr>
                     </tbody>
                 </InfoTable>
+                <BasketControlInfo><BasketControlInfocontents>할인 적용 금액은 주문서작성의 결제예정금액에서 확인 가능합니다.</BasketControlInfocontents></BasketControlInfo>
+                <Clearbasket><ClearButton>장바구니비우기</ClearButton></Clearbasket>
+                <FinalTable>
+                <colgroup>
+                    <col style={{width:"17%"}}></col>
+                    <col style={{width:"19%"}}></col>
+                    <col style={{width:"auto"}}></col>
+                </colgroup>
+                <thead  style={{    display: "table-header-group", verticalalign: "middle", bordercolor: "inherit",height: "80px"}}>
+                    <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit"}}>
+                            <FinalTh scope='col' style={{fontWeight:"bold"}}>총 상품 금액</FinalTh>
+                            <FinalTh scope='col' style={{fontWeight:"bold"}}>총 배송비</FinalTh>
+                            <FinalTh scope='col' style={{fontWeight:"bold"}}>결제 예정금액</FinalTh>
+                    </tr>
+                </thead>
+                <tbody style={{textalign: "center", display: "table-row-group", verticalAlign: "middle", borderColor: "inherit" ,height:"88px"}}> 
+                    <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit"}}>
+                    <FinalTd><FinalDiv>15,000<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
+                    <FinalTd style={{borderLeft: "1px solid #ebebeb"}}><FinalDiv><FinalDiv2>+</FinalDiv2>2,000<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
+                    <FinalTd style={{borderLeft: "1px solid #ebebeb", color:"#5a5a5a"}}><FinalDiv><FinalDiv2>=</FinalDiv2>17,000<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
+                    </tr>
+                </tbody>
+                </FinalTable>
+                <PaymentDiv>
+                <PaymentButton>전체상품주문</PaymentButton>
+                <PaymentButton2 style={{marginLeft:"1px"}}>선택상품주문</PaymentButton2>
+                </PaymentDiv>
+                <InfoDiv>
+                <InfoDivTitle>이용안내</InfoDivTitle>
+                <InfoDivContents>
+                <InfoDivh4>장바구니 이용안내</InfoDivh4>
+                <InfoDivol>
+                <li style={{backgroundPosition: "-484px 0", padding: "0 0 0 25px", background: "url(//img.echosting.cafe24.com/skin/base/common/ico_number.png) no-repeat",color: "#707070",listStyleType: "none",fontSize:"11px"}}>해외배송 상품과 국내배송 상품은 함께 결제하실 수 없으니 장바구니 별로 따로 결제해 주시기 바랍니다.</li>
+                <li style={{backgroundPosition: "-434px -100px", padding: "0 0 0 25px", background: "url(//img.echosting.cafe24.com/skin/base/common/ico_number.png) no-repeat",color: "#707070",listStyleType: "none",fontSize:"11px"}}>해외배송 가능 상품의 경우 국내배송 장바구니에 담았다가 해외배송 장바구니로 이동하여 결제하실 수 있습니다.</li>
+                <li style={{backgroundPositionX: "-384px",backgroundPositionY: "-200px",padding: "0 0 0 25px", background: "url(//img.echosting.cafe24.com/skin/base/common/ico_number.png) no-repeat",color: "#707070",listStyleType: "none",fontSize:"11px"}}>선택하신 상품의 수량을 변경하시려면 수량변경 후 [변경] 버튼을 누르시면 됩니다.</li>
+                <li style={{backgroundPositionX: "-334px",backgroundPositionY: "-300px",padding: "0 0 0 25px", background: "url(//img.echosting.cafe24.com/skin/base/common/ico_number.png) no-repeat",color: "#707070",listStyleType: "none",fontSize:"11px"}}>[쇼핑계속하기] 버튼을 누르시면 쇼핑을 계속 하실 수 있습니다.</li>
+                <li style={{backgroundPositionX: "-284px",backgroundPositionY: "-400px",padding: "0 0 0 25px", background: "url(//img.echosting.cafe24.com/skin/base/common/ico_number.png) no-repeat",color: "#707070",listStyleType: "none",fontSize:"11px"}}>장바구니와 관심상품을 이용하여 원하시는 상품만 주문하거나 관심상품으로 등록하실 수 있습니다.</li>
+                <li style={{backgroundPositionX: "-234px",backgroundPositionY: "-500px",padding: "0 0 0 25px", background: "url(//img.echosting.cafe24.com/skin/base/common/ico_number.png) no-repeat",color: "#707070",listStyleType: "none",fontSize:"11px"}}>파일첨부 옵션은 동일상품을 장바구니에 추가할 경우 마지막에 업로드 한 파일로 교체됩니다.</li>
+                </InfoDivol>
+                <InfoDivh4>무이자할부 이용안내</InfoDivh4>
+                <InfoDivol>
+                <li style={{backgroundPositionX: "-484px", backgroundPositionY:"0", padding: "0 0 0 25px", background: "url(//img.echosting.cafe24.com/skin/base/common/ico_number.png) no-repeat",color: "#707070",listStyleType: "none",fontSize:"11px"}}>상품별 무이자할부 혜택을 받으시려면 무이자할부 상품만 선택하여 [주문하기] 버튼을 눌러 주문/결제 하시면 됩니다.</li>
+                <li style={{backgroundPositionX: "-434px", backgroundPositionY:"-100px", padding: "0 0 0 25px", background: "url(//img.echosting.cafe24.com/skin/base/common/ico_number.png) no-repeat",color: "#707070",listStyleType: "none",fontSize:"11px"}}>[전체 상품 주문] 버튼을 누르시면 장바구니의 구분없이 선택된 모든 상품에 대한 주문/결제가 이루어집니다.</li>
+                <li style={{backgroundPositionX: "-384px", backgroundPositionY:"-200px",padding: "0 0 0 25px", background: "url(//img.echosting.cafe24.com/skin/base/common/ico_number.png) no-repeat",color: "#707070",listStyleType: "none",fontSize:"11px"}}>단, 전체 상품을 주문/결제하실 경우, 상품별 무이자할부 혜택을 받으실 수 없습니다.</li>
+                </InfoDivol>
+                </InfoDivContents>
+                </InfoDiv>
                 </OrderArea>
             </Contents>
         </Container>
@@ -266,4 +315,266 @@ let Forimg = styled.img` //img
     vertical-align: middle;
     margin: 0 2px;
     border: none;
+`
+
+
+
+let BlackButton = styled.a` //주문하기버튼
+    background: #333 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+    font-size: 11px;
+    line-height: 11px;
+    display: inline-block;
+    padding: 12px 15px 15px;
+    border-radius: 0px;
+    background: #fff;
+    margin: 1px 0 0;
+    vertical-align: middle;
+    -webkit-padding-before: 13px;
+    -webkit-padding-after: 14px;
+    &:hover{  
+    background: #fff !important;
+    color: #8f8f8f !important;
+    border-color: #8f8f8f !important;
+    cursor: pointer;
+    }
+    
+`
+let WhiteButton = styled.a` //상품삭제버튼
+    
+    font-size: 11px;
+    line-height: 11px;
+    display: inline-block;
+    padding: 12px 15px 15px;
+    border: 1px solid #ebebeb;
+    border-radius: 0px;
+    background: #fff;
+    margin: 1px 0 0;
+    vertical-align: middle;
+    -webkit-padding-before: 13px;
+    -webkit-padding-after: 14px;
+    text-decoration: none;
+    color: #666666;
+    &:hover{  
+    text-decoration: none;
+    color: #ccc;
+    border-color: #ccc !important;
+    cursor: pointer;
+    }
+`
+
+let BasketControlInfo = styled.ul` //안내 바
+    margin: 0;
+    padding : 0;
+` 
+let BasketControlInfocontents = styled.li` //내용
+    padding: 8px 0 8px 33px;
+    border-bottom: 1px solid #ebebeb;
+    color: #757575;
+    line-height: 1.5;
+    font-size: 11px;
+    background: url(//img.echosting.cafe24.com/skin/base/common/ico_info.gif) no-repeat 9px 8px;
+`
+
+let Clearbasket = styled.div` //장바구니 비우기 div
+
+    margin: 0 0 40px;
+    padding: 20px 0 10px;
+    text-align: center;
+    float: right;
+    text-align: right;
+
+`
+let ClearButton = styled.button ` //장바구니비우기버튼
+
+font-size: 11px;
+    line-height: 11px;
+    display: inline-block;
+    padding: 12px 15px 15px;
+    border: 1px solid #ebebeb;
+    border-radius: 0px;
+    background: #fff;
+    margin: 1px 0 0;
+    vertical-align: middle;
+    -webkit-padding-before: 13px;
+    -webkit-padding-after: 14px;
+    &:hover{  
+    text-decoration: none;
+    color: #ccc;
+    border-color: #ccc !important;
+    cursor: pointer;
+    }
+
+`
+
+let FinalTable = styled.table ` //결제부분 마지막 table
+    border: 0;
+    border-spacing: 0;
+    border-collapse: collapse;
+    border-color: #777;
+    border-top: 1px solid black;
+    position: relative;
+    margin: 10px 0 0;
+    color: #fff;
+    line-height: 1.5;
+    width: 100%; 
+`
+
+let FinalTh = styled.th ` //결제부분 마지막 th
+    border-left: 0;
+    padding: 20px 0;
+    border-bottom: 1px solid #ebebeb;
+    color: #757575;
+    vertical-align: middle;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    display: table-cell;
+    display: table-cell;
+    font-size: 11px;
+`
+
+let FinalTd = styled.td ` //결제부분 마지막 td
+    display: table-cell;
+    margin: 0;
+    border: 0;
+    border-color: #ebebeb;
+    height: 58px;
+    padding: 15px 10px 14px;
+    padding-left: 0;
+    padding-right: 0;
+    border-left: 0;
+    border-bottom: 1px solid #ebebeb;
+    color: #757575;
+    vertical-align: middle;
+    word-break: break-all;
+    word-wrap: break-word;
+`
+
+let FinalDiv = styled.div ` //결제부분 td안에 div
+
+    word-break: normal;
+    margin: 0;
+    padding: 0;
+    display: block;
+    color: #757575;
+    word-wrap: break-word;
+    text-align: center;
+    font-weight: bold;
+    font-size: 23px;
+    letter-spacing: -1px;
+`
+
+let FinalDiv2 = styled.text ` //결제부분 td안에 text 스타일
+    font-weight: bold;
+    font-size: 23px;
+    letter-spacing: -1px;
+    color: #5a5a5a;
+    word-wrap: break-word;
+`
+let PaymentDiv = styled.div `  //결제버튼이 들어갈 div
+    position: relative;
+    margin: 10px 0 40px;
+    padding: 20px 0 10px;
+    text-align: center;
+    vertical-align: middle;
+`
+
+let PaymentButton = styled.button ` //결제버튼
+    background: #333 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+    font-size: 13px;
+    line-height: 13px;
+    display: inline-block;
+    padding: 23px 30px 26px;
+    border-radius: 0px;
+    background: #fff;
+    margin: 1px 0 0;
+    vertical-align: middle;
+    -webkit-padding-before: 23px;
+    -webkit-padding-after: 23px;
+    text-align: center;
+    &:hover{  
+    background: #fff !important;
+    color: #8f8f8f !important;
+    border-color: #8f8f8f !important;
+    cursor: pointer;
+    }
+`
+
+let PaymentButton2 = styled.button ` //결제버튼2
+    background: #5a5a5a !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+    font-size: 13px;
+    line-height: 13px;
+    display: inline-block;
+    padding: 23px 30px 26px;
+    border-radius: 0px;
+    background: #fff;
+    margin: 1px 0 0;
+    vertical-align: middle;
+    -webkit-padding-before: 23px;
+    -webkit-padding-after: 23px;
+    text-align: center;
+    &:hover{  
+    background: #fff !important;
+    color: #8f8f8f !important;
+    border-color: #8f8f8f !important;
+    cursor: pointer;
+    }
+`
+
+let InfoDiv = styled.div` //이용안내 div
+    margin: 20px 0;
+    border: 1px solid #ebebeb;
+    line-height: 18px;
+    padding: 0;
+`
+
+let InfoDivTitle = styled.h3` //이용안내 h3
+    padding: 9px 0 6px 10px;
+    border-bottom: 1px solid #ebebeb;
+    color: #101010;
+    font-size: 12px;
+    background: #fbfbfb;
+    margin: 0;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+`
+
+let InfoDivContents = styled.div ` //이용안내 contents div
+    padding: 0 9px 12px;
+    margin: 0;
+    display: block;
+    line-height: 18px;
+`
+
+let InfoDivh4 = styled.h4 `  //이용안내 h4
+    margin-top: 13px;
+    margin: 22px 0 -4px;
+    color: #404040;
+    font-size: 11px;
+    font-weight: normal;
+    padding: 0;
+    display: block;
+    margin-block-start: 1.33em;
+    margin-block-end: 1.33em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+`
+let InfoDivol = styled.ol ` //이용안내 ol
+    margin: 15px 0 0 11px;
+    padding: 0;
+    display: block;
+    /* list-style-type: decimal;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px; */
 `
