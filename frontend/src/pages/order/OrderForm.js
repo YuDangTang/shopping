@@ -13,6 +13,9 @@ const Createtable = React.memo(function Createtable() {
   return(     
     <div style={{padding: "10px 20px"}}>
         <table style={{borderTop: "1px solid #ebebeb", position: "relative", margin: "10px 0 0", color: "#fff", lineHeight: "1.5",width: "100%", border: "0"}}>
+          
+          
+          
             <colgroup>
                 <col style={{width : "139px"}}></col>
                 <col style={{width : "auto"}}></col>
@@ -42,12 +45,12 @@ const Createtable = React.memo(function Createtable() {
 const Createtable2 = React.memo(function Createtable() { 
 
    return(     
-    <div style={{margin: "0 0 0 130px"}}>
-        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 휴대폰에 설치된 카카오톡 앱에서 비밀번호 입력만으로 빠르고 안전하게 결제가 가능한 서비스 입니다.</li>
-        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 안드로이드의 경우 구글 플레이, 아이폰의 경우 앱 스토어에서 카카오톡 앱을 설치 한 후,</li>
-        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 최초 1회 카드 및 계좌 정보를 등록하셔야 사용 가능합니다.</li>
-        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 인터넷 익스플로러의 경우 8 이상에서만 결제 가능합니다.</li>
-        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - BC카드 중 신한, 하나, 국민카드는 결제가 불가능합니다.</li>
+    <div style={{margin: "50px 0 0 130px",height:"100%"}}>
+        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px",marginBottom:"1.4px"}}> - 휴대폰에 설치된 카카오톡 앱에서 비밀번호 입력만으로 빠르고 안전하게 결제가 가능한 서비스 입니다.</li>
+        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px",marginBottom:"1.4px"}}> - 안드로이드의 경우 구글 플레이, 아이폰의 경우 앱 스토어에서 카카오톡 앱을 설치 한 후,</li>
+        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px",marginBottom:"1.4px"}}> - 최초 1회 카드 및 계좌 정보를 등록하셔야 사용 가능합니다.</li>
+        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px",marginBottom:"1.4px"}}> - 인터넷 익스플로러의 경우 8 이상에서만 결제 가능합니다.</li>
+        <li style={{color: "#707070",listStyleType: "none",fontSize:"11px",marginBottom:"1.4px"}}> - BC카드 중 신한, 하나, 국민카드는 결제가 불가능합니다.</li>
     </div>
 );
 });
@@ -84,12 +87,17 @@ function OrderForm(){
     const [showing, setShowing] = useState(false);
     const [showing2, setShowing2] = useState(false);
 
+    //무통장입금,카카오페이 텍스트변환
+    const [switchtext, setswitchtext] = useState();
+
+
     const toggleShowing = () => {
         if(showing2 === true){
             setShowing2(prevShowing2 => !prevShowing2);
         }
         if(showing === false){
             setShowing(prevShowing => !prevShowing); //setshowing을 true로
+            setswitchtext("무통장입금 ");
         }
     }
 
@@ -99,6 +107,7 @@ function OrderForm(){
         }
         if(showing2 === false){
             setShowing2(prevShowing2 => !prevShowing2);
+            setswitchtext("카카오페이 ");
         }
     }
 
@@ -250,22 +259,48 @@ function OrderForm(){
                 </Howmuchtable>
                 </OrderArea>
                 <OrderFormAreaTitle style={{ margin: "70px 0 10px 10px"}}><OrderAreaTitleContents>결제 수단</OrderAreaTitleContents></OrderFormAreaTitle>
-                <PayArea>
+                <PayArea><FlexArea>
                 <SelectPay>
                     <input type={'radio'} name = "selectpay" style={{ width: "13px", height: "13px", border: "0", verticalAlign:"middle",value:"cash"}}  onChange={toggleShowing}></input><label style={{verticalAlign:"middle", margin : "0 15px 5px 0"}}>무통장 입금</label>
                     <input type={'radio'} name = "selectpay" style={{ width: "13px", height: "13px", border: "0", verticalAlign:"middle",value:"kakao"}}  onChange={toggleShowing2}></input><label style={{verticalAlign:"middle", margin : "0 15px 5px 0"}}>카카오 페이</label>
                 </SelectPay>
                 {showing === true ? <Createtable>Createtable</Createtable> : null }
                 {showing2 === true ? <Createtable2>Createtable2</Createtable2> : null }
-
+                </FlexArea>
                 <FinalCheck>
-                <FinalCheckh4>무통장입금<HowmuchtdText style={{fontWeight:"normal",fontSize:"12px"}}>최종결제 금액</HowmuchtdText></FinalCheckh4>
+                <FinalCheckh4>{switchtext}<HowmuchtdText style={{fontWeight:"normal",fontSize:"12px"}}>최종결제 금액</HowmuchtdText></FinalCheckh4>
                 <FinalCheckp><HowmuchtdText style={{fontWeight:"bold",fontSize:"28px"}} >54,000</HowmuchtdText>원</FinalCheckp>
-                <FinalCheckp style={{fontWeight:"normal",fontSize:"12px"}}> <input type={'checkbox'}></input>결제정보를 확인하였으며, 구매진행에 동의합니다.</FinalCheckp>
+                <FinalCheckp style={{fontWeight:"normal",fontSize:"12px"}}> <input type={'checkbox'} style={{verticalAlign:"middle"}}></input>결제정보를 확인하였으며, 구매진행에 동의합니다.</FinalCheckp>
                 <ForpayButton><PayButton>결제하기</PayButton></ForpayButton>
                 </FinalCheck>
                 </PayArea>
+                
+                <p style={{color:"white"}}>"절 찾으셨군요!"</p>
+
+                <InfoDiv>
+                <InfoDivTitle>이용안내</InfoDivTitle>
+                <InfoDivContents>
+                <InfoDivh4>현금영수증 이용안내</InfoDivh4>
+                <InfoDivol>
+                <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 현금영수증은 1원 이상의 현금성거래(무통장입금, 실시간계좌이체, 에스크로, 예치금)에 대해 발행이 됩니다.</li>
+                <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 현금영수증 발행 금액에는 배송비는 포함되고, 적립금사용액은 포함되지 않습니다.</li>
+                <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 발행신청 기간제한 현금영수증은 입금확인일로 부터 48시간안에 발행을 해야 합니다.</li>
+                <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 현금영수증 발행 취소의 경우는 시간 제한이 없습니다. (국세청의 정책에 따라 변경 될 수 있습니다.</li>
+                <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 현금영수증이나 세금계산서 중 하나만 발행 가능 합니다.</li>
+                </InfoDivol>
+                <InfoDivh4>부가가치세법 변경에 따른 신용카드매출전표 및 세금계산서 변경안내</InfoDivh4>
+                <InfoDivol>
+                <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 변경된 부가가치세법에 의거, 2004.7.1 이후 신용카드로 결제하신 주문에 대해서는 세금계산서 발행이 불가하며</li>
+                <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 신용카드매출전표로 부가가치세 신고를 하셔야 합니다.(부가가치세법 시행령 57조)</li>
+                <li style={{color: "#707070",listStyleType: "none",fontSize:"11px"}}> - 상기 부가가치세법 변경내용에 따라 신용카드 이외의 결제건에 대해서만 세금계산서 발행이 가능함을 양지하여 주시기 바랍니다.</li>
+                </InfoDivol>
+                </InfoDivContents>
+                </InfoDiv>
+            
+
+            
             </Contents>
+            
         </Container>
     );
 }
@@ -589,15 +624,24 @@ let HowmuchtdText = styled.text ` //결제예정테이블 td 텍스트스타일
 `
 
 let PayArea = styled.div`   //결제방법 선택 div
+    display: flex;
+    box-sizing: border-box;
     overflow: hidden;
     position: relative;
-    padding: 0 241px 0 0;
     border: 1px solid #ebebeb;
     color: #353535;
     line-height: 1.5;
     float: left;
     width: 100%;
 `
+let FlexArea = styled.div` //플렉스 적용해서 밑으로 나눠줄 div
+
+    display: flex;
+    flex-direction: column;
+    width: 85%;
+`
+
+
 
 let SelectPay = styled.div ` //결제방법 진짜 선택 div
     padding: 17px 20px 15px;
@@ -616,9 +660,9 @@ let SelectPay = styled.div ` //결제방법 진짜 선택 div
 
 
 let FinalCheck = styled.div` //결제금액확인박스
+    position: relative;
     float: right;
     width: 240px;
-    margin: 0 -241px 0 0;
     margin-top: -2px;
     text-align: right;
     background: #fbfafa;
@@ -665,4 +709,60 @@ let PayButton = styled.button` //결제하기버튼
     border-color: #8f8f8f !important;
     cursor: pointer;
     }
+`
+
+let InfoDiv = styled.div` //이용안내 div
+    margin: 0;
+    margin-top: 50px;
+    border: 1px solid #ebebeb;
+    line-height: 18px;
+    padding: 0;
+`
+
+let InfoDivTitle = styled.h3` //이용안내 h3
+    padding: 9px 0 6px 10px;
+    border-bottom: 1px solid #ebebeb;
+    color: #101010;
+    font-size: 12px;
+    background: #fbfbfb;
+    margin: 0;
+    margin-top: 0px;
+    display: block;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+`
+
+let InfoDivContents = styled.div ` //이용안내 contents div
+    padding: 0 9px 12px;
+    margin: 0;
+    display: block;
+    line-height: 18px;
+`
+
+
+let InfoDivh4 = styled.h4 `  //이용안내 h4
+    margin-top: 13px;
+    margin: 22px 0 -4px;
+    color: #404040;
+    font-size: 11px;
+    font-weight: normal;
+    padding: 0;
+    display: block;
+    margin-block-start: 1.33em;
+    margin-block-end: 1.33em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+`
+
+let InfoDivol = styled.ol ` //이용안내 ol
+    margin: 15px 0 0 11px;
+    padding: 0;
+    display: block;
+    /* list-style-type: decimal;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px; */
 `
