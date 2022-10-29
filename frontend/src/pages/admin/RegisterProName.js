@@ -34,11 +34,19 @@ function RegisterProName(props){
         const proDetail = e.target.proDetail.value;
         const proCost = e.target.proCost.value;
         const proPrice = e.target.proPrice.value;
-        ProductObj.proName = proName;
         ProductObj.proDetail = proDetail;
         ProductObj.proPrice.cost = Number(proCost);
         ProductObj.proPrice.price = Number(proPrice);
         ProductObj.proPrice.profit = ProductObj.proPrice.price - ProductObj.proPrice.cost;
+        if(params.id != undefined){
+            products[0].originName = products[0].proName;
+            products[0].proName = proName;
+            products[0].proDetail = proDetail;
+            products[0].proPrice.cost = Number(proCost);
+            products[0].proPrice.price = Number(proPrice);
+            products[0].proPrice.profit = ProductObj.proPrice.price - ProductObj.proPrice.cost;
+        }
+        ProductObj.proName = proName;
         if(Number.isNaN(ProductObj.proPrice.price) || Number.isNaN(ProductObj.proPrice.cost)){
             alert("가격은 숫자만 입력해주세요");
             return;
@@ -58,6 +66,7 @@ function RegisterProName(props){
         if(params.id !== undefined){
             obj.originName = products[0].proName;
         }
+        const DB = products[0];
         if(params.id === undefined){ 
             await axios.post('http://localhost:4000/admin/regProName', obj)
             .then(async (response) => {
@@ -81,7 +90,7 @@ function RegisterProName(props){
                     e.target.proName.value = "";
                     return;
                 }else{
-                    data(`/admin/${params.id}/update2`, { state: {ProductObj} });
+                    data(`/admin/${params.id}/update2`, { state: {DB} });
                 }
             });
         }
@@ -89,7 +98,11 @@ function RegisterProName(props){
     return(
         <form onSubmit={onSubmitHandler}>
             <table align ="center" border={1} cellSpacing={1}>
-                <tr><td align ="center" colSpan = "2">상품 등록</td></tr>
+                <tr>{
+                        params.id == undefined
+                        ? <td align ="center" colSpan = "2">상품 등록</td>
+                        : <td align ="center" colSpan = "2">상품 수정</td>
+                    }</tr>
                 { 
                     products[0] != null
                     ? <Table td={"상품명"} name={"proName"} defaultValue={products[0].proName} style={{textAlign:"right"}}/>

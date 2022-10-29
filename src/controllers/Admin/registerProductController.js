@@ -44,7 +44,7 @@ export const postRegProduct = async (req, res) => {
                 };
                 size.push(obj);
             }
-            if(proKindName === "BOTTOM"){
+            if(proKindName === "Skirt" || proKindName === "Pants"){
                 await Bottom.create({
                     detail: size,
                 });
@@ -88,9 +88,12 @@ export const postRegProduct = async (req, res) => {
                 proDetail,
                 proPrice,
             });  
+            const sucess = await Product.find({"proName" : proName});
+            console.log(sucess);
+            return res.send(sucess);
         }catch(error){
             console.log(error);
         }
     }
-    return res.send('success');
+    return res.send("fail");
 };

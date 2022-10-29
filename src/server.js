@@ -3,6 +3,7 @@ import cors from "cors";
 import "./db.js";
 import session from "express-session";
 import adminRouter from "./routers/adminRouter.js";
+import productRouter from "./routers/productRouter.js"
 
 const PORT = 4000;	
 const app = express();
@@ -25,5 +26,6 @@ app.get("/", function(req, res){
 
 
 app.use("/admin", adminRouter);
+app.use("/product", productRouter);
 
 app.listen(PORT, handelListening);

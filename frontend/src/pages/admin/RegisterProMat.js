@@ -1,20 +1,29 @@
 import Table from "../../components/Table.js";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { ProductObj } from "../../obj/obj.js";
 import axios from "axios";
 // import ReactDOM from 'react-dom/client';
 function RegisterProMat(){
+    const params = useParams(); // url 가져오기(Update인지 Register인지)
     const [matArr, setMatArr] = useState([]);
     const getData = async () => {
-        const respnose = await axios.get('http://localhost:4000/admin/regProDetail');
-        const datas = respnose.data;
-        setMatArr(datas);
+        if(params.id == undefined){
+            const respnose = await axios.get('http://localhost:4000/admin/regProDetail');
+            const datas = respnose.data;
+            setMatArr(datas);
+        }else{
+            const respnose = await axios.get(`http://localhost:4000/admin/${params.id}/update3`);
+            const datas = respnose.data;
+            setMatArr(datas);
+        }
     }; 
     const location = useLocation();
     useEffect(() => {
         getData();
-        console.log("도착한 데이터: " ,location.state.ProductObj);
+        if(params.id == undefined){
+            console.log("도착한 데이터: " ,location.state.ProductObj);
+        }else{console.log("도착한 데이터: " ,location.state.DB);}
     }, []);
     const [checkedInputs, setCheckedInputs] = useState([]);
     const changeHandler = (checked, value) => {
@@ -28,6 +37,7 @@ function RegisterProMat(){
 
     const onSubmitHandler = async (e) => {
         e.preventDefault(); // 기본동작 막기
+        const DB = location.state.DB;
         const proMaterial = checkedInputs;
         if(proMaterial.length == 0){
             alert('소재를 선택해주세요');
@@ -40,24 +50,38 @@ function RegisterProMat(){
             formData.append("proImage", e.target.proImage.files[i]);
         }
         ProductObj.proMaterial = proMaterial;
-        await axios.post('http://localhost:4000/admin/regProDetail', 
-            formData
-        );
-        await axios.post('http://localhost:4000/admin/regProDetail',  ProductObj)
-        .then((response) => {
-            if(response.data == "success"){
-                alert("상품이 등록되었습니다.");
-                window.location.href = "/admin/regProName";
-            }
-        });
+        if(params.id == undefined){
+            await axios.post('http://localhost:4000/admin/regProDetail', 
+                formData
+            );
+            await axios.post('http://localhost:4000/admin/regProDetail',  ProductObj)
+            .then((response) => {
+                if(response.data != "fail"){
+                    alert("상품이 등록되었습니다.");
+                    window.location.href = `/admin/${response.data[0]._id}/stocks`;
+                }
+            });
+        }else{
+            await axios.post(`http://localhost:4000/admin/${params.id}/update3`,  DB)
+            .then((response) => {
+                if(response.data == "success"){
+                    alert("상품이 변경되었습니다.");
+                    window.location.href = "/admin";
+                }
+            });
+        }
     };
-    function handleClick(e){ 
-        window.location.href = "/admin/regProSize";
-    }
+    // function handleClick(e){ 
+    //     window.location.href = "/admin/regProSize";
+    // }
     return(
         <form onSubmit={onSubmitHandler} encType="multipart/form-data">
             <table align ="center" border={1} cellSpacing={1}>
-                <tr><td align ="center" colSpan = "2">상품 등록</td></tr>
+                <tr>{
+                        params.id == undefined
+                        ? <td align ="center" colSpan = "2">상품 등록</td>
+                        : <td align ="center" colSpan = "2">상품 수정</td>
+                    }</tr>
                 <td style={{
                         textAlign: "center",
                         padding: "0px 60px",
@@ -89,7 +113,8 @@ function RegisterProMat(){
                     </td>
                 </tr>
                 <td align ="center" colSpan = "2">
-                    <button type="button" onClick={handleClick}>이전</button><button type="submit">다음</button>
+                    {/* <button type="button" onClick={handleClick}>이전</button> */}
+                    <button type="submit">다음</button>
                 </td>
             </table>
         </form>

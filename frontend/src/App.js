@@ -27,8 +27,8 @@ function App() {
               <Route path="/admin/regProMaterial" element={<RegisterMaterial />}></Route>
               <Route path="/admin/regProColor" element={<RegisterColor/>}></Route>
               <Route path="/admin/:id/stocks" element={<Stocks/>}></Route>
-              <Route path="/admin/:id/update" element={<Update/>}></Route>
-              <Route path="/admin/:id/update2" element={<UpdateSize/>}></Route>
+              <Route path="/admin/:id/update" element={<Update url={"update"}/>}></Route>
+              <Route path="/admin/:id/update2" element={<Update url={"update2"}/>}></Route>
           </Routes>
     </Router>
   );

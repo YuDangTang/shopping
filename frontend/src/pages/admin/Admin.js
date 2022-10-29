@@ -7,7 +7,6 @@ function Admin(){
         const datas = respnose.data;
         setProducts(datas);
     };
-    console.log(products[0]);
     useEffect(() => {
         getData();
     }, []);

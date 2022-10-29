@@ -86,7 +86,6 @@ function RegisterProSize(){
             getData(params.id);
             getUpdateData(params);
         }
-        console.log("도착한 데이터: " ,location.state.ProductObj);
     }, []);
 
     const handleChange = (e) => {
@@ -106,11 +105,10 @@ function RegisterProSize(){
         }
         setCheckSize([]);
         setCheckColor([]);
+        setColorAmount([]);
     }
-
     const changeHandler = (target, value) => {
-        if (target.checked) {
-            setCheckSize([...checkSize, target.value]);
+        function addObj(){
             const obj = {
                 size: target.value,
                 colorAmount: [],
@@ -118,9 +116,49 @@ function RegisterProSize(){
             for(var i = 0; i < checkColor.length; i++){
                 obj.colorAmount.push({color: checkColor[i], amount: 0});
             }
-            setColorAmount([...colorAmount, obj]);
-        } else {
-            // 체크 해제
+            return obj;
+        }
+        if (target.checked) {
+            if(value == "Free"){    // Free 사이즈
+                var FreeSize = window.confirm("Free 사이즈는 다른 정사이즈를 선택할 수 없습니다. Free 사이즈를 선택하시겠습니까?");
+                if(!FreeSize){
+                    target.checked = false;
+                    return;
+                }
+                const size = document.getElementsByName("sizeCheck");
+                for(var i = 0; i < size.length; i++){
+                    if(size[i].value != "Free"){ size[i].checked = false; }
+                }
+                setCheckSize([target.value]);
+                const obj = addObj();
+                setColorAmount([obj]);
+            }
+            else{   // 정사이즈
+                if(checkSize.includes("Free")){
+                    var FreeSize = window.confirm("Free 사이즈는 다른 정사이즈를 선택할 수 없습니다. 정사이즈를 선택하시겠습니까?");
+                    if(!FreeSize){
+                        target.checked = false;
+                        return;
+                    }
+                    const size = document.getElementsByName("sizeCheck");
+                    for(var i = 0; i < size.length; i++){
+                        if(size[i].value == "Free"){ size[i].checked = false; }
+                    }
+                    const index = checkSize.indexOf("Free");
+                    colorAmount.splice(index, 1);
+                    checkSize.splice(index, 1);
+                    setCheckSize(checkSize.filter((el) => el !== "Free"));
+                    checkSize.push(target.value);
+                    const obj = addObj();
+                    colorAmount.push(obj);
+                    setColorAmount(colorAmount);
+                }else{
+                    const obj = addObj(); 
+                    setCheckSize([...checkSize, target.value]);
+                    setColorAmount([...colorAmount, obj]);
+                }
+            }
+        } else {// 체크 해제
             setCheckSize(checkSize.filter((el) => el !== target.value));
             for(var i = 0; i < colorAmount.length; i++){
                 if(colorAmount[i].size == target.value){
@@ -130,11 +168,9 @@ function RegisterProSize(){
             setColorAmount(colorAmount);
         }
     };
-    console.log(colorAmount);
     const changeColor = (target, value) => {
         if (target.checked) {
             if(target.id == "checked"){
-                console.log("체크?")
                 target.checked = false;
                 target.removeAttribute('id');
                 setCheckColor(checkColor.filter((el) => el !== target.value));
@@ -148,7 +184,6 @@ function RegisterProSize(){
                 setColorAmount(colorAmount);
             }
             else{
-                console.log("들어오았아낭")
                 setCheckColor([...checkColor, target.value]);
                 for(var i = 0; i < colorAmount.length; i++){
                     colorAmount[i].colorAmount.push({color: target.value, amount: 0});
@@ -157,7 +192,6 @@ function RegisterProSize(){
             }
         } else {
             // 체크 해제
-            console.log("체크X")
             setCheckColor(checkColor.filter((el) => el !== target.value));
             for(var i = 0; i < colorAmount.length; i++){
                 for(var j = 0; j < colorAmount[i].colorAmount.length; j++){
@@ -246,7 +280,8 @@ function RegisterProSize(){
                                 <Option value={"DRESS"} text={"드레스"}/>
                                 <Option value={"TOP"} text={"상의"}/>
                                 <Option value={"BLOUSE&SHIRT"} text={"블라우스&셔츠"}/>
-                                <Option value={"BOTTOM"} text={"하의"}/>
+                                <Option value={"Skirt "} text={"치마"}/>
+                                <Option value={"Pants"} text={"바지"}/>
                                 <Option value={"SHOES"} text={"신발"}/>
                             </select>
                             )
@@ -390,6 +425,7 @@ function RegisterProSize(){
                         );
                     })} */}
                 {colorAmount.map(colorA => {
+                    console.log(colorA)
                     return(
                         <tr>
                             <td style={{
