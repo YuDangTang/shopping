@@ -1,3 +1,4 @@
+import { resolveShowConfigPath } from "@babel/core/lib/config/files/index.js";
 import Color from "../../models/material/Color.js";
 import Material from "../../models/material/Material.js";
 import Product from "../../models/Product.js";
@@ -41,18 +42,6 @@ export const postUpdate = async(req, res) =>{
     }
 }
 export const getUpdate2 = async(req, res) =>{
-    const showColor = await Color.find({});
-    return res.send(showColor);
-}
-export const postUpdate2 = async(req, res) =>{
-    const search = req.body.id;
-    const find = await Product.findOne({"_id": search});
-    if(find == null){
-        return res.send("fail");
-    }
-    return res.send(find);    
-}
-export const getUpdate3 = async(req, res) =>{
     const mat = await Material.find({});
     const arr = new Array();
     for(var i = 0; i < mat.length; i++){
@@ -60,6 +49,26 @@ export const getUpdate3 = async(req, res) =>{
     }
     //console.log("소재: ", mat);
     res.send(arr);
+}
+export const postUpdate2 = async(req, res) =>{
+    console.log(req.body);
+    const updateDB = req.body;
+    try{
+        await Product.updateOne({"_id": updateDB._id}, {"$set": updateDB });
+    }catch(error){
+        console.log(error);
+        return res.send("fail");
+    }
+    return res.send("success");
+    // const search = req.body.id;
+    // const find = await Product.findOne({"_id": search});
+    // if(find == null){
+    //     return res.send("fail");
+    // }
+    // return res.send(find);    
+}
+export const getUpdate3 = async(req, res) =>{
+    
 }
 export const postUpdate3 = async(req, res) => {
     // const newData = req.body;
