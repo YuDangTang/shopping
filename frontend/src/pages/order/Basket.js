@@ -1,6 +1,11 @@
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
+import { useNavigate } from 'react-router-dom';
+
 
 function Basket(){
+
+    const navigate = useNavigate();
+
     return(
         <Container>
             <Contents>
@@ -10,7 +15,7 @@ function Basket(){
                 </Title>
                 <InfoTitleDiv><ControlInfo><ControlInfocontents>국내배송상품</ControlInfocontents></ControlInfo></InfoTitleDiv>
                 <OrderArea>
-                <OrderAreaTitle><OrderAreaTitleContents>일반상품</OrderAreaTitleContents><BeforeButton>이전페이지</BeforeButton></OrderAreaTitle>
+                <OrderAreaTitle><OrderAreaTitleContents>일반상품</OrderAreaTitleContents><BeforeButton onClick={() => navigate(-1)}>이전페이지</BeforeButton></OrderAreaTitle>
                 <InfoTable>
                     <colgroup>
                         <col style={{width:"92px"}}></col>
@@ -91,8 +96,7 @@ function Basket(){
                 </tbody>
                 </FinalTable>
                 <PaymentDiv>
-                <PaymentButton>전체상품주문</PaymentButton>
-                <PaymentButton2 style={{marginLeft:"1px"}}>선택상품주문</PaymentButton2>
+                <PaymentButton>상품주문</PaymentButton>
                 </PaymentDiv>
                 <InfoDiv>
                 <InfoDivTitle>이용안내</InfoDivTitle>
@@ -503,29 +507,6 @@ let PaymentButton = styled.button ` //결제버튼
     }
 `
 
-let PaymentButton2 = styled.button ` //결제버튼2
-    background: #5a5a5a !important;
-    color: #fff !important;
-    border: 1px solid #333 !important;
-    font-size: 13px;
-    line-height: 13px;
-    display: inline-block;
-    padding: 23px 30px 26px;
-    border-radius: 0px;
-    background: #fff;
-    margin: 1px 0 0;
-    vertical-align: middle;
-    -webkit-padding-before: 23px;
-    -webkit-padding-after: 23px;
-    text-align: center;
-    &:hover{  
-    background: #fff !important;
-    color: #8f8f8f !important;
-    border-color: #8f8f8f !important;
-    cursor: pointer;
-    }
-`
-
 let InfoDiv = styled.div` //이용안내 div
     margin: 20px 0;
     border: 1px solid #ebebeb;
@@ -540,8 +521,8 @@ let InfoDivTitle = styled.h3` //이용안내 h3
     font-size: 12px;
     background: #fbfbfb;
     margin: 0;
+    margin-top: 0px;
     display: block;
-    margin-block-start: 1em;
     margin-block-end: 1em;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
