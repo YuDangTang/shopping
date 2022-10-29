@@ -10,11 +10,23 @@ function Admin(){
     useEffect(() => {
         getData();
     }, []);
-    const onClickHandler = (e) =>{
+    const onClickHandler = async (e) =>{
         if(e.target.innerHTML === "상품수정"){
             window.location.href = "/admin/" + e.target.id + "/update";
         }else if(e.target.innerHTML === "재고관리"){
             window.location.href = "/admin/" + e.target.id + "/stocks";
+        }else if(e.target.innerHTML === "상품삭제"){
+            var com = window.confirm("해당 상품을 정말로 삭제하시겠습니까?");
+            if(!com){return;}
+            const obj = {};
+            obj.id = e.target.id;
+            await axios.post('http://localhost:4000/admin', obj)
+            .then((response) => {
+                if(response.data != "fail"){
+                    alert("상품이 삭제되었습니다.");
+                    setProducts(response.data);
+                }
+            });
         }
     }
     return(
@@ -26,6 +38,7 @@ function Admin(){
                         <td>상품명</td>
                         <td>상품수정</td>
                         <td>재고관리</td>
+                        <td>상품삭제</td>
                     </tr>
                     {
                         products.map(value => {
@@ -37,6 +50,7 @@ function Admin(){
                                         <td>{value.proName}</td>
                                         <td><button id={value._id} onClick={onClickHandler}>상품수정</button></td>
                                         <td><button id={value._id} onClick={onClickHandler}>재고관리</button></td>
+                                        <td><button id={value._id} onClick={onClickHandler}>상품삭제</button></td>
                                     </tr>
                                 </>
                             );

@@ -24,7 +24,6 @@ export const postRegProduct = async (req, res) => {
             });
         }catch(error){console.log(error)};
     }else{   
-        console.log("내가 보낸 데이터: ",ProductObj);
         const proName = ProductObj.proName;
         const proKindName = ProductObj.proKindName;
         const proMaterial = ProductObj.proMaterial;
@@ -38,6 +37,7 @@ export const postRegProduct = async (req, res) => {
         
         try{
             const size = [];
+            let Latest;
             for(var i = 0; i < proSize.length; i++){
                 let obj = {
                     size: proSize[i],
@@ -46,30 +46,30 @@ export const postRegProduct = async (req, res) => {
             }
             if(proKindName === "Skirt" || proKindName === "Pants"){
                 await Bottom.create({
+                    proName,
                     detail: size,
                 });
-                const Latest = Bottom.find().sort({_id: -1}).limit(1);
+                Latest = await Bottom.findOne({proName: proName});
             }else if(proKindName === "SHOES"){
                 await Shoes.create({
+                    proName,
                     detail: size,
                 });
-                const Latest = Shoes.find().sort({_id: -1}).limit(1);
+                Latest = await Shoes.findOne({proName: proName});
             }else{
                 await Top.create({
+                    proName,
                     detail: size,
                 });
+                Latest = await Top.findOne({proName: proName});
             }
-            // 가장 최근에 추가한 데이터 찾기
-            const Latest = await Top.find().sort({_id: -1}).limit(1);
-            const colorObj= {
-                proSize_ID: "",
-            };
+            const colorObj= {};
             // proColor의 proSize_ID 설정(다른 collections _id값)
-            colorObj.proSize_ID = Latest[0].id; 
+            colorObj.proSize_ID = Latest.id;
             const newColorArr = [];
-            for(var i = 0; i < Latest[0].detail.length; i++){
+            for(var i = 0; i < Latest.detail.length; i++){
                 const newColorObj = {
-                    size: Latest[0].detail[i].size,
+                    size: Latest.detail[i].size,
                     colorAmout: [],
                 };
                 // 각 사이즈 당 컬러-수량 저장한 객체
@@ -89,7 +89,7 @@ export const postRegProduct = async (req, res) => {
                 proPrice,
             });  
             const sucess = await Product.find({"proName" : proName});
-            console.log(sucess);
+            await Obj.remove({});
             return res.send(sucess);
         }catch(error){
             console.log(error);

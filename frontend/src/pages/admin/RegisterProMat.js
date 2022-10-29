@@ -69,10 +69,12 @@ function RegisterProMat(){
         for(var i = 0; i < img.files.length; i++){
             formData.append("proImage", e.target.proImage.files[i]);
         }
+        console.log(ProductObj)
         ProductObj.proMaterial = proMaterial;
         await axios.post('http://localhost:4000/admin/regProDetail', 
             formData
         );
+        console.log(ProductObj)
         await axios.post('http://localhost:4000/admin/regProDetail', ProductObj)
         .then((response) => {
             if(response.data != "fail"){
@@ -91,7 +93,18 @@ function RegisterProMat(){
                         params.id == undefined
                         ? <td align ="center" colSpan = "2">상품 등록</td>
                         : <td align ="center" colSpan = "2">상품 수정</td>
-                    }</tr>
+                    }</tr>{
+                        params.id == undefined
+                        ? <><td style={{
+                            textAlign: "center",
+                            padding: "0px 60px",
+                        }}>{"이미지"}</td>
+                        <td><input type="file" id="fileAdd" 
+                        multiple name={"proImage"} 
+                        accept="image/*"
+                        /></td></>
+                        : null
+                    }
                 <tr>
                     <td style={{
                         textAlign: "center",

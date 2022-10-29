@@ -1,7 +1,9 @@
-import { resolveShowConfigPath } from "@babel/core/lib/config/files/index.js";
 import Color from "../../models/material/Color.js";
 import Material from "../../models/material/Material.js";
 import Product from "../../models/Product.js";
+import Bottom from "../../models/size/Bottom.js";
+import Shoes from "../../models/size/Shoes.js";
+import Top from "../../models/size/Top.js";
 
 
 export const getAdmin = async(req, res) => {
@@ -9,7 +11,20 @@ export const getAdmin = async(req, res) => {
     return res.send(find);    
 }
 export const postAdmin = async(req, res) => {
-
+    const find = await Product.findOne({_id: req.body.id});
+    if(find.proKindName == "OUTER" || find.proKindName == "TOP"
+        || find.proKindName == "DRESS" || find.proKindName == "BLOUSE&SHIRT"){
+            await Top.deleteOne({_id: find.proSize[0].proSize_ID})
+    }else if(find.proKindName == "SKIRT" || find.proKindName == "Pants"){
+        await Bottom.deleteOne({_id: find.proSize[0].proSize_ID})
+    }else if(find.proKindName == "SHOES"){
+        await Shoes.deleteOne({_id: find.proSize[0].proSize_ID})
+    }
+    try{
+        await Product.deleteOne({_id: req.body.id});
+    }catch(error){console.log(error); return res.send("fail")}
+    const reFind = await Product.find({});
+    return res.send(reFind);
 }
 export const getRegProductName = async(req, res) => {
     // console.log("세션: ",req.session.obj);
@@ -30,7 +45,6 @@ export const postUpdate = async(req, res) =>{
         }
         return res.send(find);
     }else if(req.body.originName != null){
-        console.log(req.body.originName);
         const name = req.body.proName;
         if(req.body.originName != name){
             const find = await Product.findOne({"proName": name});
@@ -51,7 +65,6 @@ export const getUpdate2 = async(req, res) =>{
     res.send(arr);
 }
 export const postUpdate2 = async(req, res) =>{
-    console.log(req.body);
     const updateDB = req.body;
     try{
         await Product.updateOne({"_id": updateDB._id}, {"$set": updateDB });

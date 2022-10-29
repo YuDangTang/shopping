@@ -280,7 +280,7 @@ function RegisterProSize(){
                                 <Option value={"DRESS"} text={"드레스"}/>
                                 <Option value={"TOP"} text={"상의"}/>
                                 <Option value={"BLOUSE&SHIRT"} text={"블라우스&셔츠"}/>
-                                <Option value={"Skirt "} text={"치마"}/>
+                                <Option value={"SKIRT"} text={"치마"}/>
                                 <Option value={"Pants"} text={"바지"}/>
                                 <Option value={"SHOES"} text={"신발"}/>
                             </select>
