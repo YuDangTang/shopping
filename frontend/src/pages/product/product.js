@@ -74,7 +74,7 @@ function Product(){
     const[datas, setDatas] = useState([]); // 모든 상품갹체를 집어넣는다.
 
     //선택한 사이즈
-    const[selectSize, setSelectSize] = useState(""); //사이즈 버튼 클릭시 최신화된다.
+    const[selectSize, setSelectSize] = useState("사이즈를 선택해주세요"); //사이즈 버튼 클릭시 최신화된다.
     const [detailOptionBox, setDetailOptionBox] = useState(""); //사이즈와 색상이 선택되면 넘겨줄 객체가 들어간다.
     //list로 객체들을 전부 상세로 보여줘도 좋지만 한 페이지에서 한 상품만 구매할 수 있게 만드는것도 방법이다.
 
@@ -265,31 +265,11 @@ function Product(){
                             <th></th>
                             {
                                 colorAmountObj.map(function(_id,i) {
-                                    if(selectSize === 'Free'){
-                                        if(colorAmountObj[i].tmpSize==='Free'){
-                                            return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor} 
-                                            onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )} >
-                                                {colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
-
-                                        }
-                                    }else if(selectSize === 'S'){
-                                        if(colorAmountObj[i].tmpSize==='S'){
-                                            return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor} 
-                                            onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )}>{colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
-
-                                        }
-                                    }else if(selectSize === 'M'){
-                                        if(colorAmountObj[i].tmpSize==='M'){
-                                            return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor}
-                                            onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )} >{colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
-
-                                        }
-                                    }else if(selectSize === 'L'){
-                                        if(colorAmountObj[i].tmpSize==='L'){
-                                            return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor} 
-                                            onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount , colorAmountObj[i].objectBox.tmpPrice )}>{colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
-
-                                        }
+                                    
+                                    if(selectSize === colorAmountObj[i].tmpSize){
+                                        return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor} 
+                                                onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )} >
+                                                    {colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
                                     }
                                 })
                             }
@@ -383,12 +363,13 @@ let InfoDetailth = styled.div` //제품설명th
     font-size: 12px;
     text-align: left;
     vertical-align: middle;
+    
 `
 let ImgArea = styled.div` //이미지 영역1
-    /* width: 100%;
+    width: 100%;
     padding-right: 20px;
     box-sizing: border-box;
-    text-align: center; */
+    text-align: center;
     float: left;
     width: 62%;
     margin: 0 3% 0 0;
