@@ -10,14 +10,14 @@ function ItemCard(props){
     
     return(
         <ICContanel>
-            <ICContanerl2 href= {` /product/${props.product._id}`}>
+            <ICContanerl2 href= {` /product/${props.product.proName}`}>
                 <img style={{width:'100%'}} src= {proImg}/>
             </ICContanerl2>
 
 
           
-            {/* id.타이틀 값 가지고와 */}
-            <ICATag href =  {` /product/${props.product._id}`}  >
+            {/* 타이틀 값 가지고와 */}
+            <ICATag href =  {` /product/${props.product.proName}`}  >
                 <p>{props.product.proName}</p>
             </ICATag>
   

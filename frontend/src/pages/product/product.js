@@ -5,95 +5,101 @@ import { useParams } from "react-router-dom" // 1. useParams 라는 기능을 �
 import axios from "axios";
 
 
-//S 사이즈 선택시
-  let init = 0; 
-  const Createtable = React.memo(function Createtable() { 
+
+  function CreateOption(props){
+    //원하는 객체를 받아와서 사용  
+    console.log(props.selectObj);
+    console.log(props.selectObj.detailSize);
+    console.log(props.selectObj.detailColor);
+    console.log(props.selectObj.detailPrice);
+    
+    
     const [num, setNum] = useState(1);
+    const [price, setPrice] = useState(props.selectObj.detailPrice);
+  
     const increase = () =>{
-        setNum(num+1);
+        if(num < props.selectObj.detailAmount){
+            setNum(num+1);
+        }else{
+            alert("재고가 부족합니다");
+            setNum(props.selectObj.detailAmount);
+        }
     };
 
     const decrease = () =>{
         if(num < 2){
             alert("갯수는 1개부터 가능합니다");
             setNum(1);
-        }
+        }   
         else{
         setNum(num-1);
-        }
+        } 
     };
-    const numHandle = (e) => { 
-        init = e.target.value;
-    };
-
-    return(     
-    <div>
-        <table style={{width: "100%",borderSpacing:"0",borderCollapse:"0"}}>
-            <tr style={{display: "tablerow",verticalalign: "inherit",bordercolor: "inherit"}}>
-                <td style={{textalign :"left",padding: "0 10px 0 0",verticalAlign:"middle" ,fontWeight: "bold", lineHeight: "21px",fontSize:"12px",width:"220px"}}>
-                [La belle rose]리움 하트스퀘어넥 머메이드 훌롱원피스(하객룩/출근룩)<br></br>
-                -색상 : , 사이즈 : S
-                </td>
-                <td style={{textalign :"left",padding: "6.5px 0",verticalAlign:"middle" ,fontWeight: "bold", lineHeight: "18px",fontSize:"12px"}}>
-                <span style={{display: "inline-block",position:"relative",verticalAlign:"top", width:"65px"}}><input type = "text" style={{width:"22px", padding:"0 2px 0 3px",border: "1px solid #d4d8d9",borderradius: "3px 0 0 3px"}}value={num} readonly/><img src='/assets/btn_count_up.gif' style={{position:"absolute",left:"28px",top:"-1px",lineHeight:"18px",verticalAlign:"middle"}}onClick={increase}/><img src='/assets/btn_count_down.gif' style={{position:"absolute",left:"28px",bottom:"0",top:"auto"}}onClick={decrease}/></span>
-                </td>
-                <td style={{textalign :"right",padding: "6.5px 0",verticalAlign:"middle" ,fontWeight: "bold", lineHeight: "18px",fontSize:"12px"}}>
-                50,000원
-                </td>
-                </tr>
-        </table>
-    </div>
-    );
-  });
+    
 
 
-//M 사이즈 선택시
-  let init2 = 0; 
-  const Createtable2 = React.memo(function Createtable() { 
-    const [num, setNum] = useState(1);
-    const increase = () =>{
-        setNum(num+1);
-    };
+    return(   <>
 
-    const decrease = () =>{
-        if(num < 2){
-            alert("갯수는 1개부터 가능합니다");
-            setNum(1);
-        }
-        else{
-        setNum(num-1);
-        }
-    };
-    const numHandle = (e) => { 
-        init2 = e.target.value;
-    };
+    
+        <SelectTable>
+            <SelectTr >
+                <OptionTd>
+                {props.selectObj.param}<br></br>
+                - 사이즈 : {props.selectObj.detailSize} 색상 : {props.selectObj.detailColor}
+                </OptionTd>
+                <CountTd>
+                    <CountSpan >
+                        <CountInput type = "text" value={num} readonly/>
+                        <img src='/assets/btn_count_up.gif' onClick={increase} style={{position:"absolute",left:"28px",top:"-1px",lineHeight:"18px",verticalAlign:"middle"}}/>
+                        <img src='/assets/btn_count_down.gif' onClick={decrease} style={{position:"absolute",left:"28px",bottom:"0",top:"auto"}}/>
+                    </CountSpan>
+                </CountTd>
+                <SelectPrice>
+                {price * num}원
+                </SelectPrice>
+                </SelectTr>
+        </SelectTable>
+    
+    </>  
+    )
+  }
 
-    return(     
-    <div>
-        <table style={{width: "100%",borderSpacing:"0",borderCollapse:"0"}}>
-            <tr style={{display: "tablerow",verticalalign: "inherit",bordercolor: "inherit"}}>
-                <td style={{textalign :"left",padding: "0 10px 0 0",verticalAlign:"middle" ,fontWeight: "bold", lineHeight: "21px",fontSize:"12px",width:"220px"}}>
-                [La belle rose]리움 하트스퀘어넥 머메이드 훌롱원피스(하객룩/출근룩)<br></br>
-                -색상 : , 사이즈 : M
-                </td>
-                <td style={{textalign :"left",padding: "6.5px 0",verticalAlign:"middle" ,fontWeight: "bold", lineHeight: "18px",fontSize:"12px"}}>
-                <span style={{display: "inline-block",position:"relative",verticalAlign:"top", width:"65px"}}><input type = "text" style={{width:"22px", padding:"0 2px 0 3px",border: "1px solid #d4d8d9",borderradius: "3px 0 0 3px"}}value={num} readonly/><img src='/assets/btn_count_up.gif' style={{position:"absolute",left:"28px",top:"-1px",lineHeight:"18px",verticalAlign:"middle"}}onClick={increase}/><img src='/assets/btn_count_down.gif' style={{position:"absolute",left:"28px",bottom:"0",top:"auto"}}onClick={decrease}/></span>
-                </td>
-                <td style={{textalign :"right",padding: "6.5px 0",verticalAlign:"middle" ,fontWeight: "bold", lineHeight: "18px",fontSize:"12px"}}>
-                50,000원
-                </td>
-                </tr>
-        </table>
-    </div>
-    );
-  });
+
 
 
 
   //메인 상품 디테일==========================
 function Product(){
 
-    const[datas, setDatas] = useState([]); // 모든 상품을 집어넣어
+    const[datas, setDatas] = useState([]); // 모든 상품갹체를 집어넣는다.
+
+    //선택한 사이즈
+    const[selectSize, setSelectSize] = useState(""); //사이즈 버튼 클릭시 최신화된다.
+    const [detailOptionBox, setDetailOptionBox] = useState(""); //사이즈와 색상이 선택되면 넘겨줄 객체가 들어간다.
+    //list로 객체들을 전부 상세로 보여줘도 좋지만 한 페이지에서 한 상품만 구매할 수 있게 만드는것도 방법이다.
+
+    
+
+    //사이즈 버튼 클릭시 그에 맞는 색상 띄워주기
+    const handleSelect = (e) => {
+        // console.log(e)
+        return setSelectSize(e)
+    }
+
+    //사용자가 모두 선택했을때
+    const handleDetail = (detailSize, detailColor,detailAmount, detailPrice) => {
+        //선택 사이즈 선택 색상
+        console.log(detailSize); 
+        console.log(detailColor);
+        console.log(detailAmount);
+        console.log(detailPrice);
+
+         //{상품이름 :{사이즈, 색상, 갯수} }
+        var proOptionObj = {param,detailSize, detailColor,detailAmount, detailPrice};
+
+        return setDetailOptionBox(proOptionObj);
+    }
+    
 
 
     //db연결하고 상품 테이블 가지고와 products에 저장하고 지역 state에 setDatas 해준다.
@@ -108,24 +114,20 @@ function Product(){
             console.log('DB연결하고 데이터 가져오는데 에러발생...');
         }
     };
+
     useEffect(()=>{
         getData();
     }, []);//처음 한번만 실행 없으면 계속실행함
 
-    console.log( "product페이지에서 받은 url 데이터는 "+useParams().id); //id값을 받아왔다.
+    // console.log( "product페이지에서 받은 url 데이터는 "+useParams().id); //id값을 받아왔다.
     const param = useParams().id;
 
 
-
-
-//버튼 클릭시 보여주고 가리는 기능
-    const [showing, setShowing] = useState(false);
-    const toggleShowing = () => setShowing(prevShowing => !prevShowing);
-   
-    const [showing2, setShowing2] = useState(false);
-    const toggleShowing2 = () => setShowing2(prevShowing2 => !prevShowing2);
-
-
+    
+    var size = []; //상품의 크기값이 들어간다
+    var colorAmountObj = []; // 사이즈에대한 색상과 컬러값이 들어간다.
+    var detailOption =[]; //디테일에 값들이 들어간다.
+        
 
 
         return(
@@ -137,7 +139,7 @@ function Product(){
                 <ImgArea>
                 <Imgcontent>
                 {datas.map(function(_id,i) {
-                    if(datas[i]._id===param){
+                    if(datas[i].proName===param){
                         const proImg = `/${datas[i].proImg[0]}`;
                         return(
                         <img style={{maxWidth:"100"}} src={proImg}/>
@@ -149,13 +151,10 @@ function Product(){
                 <Info>  
 
 
-                {   //item title값 가져오기
-                    datas.map(function(_id,i) {
-                        if(datas[i]._id===param){
-                            return  <InfoTitle>{datas[i].proName} </InfoTitle>
-                        }
-                        })
-                }
+                    {/* 파라미터로 상품이름 가지고오기 */}
+                <InfoTitle>{param}</InfoTitle>
+                       
+                
                 <table>
                     <tr>
                         <InfoDetailth>
@@ -168,7 +167,7 @@ function Product(){
 
                         {   //item price값 가져오기
                             datas.map(function(_id,i) {
-                                if(datas[i]._id===param){
+                                if(datas[i].proName===param){
                                     return  (<td  style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px"}}>
                                         {datas[i].proPrice.price}
                                         </td>)
@@ -183,16 +182,15 @@ function Product(){
                     <tr>
                         <InfoDetailth>
                         <th  style={{color: "#B80000"}}>
-                           할인 판매가
+                        할인 판매가
                         </th>
                         </InfoDetailth>
-                       
                         {/* <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color: "#B80000"}}>
                         <strong>0 원</strong>
                         </td> */}
                         {   //item sale price값 가져오기
                             datas.map(function(_id,i) {
-                                if(datas[i]._id===param){
+                                if(datas[i].proName===param){
                                     return  (<td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color: "#B80000"}}>
                                         {datas[i].proPrice.profit}
                                         </td>)
@@ -212,59 +210,110 @@ function Product(){
                         <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px"}}>
                             허리골반셔링으로 '골반메이드'핏을 완성하였어요:) 휘뚜루마뚜루 편안함에+여성스러운 라인으로 실루엣을 보정해드리며 군살커버까지 완벽한 핏으로 보여드릴게요♥
                         </td>
-                        
                     </tr>
-                    <tr>
-                        <InfoDetailth>
-                        <th style={{fontWeight: "normal"}}>
-                            color
-                        </th>
-                        </InfoDetailth>
-                        
- 
-                        <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color:"#767479"}}>
 
-                        {
-                            datas.map(function(_id,i){
-                                if(datas[i]._id===param){
-                                    const proColor = datas[i].proSize[0].proColor
-                                    console.log(proColor); //컬러들 
-                                }
-                                return 
+                    {/* 컬러출력 부분 */}
 
-                                
-                            })
-
-                        }
-
-                        {/* <Buttonbutton>아이보리</Buttonbutton><Buttonbutton>블랙</Buttonbutton> */}
-                        
-                        <br></br>
-                        [필수]색상을 반드시 선택해 주세요
-                        </td>
-                    </tr>
                     <tr>
                         <InfoDetailth>
                         <th style={{fontWeight: "normal"}}>
                             size
                         </th>
                         </InfoDetailth>
-                        
                         <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color:"#767479"}}>
-                        <ButtonbuttonSize onClick={toggleShowing}>S</ButtonbuttonSize>                       
-                        <ButtonbuttonSize onClick={toggleShowing2}>M</ButtonbuttonSize><br></br>
-                        [필수]사이즈를 반드시 선택해 주세요
+                        
+
+                        {/*  상품에 등록된 사이즈 갯수만큼 출력  //버튼 클릭시 value값 가지고 전달하기*/}
+                        
+                        {datas && 
+                            datas.map(function(_id, i) {
+                                if(datas[i].proName===param)  {    //datas id값을 id에 넣기
+                                    for(var j = 0;j<datas[i].proSize[0].proColor.length;j++){ // 
+
+                                        var tmpSize =  datas[i].proSize[0].proColor[j].size
+
+                                        for(var t=0; t<datas[i].proSize[0].proColor[j].colorAmout.length; t++){
+
+                                            var tmpColor =  datas[i].proSize[0].proColor[j].colorAmout[t].color;
+                                            var tmpAmount = datas[i].proSize[0].proColor[j].colorAmout[t].amout;
+                                            var tmpPrice = datas[i].proPrice.price;
+                                            var objectBox = {tmpColor,tmpAmount, tmpPrice};
+                                            var objectLastBox = {tmpSize,objectBox}
+                                            colorAmountObj.push(objectLastBox);//우리가 사용할 Object를 얻었다.
+                                            // console.log(colorAmountObj)
+                                            // colorAmountObj.asign(objectLastBox); 
+                                        }
+                                        size.push(<Buttonbutton onClick={(e) => handleSelect(e.target.value)} value={datas[i].proSize[0].proColor[j].size}>{datas[i].proSize[0].proColor[j].size}</Buttonbutton>); //리턴할것을 list에 집어 넣는다.
+                                        // console.log(colorAmountObj[0].objectBox.tmpColor); 블랙
+                                    }
+                                    for(var k = 0 ; k<size.length;k++){
+                                        // console.log(size.length)
+                                        return size
+                                    }
+                                }
+                            })
+                        }
+                            
+
+
                         </td>
                     </tr>
-                </table>
-                {showing === true ? <Createtable>Createtable</Createtable> : null}
-                {showing2 === true ? <Createtable2>Createtable2</Createtable2> : null}
+                    <tr>
+                        
+                        {/* 사이즈에 따른 컬러( 갯수 1개 이상인것만 표시 */}
+                        {selectSize && <>
+                            <th></th>
+                            {
+                                colorAmountObj.map(function(_id,i) {
+                                    if(selectSize === 'Free'){
+                                        if(colorAmountObj[i].tmpSize==='Free'){
+                                            return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor} 
+                                            onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )} >
+                                                {colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
+
+                                        }
+                                    }else if(selectSize === 'S'){
+                                        if(colorAmountObj[i].tmpSize==='S'){
+                                            return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor} 
+                                            onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )}>{colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
+
+                                        }
+                                    }else if(selectSize === 'M'){
+                                        if(colorAmountObj[i].tmpSize==='M'){
+                                            return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor}
+                                            onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )} >{colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
+
+                                        }
+                                    }else if(selectSize === 'L'){
+                                        if(colorAmountObj[i].tmpSize==='L'){
+                                            return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor} 
+                                            onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount , colorAmountObj[i].objectBox.tmpPrice )}>{colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
+
+                                        }
+                                    }
+                                })
+                            }
+                            </>
+                        }
+                        </tr>
+                        </table>
+                    {/* 컬러 선택시 선택 옵션 창 뜨기 리스트에있는 맵 돌려*/}
+                    {
+                        detailOptionBox && 
+                        <CreateOption selectObj={detailOptionBox}></CreateOption>
+
+                        
+                    }
+                    
+
+                {/* //총 갯수 표시 */}
                 <Totalprice>
                     TOTAL : 0 (0개)
                 </Totalprice>
                 <Actionarea>
                 <Actionarea2>
                 
+                {/* db에 상품명, 판매가, 사이즈, 컬러, 수량 (누가샀는지 session에 존재) 보내줘  결제창으로*/}
                 <Buynow>
                     BUY IY NOW
                 </Buynow>
@@ -461,4 +510,58 @@ const Buynow3 = styled.button `//buy it now 밑에 버튼2
     color : #CCCCCC;
     cursor : pointer;
   }
+`
+
+
+
+
+
+// 사용자가 선택한 것 css
+
+const SelectTable = styled.table`
+width: 100%;
+border-spacing: 0;
+border-collapse: 0;
+`
+const SelectTr = styled.tr`
+    display: table-row;
+    vertical-align:inherit;
+    border-color: inherit;
+
+`
+const OptionTd = styled.td`
+    text-align: left;
+    padding: 0 10px 0 0;
+    vertical-align: middle;
+    font-weight: bold;
+    line-height: 21px;
+    font-size: 12px;
+    width: 220px;
+
+`
+const CountTd = styled.td`
+    text-align: left;
+    padding: 6.5px 0;
+    vertical-align: middle;
+    font-weight: bold;
+    line-height: 18px;
+    font-size: 12px;
+`
+const CountSpan = styled.span`
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+    width: 65px;
+
+`
+
+const CountInput = styled.input`
+    width: 22px;
+    padding: 0 2px 0 3px;
+    border: 1px solid #d4d8d9;
+    border-radius: 3px 0 0 3px;
+
+`
+const SelectPrice = styled.td`
+    text-align: right; padding: 6.5px 0; vertical-align: middle; font-weight: bold; line-height: 18px;, font-size: 12px;
 `
