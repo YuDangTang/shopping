@@ -1,6 +1,7 @@
 import Color from "../../models/material/Color.js";
 import Material from "../../models/material/Material.js";
 import Product from "../../models/Product.js";
+
 import Bottom from "../../models/size/Bottom.js";
 import Shoes from "../../models/size/Shoes.js";
 import Top from "../../models/size/Top.js";
@@ -134,6 +135,7 @@ export const postRegProductName = async(req, res) =>{
     // else{
     //     req.session.obj = req.body;
     // }
+
     return res.send("sucess");
 }
 export const postRegColor = async(req, res) => {
@@ -167,6 +169,7 @@ export const getRegProduct = async(req, res) => {
     return res.send(showMat);
 }
 export const getStocks = async(req, res) => {
+
     const showColor = await Color.find({});
     return res.send(showColor);
 }
@@ -257,4 +260,5 @@ export const postStocks = async(req, res) => {
         }
         res.send(find);
     }
+
 }

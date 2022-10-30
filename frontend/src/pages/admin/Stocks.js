@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import { useEffect, useState } from "react"; 
 import { useParams } from "react-router-dom";
 import { Td } from "../../components/Table";
@@ -30,11 +31,13 @@ function Stocks(){
             if(response.data == "fail"){
                 alert("해당 상품은 존재하지 않습니다.");
                 window.location.href = "/admin";
+
                 return;
             }else{
                 const datas = response.data;
                 const arr = [];
                 arr.push(datas);
+
                 let showSizeArr = [];
                 if(lists == "색상&사이즈 추가"){
                     if(datas.proKindName == "SHOES"){
@@ -387,5 +390,6 @@ function Stocks(){
                 </form>
         </>);
     }
+
 }
 export default Stocks;

@@ -1,0 +1,116 @@
+.footer{
+    width:100%;
+    float:left;
+}
+#footer .inner{
+    width:100%;
+    float:left;
+}
+.xans-layout-footer{
+    float: left;
+    width:100%;
+    letter-spacing: 0.5px;
+}
+.xans-layout-footer .footer_box {
+    margin: 0 auto;
+    margin-top: 100px;
+}
+.all_width {
+    max-width: 1460px;
+    width: 100%;
+    min-width: 1260px;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+.xans-layout-footer .footer_box .box_inner {
+    float: left;
+}
+.xans-layout-footer .footer_info {
+    line-height: 19px;
+    font-size: 10px;
+    color: #888;
+    float: left;
+    margin: 70px 80px 70px 0;
+}
+.xans-layout-footer .footer_info h2 {
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+    margin-bottom: 10px;
+    color: #888;
+}
+.xans-layout-footer .footer_info a {
+    color: #888;
+}
+.xans-layout-footer .footer_info span {
+    font-size: 11px;
+    letter-spacing: 0;
+}
+
+
+.xans-layout-footer .footer_info .info_call {
+    font-size: 14px;
+    display: inline-block;
+    padding-bottom: 5px;
+    color: #888;
+}
+
+.xans-layout-footer .footer_info .link {
+    background: #f5f5f5;
+    border: 1px solid #ebebeb;
+    box-shadow: 1px 1px 0px #dcdcdc;
+    padding: 4px 9px 5px 10px;
+    letter-spacing: -0.5px;
+    font-size: 11px;
+}
+
+.xans-layout-footer .footer_info img {
+    max-height: 20px;
+}
+
+img, fieldset {
+    border: none;
+    vertical-align: top;
+}
+
+.xans-layout-footer .footer_info:last-child {
+    margin-right: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #666666;
+}
+
+.copyright {
+    text-align: right;
+    width: 100%;
+    float: left;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    font-size: 10px;
+    color: #acacac;
+}
+
+.copyright span {
+    min-width: 1220px;
+    max-width: 1500px;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    padding-right: 15px;
+    box-sizing: border-box;
+}
+
+.copyright a {
+    font-size: 10px;
+    line-height: 33px;
+    color: #acacac;
+}
+
+#footer .inner {
+    width: 100%;
+    float: left;
+    /* *zoom: 1; */
+}
+

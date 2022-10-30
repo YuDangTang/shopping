@@ -1,7 +1,9 @@
+
 import Table from "../../components/Table.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProductObj } from "../../obj/obj.js";
 import { useEffect, useState } from "react";
+
 import axios from "axios";
 // import ReactDOM from 'react-dom/client';
 function RegisterProName(props){ 
@@ -31,12 +33,14 @@ function RegisterProName(props){
     const onSubmitHandler = async (e) => {
         e.preventDefault(); // 기본동작 막기
         const proName = e.target.proName.value;
+        console.log(proName);
         const proDetail = e.target.proDetail.value;
         const proCost = e.target.proCost.value;
         const proPrice = e.target.proPrice.value;
         ProductObj.proDetail = proDetail;
         ProductObj.proPrice.cost = Number(proCost);
         ProductObj.proPrice.price = Number(proPrice);
+
         ProductObj.proPrice.profit = ProductObj.proPrice.price - ProductObj.proPrice.cost;
         if(params.id != undefined){
             products[0].originName = products[0].proName;
@@ -47,10 +51,12 @@ function RegisterProName(props){
             products[0].proPrice.profit = ProductObj.proPrice.price - ProductObj.proPrice.cost;
         }
         ProductObj.proName = proName;
+
         if(Number.isNaN(ProductObj.proPrice.price) || Number.isNaN(ProductObj.proPrice.cost)){
             alert("가격은 숫자만 입력해주세요");
             return;
         }
+
         if(ProductObj.proPrice.price < 0 || ProductObj.proPrice.cost < 0){
             alert("0 이상의 숫자만 입력해주세요");
             return;
@@ -94,7 +100,10 @@ function RegisterProName(props){
                 }
             });
         }
+
     };
+
+
     return(
         <form onSubmit={onSubmitHandler}>
             <table align ="center" border={1} cellSpacing={1}>
@@ -120,6 +129,7 @@ function RegisterProName(props){
                     }}>{"가격"}</td>
                     <td align ="center" style={{
                         padding: "0px 16px",
+
                     }}>원가: {
                         products[0] != null
                         ? <input type="number" style={{textAlign:"right"}}
@@ -132,6 +142,7 @@ function RegisterProName(props){
                                 name="proPrice" defaultValue={products[0].proPrice.price} required/>
                             : <input type="number" style={{textAlign:"right"}} name="proPrice" required/>
                        }
+
                     </td>
                 </tr>
                 <Table type={"button"}/>
@@ -140,3 +151,4 @@ function RegisterProName(props){
     );
 };
 export default RegisterProName;
+

@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+//아이템 선언
+
 const productSchema = new mongoose.Schema({
     proName: { type: String, required: true, unique: true },
     proKindName: { type: String, required: true },
@@ -10,7 +12,9 @@ const productSchema = new mongoose.Schema({
             size: { type: String, required: true },
             colorAmout: [{
                 color: { type: String, required: true },
+
                 amout: { type: Number, required: true, default: 0 },
+
                 orderQuan: { type: Number, required: true, default: 0 },
                 notiQuan: { type: Number, required: true, default: 0 },
                 salesStatus: { type: String, required: true, default: "판매" },
@@ -27,6 +31,7 @@ const productSchema = new mongoose.Schema({
     proStatus: { type: String, required: true, default: "판매"},
     proDate: { type: Date, required: true, default: Date.now },
 });
+
 
 productSchema.pre('save', function (next) {
     var product = this;
@@ -65,4 +70,5 @@ productSchema.static("salesStatus", function(product){
 });
 
 const Product = mongoose.model("Product", productSchema);
+
 export default Product;

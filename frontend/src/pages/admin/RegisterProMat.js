@@ -1,12 +1,15 @@
 import Table from "../../components/Table.js";
 import { useEffect, useState } from "react";
+
 import { useLocation, useParams } from "react-router-dom";
+
 import { ProductObj } from "../../obj/obj.js";
 import axios from "axios";
 // import ReactDOM from 'react-dom/client';
 function RegisterProMat(){
     const params = useParams(); // url 가져오기(Update인지 Register인지)
     const [matArr, setMatArr] = useState([]);
+
     const [checkedInputs, setCheckedInputs] = useState([]);
     const getData = async () => {
         // 소재
@@ -47,12 +50,15 @@ function RegisterProMat(){
 
     const onSubmitHandler = async (e) => {
         e.preventDefault(); // 기본동작 막기
+
         const DB = location.state.DB;
+
         const proMaterial = checkedInputs;
         if(proMaterial.length == 0){
             alert('소재를 선택해주세요');
             return;
         }
+
         if(params.id != undefined){
             DB.proMaterial = proMaterial;
             await axios.post(`http://localhost:4000/admin/${params.id}/update2`, DB)
@@ -63,17 +69,21 @@ function RegisterProMat(){
                 }
             });
         }
+
         const formData = new FormData();
         const img = e.target.proImage;
         console.log(formData.values());
         for(var i = 0; i < img.files.length; i++){
             formData.append("proImage", e.target.proImage.files[i]);
         }
+
         console.log(ProductObj)
+
         ProductObj.proMaterial = proMaterial;
         await axios.post('http://localhost:4000/admin/regProDetail', 
             formData
         );
+
         console.log(ProductObj)
         await axios.post('http://localhost:4000/admin/regProDetail', ProductObj)
         .then((response) => {
@@ -105,6 +115,7 @@ function RegisterProMat(){
                         /></td></>
                         : null
                     }
+
                 <tr>
                     <td style={{
                         textAlign: "center",
@@ -116,6 +127,7 @@ function RegisterProMat(){
                     <div>{matArr.map((value) => {
                         return(
                             <>
+
                                 {
                                     params.id == undefined
                                     ? <><input type={"checkbox"}
@@ -145,6 +157,7 @@ function RegisterProMat(){
                                         {value}
                                     </>
                                 }
+
                             </>
                         );
                     })}</div>

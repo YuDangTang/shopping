@@ -24,6 +24,7 @@ export const postRegProduct = async (req, res) => {
             });
         }catch(error){console.log(error)};
     }else{   
+
         const proName = ProductObj.proName;
         const proKindName = ProductObj.proKindName;
         const proMaterial = ProductObj.proMaterial;
@@ -37,13 +38,16 @@ export const postRegProduct = async (req, res) => {
         
         try{
             const size = [];
+
             let Latest;
+
             for(var i = 0; i < proSize.length; i++){
                 let obj = {
                     size: proSize[i],
                 };
                 size.push(obj);
             }
+
             if(proKindName === "Skirt" || proKindName === "Pants"){
                 await Bottom.create({
                     proName,
@@ -70,6 +74,7 @@ export const postRegProduct = async (req, res) => {
             for(var i = 0; i < Latest.detail.length; i++){
                 const newColorObj = {
                     size: Latest.detail[i].size,
+
                     colorAmout: [],
                 };
                 // 각 사이즈 당 컬러-수량 저장한 객체
@@ -88,12 +93,16 @@ export const postRegProduct = async (req, res) => {
                 proDetail,
                 proPrice,
             });  
+
             const sucess = await Product.find({"proName" : proName});
             await Obj.remove({});
             return res.send(sucess);
+
         }catch(error){
             console.log(error);
         }
     }
+
     return res.send("fail");
+
 };

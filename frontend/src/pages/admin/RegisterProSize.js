@@ -1,10 +1,13 @@
 import Option from "../../components/Option.js";
 import { useEffect, useState } from "react";
+
 import { useNavigate, useLocation, useParams } from "react-router-dom";
+
 import { ProductObj } from "../../obj/obj.js";
 import axios from "axios";
 // import ReactDOM from 'react-dom/client';
 function RegisterProSize(){
+
     const params = useParams(); // url 가져오기(Update인지 Register인지)
     const [colorArr, setColorArr] = useState([]);   // select option
     const [products, setProducts] = useState([]);   // updateData
@@ -87,6 +90,7 @@ function RegisterProSize(){
             getUpdateData(params);
         }
     }, []);
+
 
     const handleChange = (e) => {
         if(e.target.value === "SHOES"){
@@ -209,8 +213,10 @@ function RegisterProSize(){
         const proKindName = e.target.proKindName.value;
         const size = document.querySelectorAll("#proSize");
         const arr = document.getElementsByName("proColor");
+
         const proSize = checkSize;
         if(checkColor.length == 0){
+
             alert('색상을 선택해주세요');
             return;
         }
@@ -257,6 +263,7 @@ function RegisterProSize(){
         ProductObj.proSize = color;
         data('/admin/regProDetail', { state: {ProductObj} });
     };
+
     let count = 0;
     return(
         <form onSubmit={onSubmitHandler}>
@@ -297,6 +304,7 @@ function RegisterProSize(){
                     <td><div style={{}}>
                             {colorArr.map(color => {
                                 return(
+
                                     <>
                                         {
                                             checkColor.length != 0
@@ -360,6 +368,7 @@ function RegisterProSize(){
                                         </div>
                                         }
                                     </>
+
                                 );
                             })}
                         </div></td>
@@ -413,7 +422,7 @@ function RegisterProSize(){
                                 }}>{checkColor.map(color => {
                                         return(
                                             <div>
-                                                <span id="proSize" className={color}>{color}: </span>
+                                                <span id="proSize" className={color[0]}>{color[0]}: </span>
                                                 <input type={"text"} name={"proColor"} style={{
                                                     width: "30px", textAlign: "right"
                                                 }} maxLength="3" required/>

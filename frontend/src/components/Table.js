@@ -41,6 +41,7 @@ export function Table(props){
     }
 };
 export function Td(props){
+
     if(props.input == "input"){
         return(
             <>
@@ -52,6 +53,7 @@ export function Td(props){
             </>
         );
     }
+
     if(props.type == "checkbox"){
         return(
             <>
@@ -61,7 +63,9 @@ export function Td(props){
     }else{
         return(
             <>
+
                 <td style={props.styled} name={props.name} rowSpan={props.row} >{props.td}</td>
+
             </>
         );
     }
