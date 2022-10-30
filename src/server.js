@@ -3,9 +3,11 @@ import cors from "cors";
 import "./db.js";
 import session from "express-session";
 import adminRouter from "./routers/adminRouter.js";
+import productRouter from "./routers/productRouter.js"
 import User from "./models/User.js"
 import bcrypt from 'bcrypt'
 import Product from "./models/Product.js";
+
 
 const PORT = 4000;	
 const app = express();
@@ -13,6 +15,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));  // body-parse
+
+// npm i cors -> 포트 번호가 달라도 데이터를 꺼내갈 수 있게 해줌
+
 app.use(session({
     secret: 'user',
     resave: false,
@@ -49,6 +54,7 @@ app.get("/",getMain);
 
 
 app.use("/admin", adminRouter);
+app.use("/product", productRouter);
 
 app.listen(PORT, handelListening);
 

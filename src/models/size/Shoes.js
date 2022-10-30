@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const shoesSchema = new mongoose.Schema({
+    proName: {type: String, required: true},
     detail: [{
         size: { type: String, required: true},
         heelHeight: { type: String },   // 굽높이

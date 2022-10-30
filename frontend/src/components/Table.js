@@ -34,12 +34,26 @@ export function Table(props){
                 }}>{props.td}</td>
                 <td align ="center" style={{
                     padding: "0px 30px",
-                }}><input type={props.type} className={props.class} name={props.name} required /></td>
+                }}><input type={props.type} className={props.class} name={props.name} 
+                    style={props.style} defaultValue={props.defaultValue} required /></td>
             </tr>
         );
     }
 };
 export function Td(props){
+
+    if(props.input == "input"){
+        return(
+            <>
+                <td style={{textAlign: "center"}}>
+                <input type={props.InputType} style={{textAlign: "right", width:"80px"}}
+                        name={props.InputName}
+                        Value={props.InputValue}/>
+                </td>
+            </>
+        );
+    }
+
     if(props.type == "checkbox"){
         return(
             <>
@@ -49,7 +63,9 @@ export function Td(props){
     }else{
         return(
             <>
-                <td style={props.styled} rowSpan={props.row} >{props.td}</td>
+
+                <td style={props.styled} name={props.name} rowSpan={props.row} >{props.td}</td>
+
             </>
         );
     }

@@ -77,7 +77,3 @@ function App() {
     </>
   );
 };
-
-export default App;
-
-//리셋 스타일드를 만들어서 페이지에만적용

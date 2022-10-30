@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 
 const topSchema = new mongoose.Schema({
+    proName: {type: String, required: true},
     detail: [{
         size: { type: String, required: true},
         shoulder: { type: String }, 
