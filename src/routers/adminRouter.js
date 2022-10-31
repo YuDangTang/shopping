@@ -41,9 +41,10 @@ adminRouter.post("/regProDetail", upload.array("proImage"), postRegProduct);
 // adminRouter.route("/regProColor").post(postRegColor);
 adminRouter.route("/regMatTotal").post(postRegMat);
 adminRouter.route("/:id/stocks").get(getStocks).post(postStocks);
-adminRouter.route("/:id/detailUpdate").post(getData);
+adminRouter.route("/:id/update").get(getUpdate).post(postUpdate);
 adminRouter.route("/:id/update2").get(getUpdate2).post(postUpdate2);
 adminRouter.route("/:id/update3").get(getUpdate3).post(postUpdate3);
+adminRouter.route("/:id/detailUpdate").post(getData);
 
 
 export default adminRouter;
