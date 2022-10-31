@@ -8,11 +8,6 @@ import axios from "axios";
 
   function CreateOption(props){
     //원하는 객체를 받아와서 사용  
-    console.log(props.selectObj);
-    console.log(props.selectObj.detailSize);
-    console.log(props.selectObj.detailColor);
-    console.log(props.selectObj.detailPrice);
-    
     
     const [num, setNum] = useState(1);
     const [price, setPrice] = useState(props.selectObj.detailPrice);
@@ -71,52 +66,66 @@ import axios from "axios";
   //메인 상품 디테일==========================
 function Product(){
 
-    const[datas, setDatas] = useState([]); // 모든 상품갹체를 집어넣는다.
-
+    const[datas, setDatas] = useState({}); // 모든 상품갹체를 집어넣는다.
     //선택한 사이즈
     const[selectSize, setSelectSize] = useState("사이즈를 선택해주세요"); //사이즈 버튼 클릭시 최신화된다.
     const [detailOptionBox, setDetailOptionBox] = useState(""); //사이즈와 색상이 선택되면 넘겨줄 객체가 들어간다.
     //list로 객체들을 전부 상세로 보여줘도 좋지만 한 페이지에서 한 상품만 구매할 수 있게 만드는것도 방법이다.
-
-    
-
-    //사이즈 버튼 클릭시 그에 맞는 색상 띄워주기
-    const handleSelect = (e) => {
-        // console.log(e)
-        return setSelectSize(e)
-    }
-
-    //사용자가 모두 선택했을때
-    const handleDetail = (detailSize, detailColor,detailAmount, detailPrice) => {
-        //선택 사이즈 선택 색상
-        console.log(detailSize); 
-        console.log(detailColor);
-        console.log(detailAmount);
-        console.log(detailPrice);
-
-         //{상품이름 :{사이즈, 색상, 갯수} }
-        var proOptionObj = {param,detailSize, detailColor,detailAmount, detailPrice};
-
-        return setDetailOptionBox(proOptionObj);
-    }
-    
+    const [proTitle, setProTitle] = useState("");   // 상품명
 
 
-    //db연결하고 상품 테이블 가지고와 products에 저장하고 지역 state에 setDatas 해준다.
-    const getData = async () => {
-        try{
-            const response = await axios.get('http://localhost:4000');
-            const products = response.data;
-            // console.log(products);
-            setDatas(products);
-
-        }catch(err){
-            console.log('DB연결하고 데이터 가져오는데 에러발생...');
+        //사이즈 버튼 클릭시 그에 맞는 색상 띄워주기
+        const handleSelect = (e) => {
+            console.log("이이이이", e)
+            return setSelectSize(e)
         }
-    };
+
+        //사용자가 모두 선택했을때
+        const handleDetail = (detailSize, detailColor,detailAmount, detailPrice) => {
+            //선택 사이즈 선택 색상
+            // console.log(detailSize); 
+            // console.log(detailColor);
+            // console.log(detailAmount);
+            // console.log(detailPrice);
+
+            //{상품이름 :{사이즈, 색상, 갯수} }
+            var proOptionObj = {param,detailSize, detailColor,detailAmount, detailPrice};
+
+            return setDetailOptionBox(proOptionObj);
+        }
+
+
+
+        //db연결하고 상품 테이블 가지고와 products에 저장하고 지역 state에 setDatas 해준다.
+        const getData = async (param) => {
+            try{
+                const obj = {};
+                obj.id = param;
+                console.log("url: ", param)
+                await axios.post(`http://localhost:4000/product/${param}`, obj)
+                .then((response) => {
+                    if(response.data == "fail"){
+                        alert("해당 상품은 존재하지 않습니다.");
+                        return; 
+                    }else{
+                        const data = response.data;
+                        setDatas(data);
+                        setProTitle(data.proName);
+                        console.log("데이터: ", data, "   이름: ", data.proName);
+                    }
+                }); 
+
+
+            }catch(err){
+                console.log('DB연결하고 데이터 가져오는데 에러발생...');
+            }
+        };
+
 
     useEffect(()=>{
-        getData();
+        getData(param);
+
+        
     }, []);//처음 한번만 실행 없으면 계속실행함
 
     // console.log( "product페이지에서 받은 url 데이터는 "+useParams().id); //id값을 받아왔다.
@@ -127,7 +136,6 @@ function Product(){
     var size = []; //상품의 크기값이 들어간다
     var colorAmountObj = []; // 사이즈에대한 색상과 컬러값이 들어간다.
     var detailOption =[]; //디테일에 값들이 들어간다.
-        
 
 
         return(
@@ -138,21 +146,41 @@ function Product(){
                 <ProductDetail>
                 <ImgArea>
                 <Imgcontent>
-                {datas.map(function(_id,i) {
-                    if(datas[i].proName===param){
+                {
+                    datas.proName != null
+                    ? <img style={{maxWidth:"100"}} src={"/" + datas.proImg[0]}/>
+                    : null
+                }
+                {/* {datas.map(function(_id,i) {
+                    if(datas[i]._id===param){
                         const proImg = `/${datas[i].proImg[0]}`;
                         return(
                         <img style={{maxWidth:"100"}} src={proImg}/>
                         )   
                     }
-                    })}
+                    })} */}
                 </Imgcontent>
                 </ImgArea>
                 <Info>  
 
 
                     {/* 파라미터로 상품이름 가지고오기 */}
-                <InfoTitle>{param}</InfoTitle>
+                    {
+                        datas.proName != null
+                        ? <InfoTitle>{datas.proName}</InfoTitle>
+                        : null
+                    }
+                    {/* {
+                        datas.map(function(_id, i ){
+                            if(datas[i]._id===param){
+                                const meterTitle = datas[i].proName;
+                                return <InfoTitle>{meterTitle}</InfoTitle>
+                                
+                            }
+                        })
+                    } */}
+
+                <InfoTitle>{proTitle}</InfoTitle>
                        
                 
                 <table>
@@ -164,8 +192,14 @@ function Product(){
                         </InfoDetailth>
                         
 
-
-                        {   //item price값 가져오기
+                        {
+                            datas.proName != null
+                            ? <td  style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px"}}>
+                                {datas.proPrice.price}
+                                </td>
+                            : null
+                        }
+                        {/* {   //item price값 가져오기
                             datas.map(function(_id,i) {
                                 if(datas[i].proName===param){
                                     return  (<td  style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px"}}>
@@ -173,7 +207,7 @@ function Product(){
                                         </td>)
                                 }
                                 })
-                        }
+                        } */}
                         {/* <td  style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px"}}>
                             25000원
                         </td> */}
@@ -188,7 +222,14 @@ function Product(){
                         {/* <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color: "#B80000"}}>
                         <strong>0 원</strong>
                         </td> */}
-                        {   //item sale price값 가져오기
+                        {
+                            datas.proName != null
+                            ? <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color: "#B80000"}}>
+                            {datas.proPrice.profit}
+                            </td>
+                            : null
+                        }
+                        {/* {   //item sale price값 가져오기
                             datas.map(function(_id,i) {
                                 if(datas[i].proName===param){
                                     return  (<td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color: "#B80000"}}>
@@ -196,7 +237,7 @@ function Product(){
                                         </td>)
                                 }
                                 })
-                        }
+                        } */}
 
                         
                     </tr>
@@ -224,8 +265,25 @@ function Product(){
                         
 
                         {/*  상품에 등록된 사이즈 갯수만큼 출력  //버튼 클릭시 value값 가지고 전달하기*/}
-                        
-                        {datas && 
+                        {
+                            datas.proName != null
+                            ? (
+                                datas.proSize[0].proColor.map(data => {
+                                    var tmpSize = data.size
+                                    data.colorAmout.map(d => {
+                                        var tmpColor =  d.color;
+                                        var tmpAmount = d.amout;
+                                        var tmpPrice = datas.proPrice.price;
+                                        var objectBox = {tmpColor,tmpAmount, tmpPrice};
+                                        var objectLastBox = {tmpSize,objectBox}
+                                        colorAmountObj.push(objectLastBox);//우리가 사용할 Object를 얻었다.
+                                    })
+                                    return(<Buttonbutton onClick={(e) => handleSelect(e.target.value)} value={data.size}>{data.size}</Buttonbutton>);
+                                })
+                            )
+                            : null
+                        }
+                        {/* {datas && 
                             datas.map(function(_id, i) {
                                 if(datas[i].proName===param)  {    //datas id값을 id에 넣기
                                     for(var j = 0;j<datas[i].proSize[0].proColor.length;j++){ // 
@@ -252,7 +310,7 @@ function Product(){
                                     }
                                 }
                             })
-                        }
+                        } */}
                             
 
 
@@ -265,11 +323,24 @@ function Product(){
                             <th></th>
                             {
                                 colorAmountObj.map(function(_id,i) {
-                                    
+                                    console.log("selectSize: ", selectSize, "   colorAmountObj: ", colorAmountObj)
                                     if(selectSize === colorAmountObj[i].tmpSize){
-                                        return <Buttonbutton value={colorAmountObj[i].objectBox.tmpColor} 
-                                                onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )} >
-                                                    {colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount}) </Buttonbutton>
+                                        return(
+                                            <>
+                                                {
+                                                    colorAmountObj[i].objectBox.tmpAmount == 0
+                                                    ? <Buttonbutton
+                                                    value={colorAmountObj[i].objectBox.tmpColor} >
+                                                    {colorAmountObj[i].objectBox.tmpColor} ({"품절"})
+                                                    </Buttonbutton>
+                                                    : <Buttonbutton
+                                                    value={colorAmountObj[i].objectBox.tmpColor} 
+                                                    onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )} >
+                                                    {colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount})
+                                                    </Buttonbutton>
+                                                }
+                                            </>
+                                        );
                                     }
                                 })
                             }
@@ -544,5 +615,5 @@ const CountInput = styled.input`
 
 `
 const SelectPrice = styled.td`
-    text-align: right; padding: 6.5px 0; vertical-align: middle; font-weight: bold; line-height: 18px;, font-size: 12px;
+    text-align: right; padding: 6.5px 0; vertical-align: middle; font-weight: bold; line-height: 18px; font-size: 12px;
 `

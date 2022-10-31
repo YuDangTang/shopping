@@ -1,5 +1,10 @@
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 
+
+
+
+
+
 //상품의 객체를 받아온다.
 function ItemCard(props){
     console.log(props.product._id);
@@ -10,14 +15,14 @@ function ItemCard(props){
     
     return(
         <ICContanel>
-            <ICContanerl2 href= {` /product/${props.product.proName}`}>
+            <ICContanerl2 href= {` /product/${props.product._id}`}>
                 <img style={{width:'100%'}} src= {proImg}/>
             </ICContanerl2>
 
 
           
             {/* 타이틀 값 가지고와 */}
-            <ICATag href =  {` /product/${props.product.proName}`}  >
+            <ICATag href =  {` /product/${props.product._id}`}  >
                 <p>{props.product.proName}</p>
             </ICATag>
   
