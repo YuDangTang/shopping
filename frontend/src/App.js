@@ -31,6 +31,7 @@ import Basket from "./pages/order/Basket";
 import Order from "./pages/myshop/Order";
 import MyShop from "./pages/myshop/MyShop";
 import Product from "./pages/product/product.js";
+import Modify from './pages/member/Modify.js';
 
 function App() {
   // 로그인 상태 관리
@@ -57,6 +58,7 @@ function App() {
               <Route path="/" element={<Main />} />
               <Route path="/member/login" element={<Login />} />
               <Route path="/member/Join" element={<Join />} />
+              <Route path="/member/Join" element={<Modify/>}/>
               <Route path="/order/Basket" element={<Basket />} />
               <Route path="/myshop/Order" element={<Order />} />
               <Route path="/myshop/MyShop" element={<MyShop />} />
@@ -73,7 +75,7 @@ function App() {
               <Route path="/admin/:id/update2" element={<Update url={"update2"}/>}></Route>
           </Routes>
           <Botbox/>
-    </Router>
+      </Router>
     </>
   );
 };

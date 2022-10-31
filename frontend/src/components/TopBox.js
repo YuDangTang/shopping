@@ -38,8 +38,8 @@ function Header(props){
                     <div></div>
                     <Banner href='/'>mieummieum</Banner>
                     <SearchContaner>
-                        <p>마이</p>
-                        <p>장바구니</p>
+                        <Link to='/myshop/MyShop'>마이</Link>
+                        <Link to='/order/Basket'>장바구니</Link>
                         <input type={'input'}></input>
                     </SearchContaner>
                 </Main>

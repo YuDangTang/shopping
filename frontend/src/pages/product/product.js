@@ -5,19 +5,19 @@ import { useParams } from "react-router-dom" // 1. useParams 라는 기능을 �
 import axios from "axios";
 
 
-
+// 선택 상품 컴포넌트
   function CreateOption(props){
     //원하는 객체를 받아와서 사용  
     
     const [num, setNum] = useState(1);
-    const [price, setPrice] = useState(props.selectObj.detailPrice);
+    const [price, setPrice] = useState(props.selectObj.proOptionObjTmp.detailPrice);
   
     const increase = () =>{
-        if(num < props.selectObj.detailAmount){
+        if(num < props.selectObj.proOptionObjTmp.detailAmount){
             setNum(num+1);
         }else{
             alert("재고가 부족합니다");
-            setNum(props.selectObj.detailAmount);
+            setNum(props.selectObj.proOptionObjTmp.detailAmount);
         }
     };
 
@@ -39,8 +39,8 @@ import axios from "axios";
         <SelectTable>
             <SelectTr >
                 <OptionTd>
-                {props.selectObj.param}<br></br>
-                - 사이즈 : {props.selectObj.detailSize} 색상 : {props.selectObj.detailColor}
+                {props.selectObj.detailTitle}<br></br>
+                - 사이즈 : {props.selectObj.proOptionObjTmp.detailSize} 색상 : {props.selectObj.proOptionObjTmp.detailColor}
                 </OptionTd>
                 <CountTd>
                     <CountSpan >
@@ -54,6 +54,28 @@ import axios from "axios";
                 </SelectPrice>
                 </SelectTr>
         </SelectTable>
+
+                {/* //총 갯수 표시 */}
+                <Totalprice>
+                    TOTAL : {num}개
+                </Totalprice>
+                <Actionarea>
+                    <Actionarea2>
+                    
+                        {/* db에 상품명, 판매가, 사이즈, 컬러, 수량 (누가샀는지 session에 존재) 보내줘  결제창으로*/}
+                        <Buynow>
+                            BUY IT NOW
+                        </Buynow>
+                        <div style={{display: "flex", flexdirection: "column"}}>
+                        <Buynow2>
+                            ADD TO CART
+                        </Buynow2>
+                        <Buynow3>
+                            WISH LIST
+                        </Buynow3>
+                        </div>
+                    </Actionarea2>
+                </Actionarea>
     
     </>  
     )
@@ -81,7 +103,7 @@ function Product(){
         }
 
         //사용자가 모두 선택했을때
-        const handleDetail = (detailSize, detailColor,detailAmount, detailPrice) => {
+        const handleDetail = (detailTitle, param, detailSize, detailColor,detailAmount, detailPrice) => {
             //선택 사이즈 선택 색상
             // console.log(detailSize); 
             // console.log(detailColor);
@@ -89,7 +111,9 @@ function Product(){
             // console.log(detailPrice);
 
             //{상품이름 :{사이즈, 색상, 갯수} }
-            var proOptionObj = {param,detailSize, detailColor,detailAmount, detailPrice};
+            var proOptionObjTmp = {detailSize, detailColor,detailAmount, detailPrice};
+            var proOptionObj = {detailTitle, param, proOptionObjTmp};
+            console.log(proOptionObj)
 
             return setDetailOptionBox(proOptionObj);
         }
@@ -180,7 +204,7 @@ function Product(){
                         })
                     } */}
 
-                <InfoTitle>{proTitle}</InfoTitle>
+                {/* <InfoTitle>{proTitle}</InfoTitle> */}
                        
                 
                 <table>
@@ -335,7 +359,7 @@ function Product(){
                                                     </Buttonbutton>
                                                     : <Buttonbutton
                                                     value={colorAmountObj[i].objectBox.tmpColor} 
-                                                    onClick={(e) => handleDetail(colorAmountObj[i].tmpSize, e.target.value, colorAmountObj[i].objectBox.tmpAmount, colorAmountObj[i].objectBox.tmpPrice )} >
+                                                    onClick={(e) => handleDetail(proTitle, param,  colorAmountObj[i].tmpSize,    e.target.value,    colorAmountObj[i].objectBox.tmpAmount,    colorAmountObj[i].objectBox.tmpPrice )} >
                                                     {colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount})
                                                     </Buttonbutton>
                                                 }
@@ -352,32 +376,10 @@ function Product(){
                     {
                         detailOptionBox && 
                         <CreateOption selectObj={detailOptionBox}></CreateOption>
-
-                        
                     }
                     
 
-                {/* //총 갯수 표시 */}
-                <Totalprice>
-                    TOTAL : 0 (0개)
-                </Totalprice>
-                <Actionarea>
-                <Actionarea2>
-                
-                {/* db에 상품명, 판매가, 사이즈, 컬러, 수량 (누가샀는지 session에 존재) 보내줘  결제창으로*/}
-                <Buynow>
-                    BUY IY NOW
-                </Buynow>
-                <div style={{display: "flex", flexdirection: "column"}}>
-                <Buynow2>
-                    ADD TO CART
-                </Buynow2>
-                <Buynow3>
-                    WISH LIST
-                </Buynow3>
-                </div>
-                </Actionarea2>
-                </Actionarea>
+
                 </Info>
                 </ProductDetail>
             </Contents>         
