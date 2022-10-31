@@ -1,11 +1,13 @@
 import express, { application } from "express";
 import multer from "multer";
-import fs from "fs";
+import fs from "fs"; 
 import { postRegProduct } from "../controllers/Admin/registerProductController.js";
-import {
-	postRegProductName, postRegColor, postRegMat, getRegSize,
+import { postRegProductName, postRegColor, postRegMat, getRegSize,
+
 	getRegProduct, getRegMat, getStocks, postStocks, getRegProductName,
-	getAdmin, postAdmin, getUpdate, postUpdate, getUpdate2, postUpdate2, getData
+	getAdmin, postAdmin, getUpdate, postUpdate, getUpdate2, postUpdate2, 
+	getUpdate3, postUpdate3, getData
+
 } from "../controllers/Admin/adminRegiserProductController.js";
 const adminRouter = express.Router();
 try {
@@ -39,8 +41,9 @@ adminRouter.post("/regProDetail", upload.array("proImage"), postRegProduct);
 // adminRouter.route("/regProColor").post(postRegColor);
 adminRouter.route("/regMatTotal").post(postRegMat);
 adminRouter.route("/:id/stocks").get(getStocks).post(postStocks);
-adminRouter.route("/:id/update").get(getUpdate).post(postUpdate);
-adminRouter.route("/:id/update2").get(getUpdate2).post(postUpdate2);
 adminRouter.route("/:id/detailUpdate").post(getData);
+adminRouter.route("/:id/update2").get(getUpdate2).post(postUpdate2);
+adminRouter.route("/:id/update3").get(getUpdate3).post(postUpdate3);
+
 
 export default adminRouter;
