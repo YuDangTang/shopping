@@ -47,8 +47,8 @@ export const postRegProduct = async (req, res) => {
                 };
                 size.push(obj);
             }
-
-            if(proKindName === "Skirt" || proKindName === "Pants"){
+            
+            if(proKindName === "SKIRT" || proKindName === "PANTS"){
                 await Bottom.create({
                     proName,
                     detail: size,
