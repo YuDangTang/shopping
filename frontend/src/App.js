@@ -22,6 +22,8 @@ import GlobalStyles from './css/GlobalStyles';
 
 import Botbox from "./components/Botbox.js";
 
+import Test from "./components/Test";
+
 //page importing
 import Main from "./pages/Main.js";
 import Admin from "./pages/admin/Admin.js";
@@ -63,6 +65,8 @@ function App() {
               <Route path="/myshop/Order" element={<Order />} />
               <Route path="/myshop/MyShop" element={<MyShop />} />
               <Route path="/product/:id" element={<Product />} /> 
+
+              <Route path="/test" element={<Test/>}/>
 
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/regProName" element={<RegisterProName />}></Route>
