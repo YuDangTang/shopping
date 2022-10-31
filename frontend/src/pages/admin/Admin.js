@@ -27,6 +27,8 @@ function Admin(){
                     setProducts(response.data);
                 }
             });
+        } else if (e.target.innerHTML === "상품디테일수정") {
+            window.location.href = "/admin/" + e.target.id + "/detailUpdate";
         }
     }
     return(
@@ -50,6 +52,7 @@ function Admin(){
                                         <td>{value.proName}</td>
                                         <td><button id={value._id} onClick={onClickHandler}>상품수정</button></td>
                                         <td><button id={value._id} onClick={onClickHandler}>재고관리</button></td>
+                                        <td><button id={value._id} onClick={onClickHandler}>상품디테일수정</button></td>
                                         <td><button id={value._id} onClick={onClickHandler}>상품삭제</button></td>
                                     </tr>
                                 </>

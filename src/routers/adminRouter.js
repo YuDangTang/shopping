@@ -1,20 +1,18 @@
 import express, { application } from "express";
 import multer from "multer";
-import fs from "fs"; 
+import fs from "fs";
 import { postRegProduct } from "../controllers/Admin/registerProductController.js";
-import { postRegProductName, postRegColor, postRegMat, getRegSize,
-
+import {
+	postRegProductName, postRegColor, postRegMat, getRegSize,
 	getRegProduct, getRegMat, getStocks, postStocks, getRegProductName,
-	getAdmin, postAdmin, getUpdate, postUpdate, getUpdate2, postUpdate2, 
-	getUpdate3, postUpdate3
-
+	getAdmin, postAdmin, getUpdate, postUpdate, getUpdate2, postUpdate2, getData
 } from "../controllers/Admin/adminRegiserProductController.js";
 const adminRouter = express.Router();
 try {
-    fs.readdirSync('frontend/public/img'); // 폴더 확인 
-} catch(err) {
-    console.error('frontend/public/img가 없습니다. 폴더를 생성합니다.');
-    fs.mkdirSync('frontend/public/img'); // 폴더 생성
+	fs.readdirSync('frontend/public/img'); // 폴더 확인 
+} catch (err) {
+	console.error('frontend/public/img가 없습니다. 폴더를 생성합니다.');
+	fs.mkdirSync('frontend/public/img'); // 폴더 생성
 }
 // diskStorage: 하드디스크에 업로드 파일을 저장
 // destination: 저장할 경로
@@ -30,7 +28,7 @@ const upload = multer({
 			cb(null, Date.now() + file.originalname);
 		},
 	}),
-    limits: { fieldSize: 10 * 1024 * 1024 },
+	limits: { fieldSize: 10 * 1024 * 1024 },
 });
 
 adminRouter.route("/").get(getAdmin).post(postAdmin);
@@ -43,7 +41,6 @@ adminRouter.route("/regMatTotal").post(postRegMat);
 adminRouter.route("/:id/stocks").get(getStocks).post(postStocks);
 adminRouter.route("/:id/update").get(getUpdate).post(postUpdate);
 adminRouter.route("/:id/update2").get(getUpdate2).post(postUpdate2);
-adminRouter.route("/:id/update3").get(getUpdate3).post(postUpdate3);
-
+adminRouter.route("/:id/detailUpdate").post(getData);
 
 export default adminRouter;
