@@ -34,6 +34,7 @@ import Order from "./pages/myshop/Order";
 import MyShop from "./pages/myshop/MyShop";
 import Product from "./pages/product/product.js";
 import Modify from './pages/member/Modify.js';
+import Review from './components/Review.js';
 
 function App() {
   // 로그인 상태 관리
@@ -65,6 +66,7 @@ function App() {
               <Route path="/myshop/Order" element={<Order />} />
               <Route path="/myshop/MyShop" element={<MyShop />} />
               <Route path="/product/:id" element={<Product />} /> 
+              <Route path="/product/:id/review" element={<Review />} /> 
 
               <Route path="/test" element={<Test/>}/>
 

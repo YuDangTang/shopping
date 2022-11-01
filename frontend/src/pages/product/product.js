@@ -3,6 +3,9 @@ import React, { Component } from "react";
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 import { useParams } from "react-router-dom" // 1. useParams 라는 기능을 임포트한다.
 import axios from "axios";
+// 리뷰 하려고 추가하는 중,,,
+import Review from "../../components/Review";
+
 
 
 // 선택 상품 컴포넌트
@@ -381,7 +384,9 @@ function Product(){
 
 
                 </Info>
+                
                 </ProductDetail>
+              
             </Contents>         
         );
 };
