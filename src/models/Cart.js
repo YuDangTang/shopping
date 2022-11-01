@@ -3,10 +3,13 @@ import mongoose from "mongoose";
 const cartSchema = new mongoose.Schema({
     userID: { type: String, required: true, unique: true },
     products: [{
-        pro_ID: { type: String, required: true},
+        proName: { type: String},
         cartQuan: [{
-            color: { type: String, required: true},
-            quan: { type: Number, required: true},
+            size: { type: String},
+            colorAmount: [{
+                color: { type: String},
+                quan: { type: Number}
+            }],
         }],
     }],
 });

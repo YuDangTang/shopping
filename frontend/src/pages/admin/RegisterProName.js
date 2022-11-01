@@ -3,7 +3,6 @@ import Table from "../../components/Table.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProductObj } from "../../obj/obj.js";
 import { useEffect, useState } from "react";
-
 import axios from "axios";
 // import ReactDOM from 'react-dom/client';
 function RegisterProName(props){ 

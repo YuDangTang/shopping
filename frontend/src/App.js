@@ -31,7 +31,7 @@ import Basket from "./pages/order/Basket";
 import Order from "./pages/myshop/Order";
 import MyShop from "./pages/myshop/MyShop";
 import Product from "./pages/product/product.js";
-
+import OrderForm from './pages/order/OrderForm.js';
 function App() {
   // 로그인 상태 관리
   const [isLogin, setIsLogin] = useState(false);
@@ -58,6 +58,7 @@ function App() {
               <Route path="/member/login" element={<Login />} />
               <Route path="/member/Join" element={<Join />} />
               <Route path="/order/Basket" element={<Basket />} />
+              <Route path="/order/OrderForm" element={<OrderForm />} />
               <Route path="/myshop/Order" element={<Order />} />
               <Route path="/myshop/MyShop" element={<MyShop />} />
               <Route path="/product/:id" element={<Product />} /> 

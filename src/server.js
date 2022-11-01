@@ -7,10 +7,13 @@ import productRouter from "./routers/productRouter.js"
 import User from "./models/User.js"
 import bcrypt from 'bcrypt'
 import Product from "./models/Product.js";
+import orderRouter from "./routers/orderRouter.js";
+import Cart from "./models/Cart.js";
 
 
 const PORT = 4000;	
 const app = express();
+
 
 app.use(cors());
 app.use(express.json());
@@ -53,6 +56,7 @@ app.get("/",getMain);
 
 app.use("/admin", adminRouter);
 app.use("/product", productRouter);
+app.use("/order", orderRouter);
 
 app.listen(PORT, handelListening);
 
@@ -73,6 +77,13 @@ const join = async (req, res) => {
             userBirth: joinBirth,
         });
         if (boo) {
+            await Cart.create({
+                userID: joinId,
+                // products: [{
+                //     proName: cart.proName,
+                //     cartQuan,
+                // }],
+            });
             return res.send("Success");
         } else {
             return res.send("fail");
@@ -117,6 +128,7 @@ const login = async (req, res) => {
         const byID = await bcrypt.compare(loginPw, checkPw);
         if (byID) {
             req.session.user = loginId;
+            console.log("나 로그인함: ", req.session.user);
             // const user = req.session.user;
             // console.log("user: ", user);
             return res.send("sucess");

@@ -1,11 +1,117 @@
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 import { useNavigate } from 'react-router-dom';
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Basket(){
-
+    const [baskets, setBasket] = useState([]);
     const navigate = useNavigate();
+    const data = useNavigate();
+    // 체크된 아이템을 담을 배열
+    const [checkItems, setCheckItems] = useState([]);
+    console.log(checkItems);
+     // 체크박스 단일 선택
+     const handleSingleCheck = (target, id) => {
+        const checkbox = document.getElementsByName("select");
+        let num2 = 0;
+        for(var i = 0; i < checkbox.length; i++){
+            if(checkbox[i].checked){
+                num2++;
+            }
+        }
+        if(num2 == checkbox.length){document.getElementsByName("select-all")[0].checked = true;}
+        else{document.getElementsByName("select-all")[0].checked = false;}
+        console.log(target);
+        console.log(checkItems);
+       if (target.checked) {
+         // 단일 선택 시 체크된 아이템을 배열에 추가
+         setCheckItems([...checkItems, id]);
+       } else {
+         // 단일 선택 해제 시 체크된 아이템을 제외한 배열 (필터)
+         setCheckItems(checkItems.filter((el) => el !== id));
+       }
+     };
 
+      // 체크박스 전체 선택
+    const handleAllCheck = (checked) => {
+        if(checked){
+            const checkbox = document.getElementsByName("select");
+            for(var i = 0; i < checkbox.length; i++){
+                checkbox[i].checked = true;
+            }
+        }else{
+            const checkbox = document.getElementsByName("select");
+            for(var i = 0; i < checkbox.length; i++){
+                checkbox[i].checked = false;
+            }
+        }
+    }
+
+    const getData = async () => {
+        const cart = {};
+        cart.id = sessionStorage.getItem('id');
+        console.log("겟데이터")
+        await axios.post("http://localhost:4000/order/basket", cart)
+        .then((response) => {
+            console.log("난 데이ㅓㅌ: ", response.data);
+            setBasket(response.data);
+            // if(response.data == "fail"){
+            //     alert("DB Error.");
+            // }else if(response.data == "success"){
+            //     var basket = window.confirm("장바구니로 이동하시겠습니까?");
+            //     if(basket){
+            //         window.location.href = "/order/basket";
+            //     }
+            // }
+        }); 
+    };
+    const onClickDelete = async(id) => {
+        console.log("나는 카트 아이디: ", id);
+        const obj = {};
+        obj.deteId = id;
+        obj.userId = sessionStorage.getItem('id');
+        await axios.post("http://localhost:4000/order/basket", obj)
+        .then((response) => {
+            if(response.data == "success"){
+                getData();
+            }else{alert("DB Error.")}
+        }); 
+    }
+    const onClickUpdate = async(e, size, color, id) => {
+        const obj = {};
+        const updateAmount = e.target.previousSibling;
+        console.log(updateAmount)
+        obj.updateId = id;
+        obj.size = size;
+        obj.color = color;
+        obj.updateAmount = updateAmount.value;
+        obj.userId = sessionStorage.getItem('id');
+        await axios.post("http://localhost:4000/order/basket", obj)
+        .then((response) => {
+            if(response.data == "success"){
+                alert("수량 변경이 완료되었습니다.")
+                getData();
+            }else{alert("DB Error.")}
+        }); 
+    }
+    const onSubmitHandler = async (e) => {
+        e.preventDefault(); // 기본동작 막기
+        const colorSize = e.target.proSizeColor.value;
+        const ob = {};
+        ob.proName = e.target.proName.value;
+        ob.colorSize = colorSize;
+        ob.proQuan = Number(e.target.proQuan.value);
+        ob.proTotalPrice = Number(e.target.proTotalPrice.value);
+        // console.log("단품가격: ", e.target.proPrice.value);
+        const obj = [];
+        obj.push(ob);
+
+        data('/order/OrderForm', { state: {obj} });
+    }
+    useEffect(() => {
+        getData();
+    }, [])
+    let num = -1;
     return(
         <Container>
             <Contents>
@@ -15,8 +121,12 @@ function Basket(){
                 </Title>
                 <InfoTitleDiv><ControlInfo><ControlInfocontents>국내배송상품</ControlInfocontents></ControlInfo></InfoTitleDiv>
                 <OrderArea>
-                <OrderAreaTitle><OrderAreaTitleContents>일반상품</OrderAreaTitleContents><BeforeButton onClick={() => navigate(-1)}>이전페이지</BeforeButton></OrderAreaTitle>
-                <InfoTable>
+                <OrderAreaTitle><OrderAreaTitleContents>일반상품</OrderAreaTitleContents>
+                <BeforeButton onClick={() => navigate(-1)}>이전페이지</BeforeButton>
+                </OrderAreaTitle>
+                
+                {/* 정보 윗 부분 */}
+                <InfoTable style={{borderTop: "0.5px solid #ebebeb"}}>
                     <colgroup>
                         <col style={{width:"92px"}}></col>
                         <col style={{width:"auto"}}></col>
@@ -27,10 +137,17 @@ function Basket(){
                         <col style={{width:"85px"}}></col>
                         <col style={{width:"98px"}}></col>
                     </colgroup>
-                    <thead style={{    display: "table-header-group", verticalalign: "middle", bordercolor: "inherit"}}>
-                        <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit"}}>
+                    <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit"}}>
+                            <InfoTh>
+                                <input 
+                                type={'checkbox'} name='select-all'
+                                onChange={(e) => handleAllCheck(e.target.checked)}
+                                // checked={checkItems.length === data.length ? true : false} 
+                                style={{width: "13px", height: "13px", border: "0"}}>
+                                </input>
+                            </InfoTh>
                             <InfoTh scope='col'>이미지</InfoTh>
-                            <InfoTh scope='col'>상품정보</InfoTh>
+                            <InfoTh scope='col' style={{paddingLeft:"10px", width:"400px"}}>상품정보</InfoTh>
                             <InfoTh scope='col'>판매가</InfoTh>
                             <InfoTh scope='col'>수량</InfoTh>
                             <InfoTh scope='col'>적립금</InfoTh>
@@ -39,9 +156,108 @@ function Basket(){
                             <InfoTh scope='col'>합계</InfoTh>
                             <InfoTh scope='col'>선택</InfoTh>
                         </tr>
-                    </thead>
-                    <tfoot style={{textalign: "right"}}>
-                        <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit", verticalalign:"middle"}}>
+                </InfoTable>
+
+                {/* 정보 중간부분 폼 태그 넣을곳 */}
+                
+                    {   
+                        baskets.length != 0
+                        ? baskets.products.map(bas => {
+                            console.log("bas: ", bas)
+                            return(<>
+                                {
+                                    bas.carInfo.cartQuan.map(cartQuan => {
+                                        return(
+                                            cartQuan.colorAmount.map(pro => {
+                                                num++;
+                                                return(
+                                                    <>
+                                                    <form onSubmit={onSubmitHandler} >
+                                                        <InfoTable>
+                                                            <colgroup>
+                                                                <col style={{width:"92px"}}></col>
+                                                                <col style={{width:"auto"}}></col>
+                                                                <col style={{width:"98px"}}></col>
+                                                                <col style={{width:"75px"}}></col>
+                                                                <col style={{width:"98px"}}></col>
+                                                                <col style={{width:"98px"}}></col>
+                                                                <col style={{width:"85px"}}></col>
+                                                                <col style={{width:"98px"}}></col>
+                                                            </colgroup>
+                                                            <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}} id={bas.productInfo.proName}>
+                                                            <InfoTd2 style={{paddingLeft:0,paddingRight:0}}>
+                                                                <input type={'checkbox'}  name={`select`} id={num}
+                                                                onChange={(e) => handleSingleCheck(e.currentTarget, num)}
+                                                                ></input>
+                                                            </InfoTd2>
+                                                                    <InfoTd2><Forimg src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg></InfoTd2>
+                                                                    <InfoTd2 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb",width:"400px"}}>
+                                                                    <TdcontentsInput name={"proName"} defaultValue={bas.productInfo.proName} 
+                                                                        style={{fontWeight:"bold"}} readonly onfocus="this.blur();">
+                                                                        
+                                                                    </TdcontentsInput><br></br>
+                                                                    <TdcontentsInput style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}
+                                                                        name={"proSizeColor"} value={"["+cartQuan.size+"/"+pro.color+"]"} readonly onfocus="this.blur();">
+                                                                        
+                                                                    </TdcontentsInput>
+                                                                    </InfoTd2>
+                                                                    <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
+                                                                        <span style={{display:"flex"}}><TdcontentsInput style={{fontWeight:"bold",textAlign:"right"}}
+                                                                            name={"proPrice"} defaultValue={bas.productInfo.proPrice.price} readonly onfocus="this.blur();">
+                                                                            
+                                                                        </TdcontentsInput>
+                                                                        <Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext>
+                                                                        </span>
+                                                                    </InfoTd2>
+                                                                    <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}>
+                                                                        <TdcontentsInputNumber type={"number"} 
+                                                                            style={{fontWeight:"bold", textAlign:"right", width:"50px"}}
+                                                                            name={"proQuan"} defaultValue={pro.quan}>
+                                                                        </TdcontentsInputNumber>
+                                                                        <WhiteButton style={{width: "40px", height:"30px", marginTop:"10px",padding: "0px"}} 
+                                                                            type={"button"} onClick={(e) => onClickUpdate(e, cartQuan.size, pro.color, bas.carInfo._id)}>변경</WhiteButton>
+                                                                    </InfoTd2>
+                                                                    <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>-</Tdcontentstext></InfoTd2>
+                                                                    <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>기본배송</Tdcontentstext></InfoTd2>
+                                                                    <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>0원</Tdcontentstext></InfoTd2>
+                                                                    <InfoTd2 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",textAlign:"right"}}>
+                                                                        <TdcontentsInput style={{fontWeight:"bold"}}
+                                                                            name={"proTotalPrice"} defaultValue={bas.productInfo.proPrice.price*pro.quan}  readonly onfocus="this.blur();">
+                                                                            </TdcontentsInput>
+                                                                        <Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext>
+                                                                    </InfoTd2>
+                                                                    <InfoTd2 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", paddingRight: 0,width:"98px"}}>
+                                                                        <BlackButton type={"submit"}>주문하기</BlackButton>
+                                                                        <WhiteButton type={"button"} onClick={(e) => onClickDelete(bas.carInfo._id)}>상품삭제</WhiteButton>
+                                                                    </InfoTd2>
+                                                                </tr>
+                                                        </InfoTable>
+                                                    </form>
+                                                    </>
+                                                )
+                                            })
+                                        )
+                                    })
+                                }
+                            </>)
+                        })
+                        : <><div>장바구니가 비어있습니다.</div></>
+                    }
+                
+
+                {/* 정보 밑부분 */}
+                <InfoTable style={{borderTop : 0}}>
+                <colgroup>
+                        <col style={{width:"92px"}}></col>
+                        <col style={{width:"auto"}}></col>
+                        <col style={{width:"98px"}}></col>
+                        <col style={{width:"75px"}}></col>
+                        <col style={{width:"98px"}}></col>
+                        <col style={{width:"98px"}}></col>
+                        <col style={{width:"85px"}}></col>
+                        <col style={{width:"98px"}}></col>
+                    </colgroup>
+                    <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit", verticalalign:"middle"}}>
                             <InfoTd colSpan={9}>
                                 <span style={{    float: "left", margin: "6px 0 0"}}>[기본배송]</span>
                                 <Tdcontentstext>상품구매금액</Tdcontentstext>
@@ -53,25 +269,13 @@ function Basket(){
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px"}}>원</Tdcontentstext>
                              </InfoTd>
                         </tr>
-                    </tfoot>
-                  
-                    <tbody style={{textalign: "center"}}> 
-                    <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}}>
-                        <InfoTd2><Forimg src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg></InfoTd2>
-                        <InfoTd2 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
-                        <Tdcontentstext style={{fontWeight:"bold"}}>상품이름상품이름상품이름상품이름상품이름</Tdcontentstext><br></br>
-                        <Tdcontentstext style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>[옵션 : 아이아이]</Tdcontentstext>
-                        </InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}><Tdcontentstext style={{fontWeight:"bold"}}>22,500</Tdcontentstext><Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext style={{fontWeight:"bold"}}>1</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>-</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>기본배송</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>조건</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",textAlign:"right"}}><Tdcontentstext style={{fontWeight:"bold"}}>22,500</Tdcontentstext><Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", paddingRight: 0,width:"98px"}}><BlackButton>주문하기</BlackButton><WhiteButton>상품삭제</WhiteButton></InfoTd2>
-                    </tr>
-                    </tbody>
                 </InfoTable>
+
+
+
+
+
+                
                 <BasketControlInfo><BasketControlInfocontents>할인 적용 금액은 주문서작성의 결제예정금액에서 확인 가능합니다.</BasketControlInfocontents></BasketControlInfo>
                 <Clearbasket><ClearButton>장바구니비우기</ClearButton></Clearbasket>
                 <FinalTable>
@@ -273,7 +477,7 @@ let InfoTable = styled.table `  //정보 테이블
 let InfoTh = styled.th ` //정보테이블 th
     padding: 20px 0;
     font-size: 11px;
-    border-bottom: 1px solid #ebebeb;
+    border-bottom: 1px solitestd #ebebeb;
     color: #757575;
     vertical-align: middle;
     font-weight: normal;
@@ -303,6 +507,21 @@ let Tdcontentstext = styled.text ` //텍스트스타일
     color: #757575;
 `
 
+let TdcontentsInput = styled.input ` //텍스트스타일
+    font-size: 11px;
+    margin: 6px 0 0;
+    color: #757575;
+    font-weight: bold;
+    border: none;
+    pointer-events: none;
+`
+let TdcontentsInputNumber = styled.input ` //텍스트스타일
+    font-size: 11px;
+    margin: 6px 0 0;
+    color: #757575;
+    font-weight: bold;
+`
+
 let InfoTd2 = styled.td` //정보테이블 tbody td
     padding: 15px 10px 14px;
     border-color: #ebebeb;
@@ -323,7 +542,7 @@ let Forimg = styled.img` //img
 
 
 
-let BlackButton = styled.a` //주문하기버튼
+let BlackButton = styled.button` //주문하기버튼
     background: #333 !important;
     color: #fff !important;
     border: 1px solid #333 !important;
@@ -345,7 +564,7 @@ let BlackButton = styled.a` //주문하기버튼
     }
     
 `
-let WhiteButton = styled.a` //상품삭제버튼
+let WhiteButton = styled.button` //상품삭제버튼
     
     font-size: 11px;
     line-height: 11px;

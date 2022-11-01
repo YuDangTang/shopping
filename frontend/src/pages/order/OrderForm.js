@@ -1,15 +1,13 @@
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import React, { useState } from 'react';
 import Post from "../../components/Post";
+import { useEffect } from 'react';
+import axios from "axios";
 
-
-
-
-
-//무통장입금 선택시
+// //무통장입금 선택시
 const Createtable = React.memo(function Createtable() {
-
+  
   return(     
     <div style={{padding: "10px 20px"}}>
         <table style={{borderTop: "1px solid #ebebeb", position: "relative", margin: "10px 0 0", color: "#fff", lineHeight: "1.5",width: "100%", border: "0"}}>
@@ -55,17 +53,139 @@ const Createtable2 = React.memo(function Createtable() {
 );
 });
 
-
-
-
-
-
-
-
 function OrderForm(){
     
     const navigate = useNavigate();
+    const location = useLocation();
+    const [datas, setDatas] = useState([]);
+    const [totalPrice, setTotalPrice] = useState("");
+    useEffect(() => {
+        const DB = location.state.obj;
+        console.log("불로온거: ", DB);
+        setDatas(DB);
+        let total = 0;
+        for(var i = 0; i < DB.length; i++){
+            total += DB[i].proTotalPrice;
+        }
+        console.log(total);
+        setTotalPrice(total);
+        const jquery = document.createElement("script");
+        jquery.src = "https://code.jquery.com/jquery-1.12.4.min.js";
+        const iamport = document.createElement("script");
+        iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.1.7.js";
+        document.head.appendChild(jquery);
+        document.head.appendChild(iamport);
+        return () => {
+            document.head.removeChild(jquery); document.head.removeChild(iamport);
+        }
+    }, []);
+    
+    const onClickPayment = () => {
+        const buyer = document.getElementsByName("buyer")[0].value;
+        const joinAddress = document.getElementsByName("joinAddress")[0].value;
+        const joinDetailAddress = document.getElementsByName("joinDetailAddress")[0].value;
+        const buyerTel = document.getElementsByName("userTel")[0].value;
+        if(buyer == "" || joinAddress == "" || 
+            joinDetailAddress == "" || buyerTel == ""){
+                alert("주문 정보를 입력해주세요.");
+                return;
+        }
 
+        const recipient = document.getElementsByName("recipient")[0].value;
+        const recipAddress = document.getElementsByName("recipAddress")[0].value;
+        const recipDetailAddress = document.getElementsByName("recipDetailAddress")[0].value;
+        const recipientTel = document.getElementsByName("recipientTel")[0].value;
+        if(recipient == "" || recipAddress == "" || 
+            recipDetailAddress == "" || recipientTel == ""){
+                alert("배송 정보를 입력해주세요.");
+                return;
+        }
+        const totalCost = totalPrice;
+        const totalPrice2 = document.getElementById("totalPrice").innerHTML;
+
+        const proName = document.getElementById("totalPrice");
+        const proColorSize = document.getElementById("proColorSize");
+        const proQuan = document.getElementById("proQuan");
+        const pro_ID = [];
+        for(var i = 0; i < datas.length; i++){
+            const obj1 = {};
+            obj1.proName = datas[i].proName;
+            const colorSizeAmount = [];
+            for(var j = 0; j < datas[i].product.length; j++){
+                const obj = {};
+                obj.colorSize = datas[i].product[j].colorSize
+                obj.amount = datas[i].product[j].proQuan
+                colorSizeAmount.push(obj);
+            }
+            obj1.colorSizeAmount = colorSizeAmount;
+            pro_ID.push(obj1);
+        }
+
+        const { IMP } = window; 
+        IMP.init('imp27761044'); // 가맹점 식별코드 // 결제 데이터 정의
+        const data = {
+            pg: 'html5_inicis', // PG사 (필수항목)
+            pay_method: 'card', // 결제수단 (필수항목)
+            merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
+            name: 'mieummieum', // 주문명 (필수항목)
+            amount: '1', //totalPrice2, // 금액 (필수항목)
+            custom_data: { name: '부가정보', desc: '세부 부가정보' },
+            buyer_name: buyer, // 구매자 이름
+            buyer_tel: buyerTel, // 구매자 전화번호 (필수항목)
+            buyer_addr: joinAddress + " " + joinDetailAddress,
+            DB : {
+                pro_ID,
+                buyer_name: buyer, // 구매자 이름
+                buyer_tel: buyerTel, // 구매자 전화번호 (필수항목)
+                buyer_addr: joinAddress + " " + joinDetailAddress,
+                recipient, // 받는 사람 이름
+                recipAddress: recipAddress + " " + recipDetailAddress, // 받는사람 주소
+                recipientTel: recipientTel,
+                payPrice: {
+                    cost: totalPrice,
+                    payAmount: totalPrice,
+                }
+            },
+            buyer_email: 'l4279625@gmail.com', // 구매자 이메일
+            buyer_postalcode: '05258'
+        };
+        IMP.request_pay(data, callback);
+    }
+    
+    const callback = async (response) => {
+        const {success, error_msg, imp_uid, merchant_uid, pay_method, paid_amount, status,
+            amount, cost, DB,
+            buyer_name, buyer_tel, buyer_addr, recipient, recipAddress, recipientTel} = response;
+        if (success) {
+            const db = {
+                userID: sessionStorage.getItem('id'),
+                DB,
+                buyer_name,
+                buyer_tel,
+                buyer_addr,
+                recipient,
+                recipAddress,
+                recipientTel,
+                amount: totalPrice,
+                cost
+            }
+            console.log(db);
+            // await axios.post(`http://localhost:4000/order/OrderForm`, db )
+            // .then((response) => {
+            //     if(response.data == "fail"){
+            //         alert("DB Error.");
+            //     }else if(response.data == "success"){
+            //         var basket = window.confirm("장바구니로 이동하시겠습니까?");
+            //         if(basket){
+            //             window.location.href = "/order/basket";
+            //         }
+            //     }
+            // }); 
+            alert('주문이 완료되었습니다');
+        } else {
+            alert(`결제 실패 : ${error_msg}`);
+        }
+    }
     
     //주소 api 변수 및 핸들러들
     const [enroll_company, setEnroll_company] = useState({
@@ -158,21 +278,34 @@ function OrderForm(){
                              </InfoTd>
                         </tr>
                     </tfoot>
-                    <tbody style={{textalign: "center"}}>
-                    <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}}>
-                        <InfoTd2><Forimg src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg></InfoTd2>
-                        <InfoTd2 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
-                        <Tdcontentstext style={{fontWeight:"bold"}}>상품이름상품이름상품이름상품이름상품이름</Tdcontentstext><br></br>
-                        <Tdcontentstext style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>[옵션 : 아이아이]</Tdcontentstext>
-                        </InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}><Tdcontentstext style={{fontWeight:"bold"}}>22,500</Tdcontentstext><Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext style={{fontWeight:"bold"}}>1</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>-</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>기본배송</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>조건</Tdcontentstext></InfoTd2>
-                        <InfoTd2 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",textAlign:"right"}}><Tdcontentstext style={{fontWeight:"bold"}}>22,500</Tdcontentstext><Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext></InfoTd2>
-                    </tr>
-                    </tbody>
+                    {
+                        datas.map(data => {
+                            return(
+                                <tbody style={{textalign: "center"}}>
+                                    <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}}>
+                                        <InfoTd2><Forimg src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg></InfoTd2>
+                                        <InfoTd2 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
+                                        <Tdcontentstext id={"proName"} style={{fontWeight:"bold"}}>{data.proName}</Tdcontentstext><br></br>
+                                        <Tdcontentstext id={"proColorSize"} style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>{data.colorSize}</Tdcontentstext>
+                                        </InfoTd2>
+                                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
+                                            <Tdcontentstext style={{fontWeight:"bold"}}>{data.proTotalPrice/data.proQuan}</Tdcontentstext>
+                                            <Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext>
+                                        </InfoTd2>
+                                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",
+                                            paddingLeft: 0, paddingRight: 0,textAlign:"center"}}>
+                                            <Tdcontentstext id={"proQuan"} style={{fontWeight:"bold"}}>{data.proQuan}</Tdcontentstext>
+                                        </InfoTd2>
+                                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>-</Tdcontentstext></InfoTd2>
+                                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>기본배송</Tdcontentstext></InfoTd2>
+                                        <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>조건</Tdcontentstext></InfoTd2>
+                                        <InfoTd2 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",textAlign:"right"}}><Tdcontentstext style={{fontWeight:"bold"}}>{data.proTotalPrice}</Tdcontentstext><Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext></InfoTd2>
+                                    </tr>
+                                </tbody>
+                            )
+                        })
+                    }
+                    
                 </InfoTable>
                 <DuplicateDiv>
                 <BeforeButton onClick={() => navigate(-1)}>이전페이지</BeforeButton>
@@ -188,20 +321,28 @@ function OrderForm(){
                     <tbody>
                     <tr>
                         <Tableth>주문하시는 분</Tableth>
-                        <Tabletd><OrderInput style={{width : "180px"}}></OrderInput></Tabletd>
+                        <Tabletd>
+                            <OrderInput style={{width : "180px"}}
+                                name="buyer"></OrderInput>
+                        </Tabletd>
                     </tr>
                     <tr>
                         <Tableth>주소</Tableth>
                         <Tabletd>
-                            <OrderInput className="user_enroll_text" type="text" id="joinrTel" name="joinAddress" minlength="11" maxlength="11" onChange={handleInput} value={enroll_company.address} style={{ width: "280px"}}></OrderInput>
+                            <OrderInput className="user_enroll_text" type="text" 
+                                id="joinrTel" name="joinAddress" minlength="11" maxlength="11" onChange={handleInput} value={enroll_company.address} style={{ width: "280px"}}></OrderInput>
                             <AdressButton type="button" onClick={handleComplete}>주소검색</AdressButton><br></br>
-                            <OrderInput className="user_enroll_text" type="text" id="joinrTel" name="joinDetailAddress" minlength="11" maxlength="30"  style={{ width: "280px"}} ></OrderInput> 상세주소
+                            <OrderInput className="user_enroll_text" type="text" 
+                                id="joinrTel" name="joinDetailAddress" minlength="11" maxlength="30"  style={{ width: "280px"}} ></OrderInput> 상세주소
                             {popup && <Post company={enroll_company} setcompany={setEnroll_company}></Post >}
                         </Tabletd>
                     </tr>
                     <tr>
                         <Tableth>전화번호</Tableth>
-                        <Tabletd><OrderInput style={{width : "180px"}}></OrderInput></Tabletd>
+                        <Tabletd>
+                            <OrderInput style={{width : "180px"}}
+                                name="userTel"></OrderInput>
+                        </Tabletd>
                     </tr>
                     </tbody>
                 </OrderTable>
@@ -216,20 +357,25 @@ function OrderForm(){
                     <tbody>
                     <tr>
                         <Tableth >받으시는 분</Tableth>
-                        <Tabletd><OrderInput style={{width : "180px"}}></OrderInput></Tabletd>
+                        <Tabletd>
+                            <OrderInput style={{width : "180px"}}
+                                name="recipient"></OrderInput>
+                        </Tabletd>
                     </tr>
                     <tr>
                         <Tableth>주소</Tableth>
                         <Tabletd>
-                            <OrderInput className="user_enroll_text" type="text" id="joinrTel" name="joinAddress" minlength="11" maxlength="11" onChange={handleInput} value={enroll_company.address} style={{ width: "280px"}}></OrderInput>
+                            <OrderInput className="user_enroll_text" type="text" 
+                                id="joinrTel2" name="recipAddress" minlength="11" maxlength="11" onChange={handleInput} value={enroll_company.address} style={{ width: "280px"}}></OrderInput>
                             <AdressButton type="button" onClick={handleComplete}>주소검색</AdressButton><br></br>
-                            <OrderInput className="user_enroll_text" type="text" id="joinrTel" name="joinDetailAddress" minlength="11" maxlength="30"  style={{ width: "280px"}} ></OrderInput> 상세주소
+                            <OrderInput className="user_enroll_text" type="text" id="joinrTel2" name="recipDetailAddress" minlength="11" maxlength="30"  style={{ width: "280px"}} ></OrderInput> 상세주소
                             {popup && <Post company={enroll_company} setcompany={setEnroll_company}></Post >}
                         </Tabletd>
                     </tr>
                     <tr>
                         <Tableth>전화번호</Tableth>
-                        <Tabletd><OrderInput style={{width : "180px"}}></OrderInput></Tabletd>
+                        <Tabletd><OrderInput style={{width : "180px"}}
+                            name="recipientTel"></OrderInput></Tabletd>
                     </tr>
                     </tbody>
                 </OrderTable>
@@ -251,9 +397,9 @@ function OrderForm(){
                     </thead>
                     <tbody style={{textAlign: "center",height:"80px", display: "tablerowgroup", verticalAlign: "middle", borderColor: "inherit"}}>
                         <tr>
-                            <Howmuchtd>52,000<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
-                            <Howmuchtd>52,000<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
-                            <Howmuchtd>52,000<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
+                            <Howmuchtd>{totalPrice}<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
+                            <Howmuchtd>0<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
+                            <Howmuchtd>{totalPrice}<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
                         </tr>
                     </tbody>
                 </Howmuchtable>
@@ -264,14 +410,16 @@ function OrderForm(){
                     <input type={'radio'} name = "selectpay" style={{ width: "13px", height: "13px", border: "0", verticalAlign:"middle",value:"cash"}}  onChange={toggleShowing}></input><label style={{verticalAlign:"middle", margin : "0 15px 5px 0"}}>무통장 입금</label>
                     <input type={'radio'} name = "selectpay" style={{ width: "13px", height: "13px", border: "0", verticalAlign:"middle",value:"kakao"}}  onChange={toggleShowing2}></input><label style={{verticalAlign:"middle", margin : "0 15px 5px 0"}}>카카오 페이</label>
                 </SelectPay>
-                {showing === true ? <Createtable>Createtable</Createtable> : null }
-                {showing2 === true ? <Createtable2>Createtable2</Createtable2> : null }
+                {/* {showing === true ? <Createtable>Createtable</Createtable> : null }
+                {showing2 === true ? <Createtable2>Createtable2</Createtable2> : null } */}
                 </FlexArea>
                 <FinalCheck>
                 <FinalCheckh4>{switchtext}<HowmuchtdText style={{fontWeight:"normal",fontSize:"12px"}}>최종결제 금액</HowmuchtdText></FinalCheckh4>
-                <FinalCheckp><HowmuchtdText style={{fontWeight:"bold",fontSize:"28px"}} >54,000</HowmuchtdText>원</FinalCheckp>
-                <FinalCheckp style={{fontWeight:"normal",fontSize:"12px"}}> <input type={'checkbox'} style={{verticalAlign:"middle"}}></input>결제정보를 확인하였으며, 구매진행에 동의합니다.</FinalCheckp>
-                <ForpayButton><PayButton>결제하기</PayButton></ForpayButton>
+                <FinalCheckp>
+                    <HowmuchtdText style={{fontWeight:"bold",fontSize:"28px"}}
+                    id="totalPrice">{totalPrice}</HowmuchtdText>원</FinalCheckp>
+                <FinalCheckp style={{fontWeight:"normal",fontSize:"12px"}}> <input name='check' type={'checkbox'} style={{verticalAlign:"middle"}}></input>결제정보를 확인하였으며, 구매진행에 동의합니다.</FinalCheckp>
+                <ForpayButton><PayButton onClick={() => onClickPayment()}>결제하기</PayButton></ForpayButton>
                 </FinalCheck>
                 </PayArea>
                 
