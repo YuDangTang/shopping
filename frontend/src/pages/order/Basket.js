@@ -9,9 +9,11 @@ function Basket(){
     const data = useNavigate();
     // 체크된 아이템을 담을 배열
     const [checkItems, setCheckItems] = useState([]);
-    console.log(checkItems);
+    const [datas, setData] = useState([]);
+    const [totalProPrice, setTotalPrice] = useState(0);
+    console.log("체크한 데이터 ;" ,datas);
      // 체크박스 단일 선택
-     const handleSingleCheck = (target, id) => {
+     const handleSingleCheck = (target, id, proName, sizeColor, quan, price, totTalPrice) => {
         const checkbox = document.getElementsByName("select");
         let num2 = 0;
         for(var i = 0; i < checkbox.length; i++){
@@ -21,14 +23,27 @@ function Basket(){
         }
         if(num2 == checkbox.length){document.getElementsByName("select-all")[0].checked = true;}
         else{document.getElementsByName("select-all")[0].checked = false;}
-        console.log(target);
-        console.log(checkItems);
+        const obj = {
+            proName, sizeColor, quan, price, totTalPrice
+        };
+        console.log(target.checked);
        if (target.checked) {
          // 단일 선택 시 체크된 아이템을 배열에 추가
          setCheckItems([...checkItems, id]);
+         setData([...datas, obj]);
+         setTotalPrice(totalProPrice+Number(totTalPrice));
        } else {
          // 단일 선택 해제 시 체크된 아이템을 제외한 배열 (필터)
          setCheckItems(checkItems.filter((el) => el !== id));
+         for(var i = 0; i < datas.length; i++){
+            if(obj.proName == datas[i].proName && obj.sizeColor == datas[i].sizeColor){
+                datas.splice(i, 1);
+                break;
+            }
+         }
+         setData(datas);
+         setTotalPrice(totalProPrice-Number(totTalPrice));
+        //  setData(datas.filter((el) => el !== obj));
        }
      };
 
@@ -39,11 +54,33 @@ function Basket(){
             for(var i = 0; i < checkbox.length; i++){
                 checkbox[i].checked = true;
             }
+            const proName = document.getElementsByName("proName");
+            const proSizeColor = document.getElementsByName("proSizeColor");
+            const proPrice = document.getElementsByName("proPrice");
+            const proQuan = document.getElementsByName("proQuan");
+            const proTotalPrice = document.getElementsByName("proTotalPrice");
+            const arr = [];
+            let total = 0;
+            for(var i = 0; i < proName.length; i++){
+                total += Number(proTotalPrice[i].value);
+                const obj = {
+                    proName: proName[i].value, 
+                    sizeColor: proSizeColor[i].value, 
+                    quan: Number(proQuan[i].value), 
+                    price: Number(proPrice[i].value), 
+                    totTalPrice: Number(proTotalPrice[i].value)
+                };
+                arr.push(obj);
+            }
+            setData(arr);
+            setTotalPrice(total);
         }else{
             const checkbox = document.getElementsByName("select");
             for(var i = 0; i < checkbox.length; i++){
                 checkbox[i].checked = false;
             }
+            setData([]);
+            setTotalPrice(0);
         }
     }
 
@@ -55,21 +92,14 @@ function Basket(){
         .then((response) => {
             console.log("난 데이ㅓㅌ: ", response.data);
             setBasket(response.data);
-            // if(response.data == "fail"){
-            //     alert("DB Error.");
-            // }else if(response.data == "success"){
-            //     var basket = window.confirm("장바구니로 이동하시겠습니까?");
-            //     if(basket){
-            //         window.location.href = "/order/basket";
-            //     }
-            // }
         }); 
     };
-    const onClickDelete = async(id) => {
-        console.log("나는 카트 아이디: ", id);
+    const onClickDelete = async(cartID, pro, proName) => {
+        console.log("나는 카트 아이디: ", cartID, pro);
         const obj = {};
-        obj.deteId = id;
+        obj.deteId = pro._id;
         obj.userId = sessionStorage.getItem('id');
+        obj.proName = proName;
         await axios.post("http://localhost:4000/order/basket", obj)
         .then((response) => {
             if(response.data == "success"){
@@ -81,6 +111,7 @@ function Basket(){
         const obj = {};
         const updateAmount = e.target.previousSibling;
         console.log(updateAmount)
+        
         obj.updateId = id;
         obj.size = size;
         obj.color = color;
@@ -91,27 +122,48 @@ function Basket(){
             if(response.data == "success"){
                 alert("수량 변경이 완료되었습니다.")
                 getData();
+                setCheckItems([]);
+                setData([]);
+                const checkbox = document.getElementsByName("select");
+                for(var i = 0; i < checkbox.length; i++){
+                    checkbox[i].checked = false;
+                }
+                document.getElementsByName("select-all")[0].checked = false;
             }else{alert("DB Error.")}
         }); 
     }
     const onSubmitHandler = async (e) => {
         e.preventDefault(); // 기본동작 막기
+
         const colorSize = e.target.proSizeColor.value;
         const ob = {};
         ob.proName = e.target.proName.value;
-        ob.colorSize = colorSize;
-        ob.proQuan = Number(e.target.proQuan.value);
-        ob.proTotalPrice = Number(e.target.proTotalPrice.value);
+        ob.sizeColor = colorSize;
+        ob.price = e.target.proPrice.value;
+        ob.quan = Number(e.target.proQuan.value);
+        ob.totTalPrice = Number(e.target.proTotalPrice.value);
         // console.log("단품가격: ", e.target.proPrice.value);
         const obj = [];
         obj.push(ob);
-
+        console.log(obj);
         data('/order/OrderForm', { state: {obj} });
     }
+    const onClickSubmit = (e) => {
+        e.preventDefault(); // 기본동작 막기
+        const obj = datas;
+        if(datas.length == 0){
+            alert("상품을 선택해주세요.");
+            return;
+        }
+        console.log(obj);
+        data('/order/OrderForm', { state: {obj} });
+    }
+
     useEffect(() => {
         getData();
     }, [])
     let num = -1;
+    let totalPrice = 0;
     return(
         <Container>
             <Contents>
@@ -163,13 +215,13 @@ function Basket(){
                     {   
                         baskets.length != 0
                         ? baskets.products.map(bas => {
-                            console.log("bas: ", bas)
                             return(<>
                                 {
                                     bas.carInfo.cartQuan.map(cartQuan => {
                                         return(
                                             cartQuan.colorAmount.map(pro => {
                                                 num++;
+                                                totalPrice += bas.productInfo.proPrice.price*pro.quan;
                                                 return(
                                                     <>
                                                     <form onSubmit={onSubmitHandler} >
@@ -187,7 +239,10 @@ function Basket(){
                                                             <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}} id={bas.productInfo.proName}>
                                                             <InfoTd2 style={{paddingLeft:0,paddingRight:0}}>
                                                                 <input type={'checkbox'}  name={`select`} id={num}
-                                                                onChange={(e) => handleSingleCheck(e.currentTarget, num)}
+                                                                onChange={(e) => 
+                                                                    handleSingleCheck(
+                                                                        e.currentTarget, num, bas.productInfo.proName, "["+cartQuan.size+"/"+pro.color+"]", pro.quan, bas.productInfo.proPrice.price,
+                                                                        bas.productInfo.proPrice.price*pro.quan)}
                                                                 ></input>
                                                             </InfoTd2>
                                                                     <InfoTd2><Forimg src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg></InfoTd2>
@@ -228,7 +283,7 @@ function Basket(){
                                                                     </InfoTd2>
                                                                     <InfoTd2 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", paddingRight: 0,width:"98px"}}>
                                                                         <BlackButton type={"submit"}>주문하기</BlackButton>
-                                                                        <WhiteButton type={"button"} onClick={(e) => onClickDelete(bas.carInfo._id)}>상품삭제</WhiteButton>
+                                                                        <WhiteButton type={"button"} onClick={(e) => onClickDelete(bas.carInfo._id, pro, bas.productInfo.proName)}>상품삭제</WhiteButton>
                                                                     </InfoTd2>
                                                                 </tr>
                                                         </InfoTable>
@@ -261,11 +316,12 @@ function Basket(){
                             <InfoTd colSpan={9}>
                                 <span style={{    float: "left", margin: "6px 0 0"}}>[기본배송]</span>
                                 <Tdcontentstext>상품구매금액</Tdcontentstext>
-                                <Tdcontentstext style={{fontWeight:"bold"}}> 20,000</Tdcontentstext>
+                                <Tdcontentstext style={{fontWeight:"bold"}}>{" " + totalPrice }</Tdcontentstext>
                                 <Tdcontentstext>+ 배송비</Tdcontentstext>
                                 <Tdcontentstext  style={{marginLeft:"6px 0 0"}}> 2,500</Tdcontentstext>
                                 <Tdcontentstext> = 합계:</Tdcontentstext>
-                                <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px", marginLeft: "10px" }}>22,500</Tdcontentstext>
+                                <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px", marginLeft: "10px" }}>
+                                    {" " + (Number(totalPrice)+Number(2500))}</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px"}}>원</Tdcontentstext>
                              </InfoTd>
                         </tr>
@@ -293,14 +349,22 @@ function Basket(){
                 </thead>
                 <tbody style={{textalign: "center", display: "table-row-group", verticalAlign: "middle", borderColor: "inherit" ,height:"88px"}}> 
                     <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit"}}>
-                    <FinalTd><FinalDiv>15,000<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
-                    <FinalTd style={{borderLeft: "1px solid #ebebeb"}}><FinalDiv><FinalDiv2>+</FinalDiv2>2,000<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
-                    <FinalTd style={{borderLeft: "1px solid #ebebeb", color:"#5a5a5a"}}><FinalDiv><FinalDiv2>=</FinalDiv2>17,000<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
+                    <FinalTd><FinalDiv>{ 
+                        totalProPrice == 0
+                        ? totalPrice
+                        : totalProPrice
+                    }<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
+                    <FinalTd style={{borderLeft: "1px solid #ebebeb"}}><FinalDiv><FinalDiv2>+</FinalDiv2>2,500<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
+                    <FinalTd style={{borderLeft: "1px solid #ebebeb", color:"#5a5a5a"}}><FinalDiv><FinalDiv2>=</FinalDiv2>{
+                        totalProPrice == 0
+                        ? Number(totalPrice)+Number(2500)
+                        : totalProPrice
+                    }<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
                     </tr>
                 </tbody>
                 </FinalTable>
                 <PaymentDiv>
-                <PaymentButton>상품주문</PaymentButton>
+                <PaymentButton onClick={onClickSubmit}>상품주문</PaymentButton>
                 </PaymentDiv>
                 <InfoDiv>
                 <InfoDivTitle>이용안내</InfoDivTitle>

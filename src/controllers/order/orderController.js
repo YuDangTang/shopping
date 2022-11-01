@@ -27,16 +27,21 @@ export const postBasket = async(req, res) => {
         try{
             // req.body.deteId
             const del = await Cart.findOne({userID: req.body.userId});
-            let index;
             for(var i = 0; i < del.products.length; i++){
-                if(del.products[i].id == req.body.deteId){
-                    index = i;
-                    break;
+                if(del.products[i].proName == req.body.proName){
+                    for(var j = 0; j < del.products[i].cartQuan.length; j++){
+                        for(var k = 0; k < del.products[i].cartQuan[j].colorAmount.length; k++){
+                            if(del.products[i].cartQuan[j].colorAmount[k].id == req.body.deteId){
+                                del.products[i].cartQuan[j].colorAmount.splice(i, 1);
+                                try{
+                                    await Cart.updateOne({userID: req.body.userId}, {$set: {products: del.products}})
+                                    return res.send("success");
+                                }catch(error){console.log(error); return res.send("fail")}
+                            }
+                        }
+                    } 
                 }
             }
-            del.products.splice(i, 1);
-            await Cart.updateOne({userID: req.body.userId}, {$set: {products: del.products}})
-            return res.send("success");
         }catch(error){console.log(error); return res.send("fail")}
     }else if(req.body.updateId != null){
         const data = req.body;
@@ -70,21 +75,47 @@ export const getOrderForm = async(req, res) => {
 export const postOrderForm = async(req, res) => {
     if(req.body.buyer_name != null){
         const data = req.body;
-        const cart = await Cart.findOne({userID: data.userID});
-        for(var i = 0; i < cart.products.length; i++){
+        // const cart = await Cart.findOne({userID: data.userID});
+        // for(var i = 0; i < cart.products.length; i++){
 
-        }
-        await Order.create({
-            pro_ID : data.pro_ID,
-            buyerName: data.buyer_name,
-            buyerTel: data.buyer_tel,
-            recipientName: data.recipient,
-            recipAddress: data.recipAddress,
-            recipientTel: data.recipientTel,
-            payPrice: {
-                cost: data.cost,
-                payAmount: data.amount,
-            },
-        })
+        // }
+        try{
+            await Order.create({
+                pro_ID : data.pro_ID,
+                user_ID : data.userID,
+                buyerName: data.buyer_name,
+                buyerTel: data.buyer_tel,
+                recipientName: data.recipient,
+                recipAddress: data.recipAddress,
+                recipientTel: data.recipientTel,
+                payPrice: data.payPrice,
+            })
+            const cart = await Cart.findOne({userID: data.userID});
+            // 결제 후 장바구니 비우기 필요
+            for(var i = 0; i < cart.products.length; i++){
+                for(var j = 0; j < data.pro_ID.length; j++){
+                    if(cart.products[i].proName == data.pro_ID[j].proName){
+                        let idx = 0;
+                        for(var k = 0; k < data.pro_ID[j].colorSizeAmount.length; k++){
+                            if(cart.products[i].cartQuan[j].size == data.pro_ID[j].colorSizeAmount[k].size){
+                                for(var q = 0; q < data.pro_ID[j].colorSizeAmount[k].sizeColorAmount.length; q++){
+                                    if(cart.products[i].cartQuan[j].colorAmount[k].color
+                                        == data.pro_ID[j].colorSizeAmount[k].sizeColorAmount[q].color){
+                                            cart.products[i].cartQuan[j].colorAmount.splice(k, 1);
+                                            break;
+                                        }
+                                }
+                            }
+                        }
+                    } 
+                }
+            }
+            try{
+                const updateData = await Cart.updateOne({userID: data.userID}, {$set: cart});
+                if(!updateData){console.log("업데이트 실패"); return res.send("fail");}
+                return res.send("success");
+            }catch(error){console.log(error); return res.send("fail");}
+            return res.send("success");
+        }catch(error){console.log(error); return res.send("fail");}
     }
 }

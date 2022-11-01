@@ -5,11 +5,13 @@ const orderSchema = new mongoose.Schema({
         proName: { type: String, required: true },
         colorSizeAmount: [{
             size: { type: String, required: true },
-            color: { type: String, required: true },
-            amount: { type: String, required: true },
+            sizeColorAmount: [{
+                color: { type: String, required: true },
+                amount: { type: String, required: true },
+            }]
         }]
     }],
-    payDate: { type: Date, required: true, default: Date.now  },
+    user_ID : { type: String, required: true },
     buyerName: { type: String, required: true },
     buyerTel: { type: String, required: true },
     recipientName: { type: String, required: true },
@@ -19,6 +21,7 @@ const orderSchema = new mongoose.Schema({
         cost: { type: Number, default: 0, required: true},
         payAmount: { type: Number, default: 0, required: true},
     },
+    payDate: { type: Date, required: true, default: Date.now  },
 });
 
 const Order = mongoose.model("Order", orderSchema);

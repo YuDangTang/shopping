@@ -59,13 +59,14 @@ function OrderForm(){
     const location = useLocation();
     const [datas, setDatas] = useState([]);
     const [totalPrice, setTotalPrice] = useState("");
+    const [DBModel, setDBModel] = useState({});
     useEffect(() => {
         const DB = location.state.obj;
         console.log("불로온거: ", DB);
         setDatas(DB);
         let total = 0;
         for(var i = 0; i < DB.length; i++){
-            total += DB[i].proTotalPrice;
+            total += DB[i].totTalPrice;
         }
         console.log(total);
         setTotalPrice(total);
@@ -90,7 +91,7 @@ function OrderForm(){
                 alert("주문 정보를 입력해주세요.");
                 return;
         }
-
+        
         const recipient = document.getElementsByName("recipient")[0].value;
         const recipAddress = document.getElementsByName("recipAddress")[0].value;
         const recipDetailAddress = document.getElementsByName("recipDetailAddress")[0].value;
@@ -100,6 +101,11 @@ function OrderForm(){
                 alert("배송 정보를 입력해주세요.");
                 return;
         }
+        const check = document.getElementsByName("check")[0];
+        if(!check.checked){
+            alert("결제정보 확인 및 구매진행에 동의해주세요.")
+            return;
+        }
         const totalCost = totalPrice;
         const totalPrice2 = document.getElementById("totalPrice").innerHTML;
 
@@ -107,20 +113,61 @@ function OrderForm(){
         const proColorSize = document.getElementById("proColorSize");
         const proQuan = document.getElementById("proQuan");
         const pro_ID = [];
+        const proNameArr = [];
         for(var i = 0; i < datas.length; i++){
-            const obj1 = {};
-            obj1.proName = datas[i].proName;
-            const colorSizeAmount = [];
-            for(var j = 0; j < datas[i].product.length; j++){
-                const obj = {};
-                obj.colorSize = datas[i].product[j].colorSize
-                obj.amount = datas[i].product[j].proQuan
-                colorSizeAmount.push(obj);
+            const obj = {};
+            obj.size = datas[i].sizeColor.split("/")[0].replace("[", "");
+            obj.sizeColorAmount = [];
+            const dataObj = {
+                color: datas[i].sizeColor.split("/")[1].replace("]", ""),
+                amount: datas[i].quan
+            };
+            obj.sizeColorAmount.push(dataObj);
+            if(proNameArr.includes(datas[i].proName)){
+                for(var j = 0; j < pro_ID.length; j++){
+                    if(pro_ID[j].proName == datas[i].proName){
+                        const sizeColorObj = {
+                            color: datas[i].sizeColor.split("/")[1].replace("]", ""),
+                            amount: datas[i].quan,
+                        };
+                        let cnt = 0;
+                        for(var k = 0; k < pro_ID[j].colorSizeAmount.length; k++){
+                            if(pro_ID[j].colorSizeAmount[k].size == obj.size){
+                                pro_ID[j].colorSizeAmount[k].sizeColorAmount.push(sizeColorObj);
+                                cnt++;
+                            }
+                        }
+                        if(cnt == 0){
+                            pro_ID[j].colorSizeAmount.push(obj);
+                        }
+                    }
+                }
+            }else{
+                const obj1 = {
+                    colorSizeAmount: [],
+                };
+                obj1.proName = datas[i].proName;
+                proNameArr.push(datas[i].proName);
+                obj1.colorSizeAmount.push(obj);
+                pro_ID.push(obj1);
             }
-            obj1.colorSizeAmount = colorSizeAmount;
-            pro_ID.push(obj1);
         }
-
+        const dbSave = {
+            pro_ID,
+            buyer_name: buyer, // 구매자 이름
+            buyer_tel: buyerTel, // 구매자 전화번호 (필수항목)
+            buyer_addr: joinAddress + " " + joinDetailAddress,
+            recipient, // 받는 사람 이름
+            recipAddress: recipAddress + " " + recipDetailAddress, // 받는사람 주소
+            recipientTel: recipientTel,
+            payPrice: {
+                cost: totalPrice,
+                payAmount: totalPrice,
+            },
+            userID: sessionStorage.getItem('id'),
+        };
+        console.log("디비에 저장할거: ", dbSave);
+        setDBModel(dbSave);
         const { IMP } = window; 
         IMP.init('imp27761044'); // 가맹점 식별코드 // 결제 데이터 정의
         const data = {
@@ -128,24 +175,12 @@ function OrderForm(){
             pay_method: 'card', // 결제수단 (필수항목)
             merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
             name: 'mieummieum', // 주문명 (필수항목)
-            amount: '1', //totalPrice2, // 금액 (필수항목)
+            amount: '100', //totalPrice2, // 금액 (필수항목)
             custom_data: { name: '부가정보', desc: '세부 부가정보' },
             buyer_name: buyer, // 구매자 이름
             buyer_tel: buyerTel, // 구매자 전화번호 (필수항목)
             buyer_addr: joinAddress + " " + joinDetailAddress,
-            DB : {
-                pro_ID,
-                buyer_name: buyer, // 구매자 이름
-                buyer_tel: buyerTel, // 구매자 전화번호 (필수항목)
-                buyer_addr: joinAddress + " " + joinDetailAddress,
-                recipient, // 받는 사람 이름
-                recipAddress: recipAddress + " " + recipDetailAddress, // 받는사람 주소
-                recipientTel: recipientTel,
-                payPrice: {
-                    cost: totalPrice,
-                    payAmount: totalPrice,
-                }
-            },
+            pro_ID,
             buyer_email: 'l4279625@gmail.com', // 구매자 이메일
             buyer_postalcode: '05258'
         };
@@ -154,34 +189,26 @@ function OrderForm(){
     
     const callback = async (response) => {
         const {success, error_msg, imp_uid, merchant_uid, pay_method, paid_amount, status,
-            amount, cost, DB,
-            buyer_name, buyer_tel, buyer_addr, recipient, recipAddress, recipientTel} = response;
+            amount,
+            buyer_name, buyer_tel, buyer_addr} = response;
         if (success) {
             const db = {
                 userID: sessionStorage.getItem('id'),
-                DB,
                 buyer_name,
                 buyer_tel,
                 buyer_addr,
-                recipient,
-                recipAddress,
-                recipientTel,
                 amount: totalPrice,
-                cost
             }
-            console.log(db);
-            // await axios.post(`http://localhost:4000/order/OrderForm`, db )
-            // .then((response) => {
-            //     if(response.data == "fail"){
-            //         alert("DB Error.");
-            //     }else if(response.data == "success"){
-            //         var basket = window.confirm("장바구니로 이동하시겠습니까?");
-            //         if(basket){
-            //             window.location.href = "/order/basket";
-            //         }
-            //     }
-            // }); 
-            alert('주문이 완료되었습니다');
+            console.log("결제했눙?",db);
+            console.log("결제 디비에 저장해라요", DBModel);
+            await axios.post(`http://localhost:4000/order/OrderForm`, DBModel )
+            .then((response) => {
+                if(response.data == "fail"){
+                    alert("결제에 실패하였습니다.");
+                }else if(response.data == "success"){
+                    alert("결제가 완료되었습니다.");
+                }
+            }); 
         } else {
             alert(`결제 실패 : ${error_msg}`);
         }
@@ -269,11 +296,11 @@ function OrderForm(){
                             <InfoTd colSpan={8}>
                                 <span style={{    float: "left", margin: "6px 0 0"}}>[기본배송]</span>
                                 <Tdcontentstext>상품구매금액</Tdcontentstext>
-                                <Tdcontentstext style={{fontWeight:"bold"}}> 20,000</Tdcontentstext>
+                                <Tdcontentstext style={{fontWeight:"bold"}}>{" " + totalPrice}</Tdcontentstext>
                                 <Tdcontentstext>+ 배송비</Tdcontentstext>
                                 <Tdcontentstext  style={{marginLeft:"6px 0 0"}}> 2,500</Tdcontentstext>
                                 <Tdcontentstext> = 합계:</Tdcontentstext>
-                                <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px", marginLeft: "10px" }}>22,500</Tdcontentstext>
+                                <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px", marginLeft: "10px" }}>{(totalPrice + Number(2500))}</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px"}}>원</Tdcontentstext>
                              </InfoTd>
                         </tr>
@@ -286,20 +313,20 @@ function OrderForm(){
                                         <InfoTd2><Forimg src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg></InfoTd2>
                                         <InfoTd2 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
                                         <Tdcontentstext id={"proName"} style={{fontWeight:"bold"}}>{data.proName}</Tdcontentstext><br></br>
-                                        <Tdcontentstext id={"proColorSize"} style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>{data.colorSize}</Tdcontentstext>
+                                        <Tdcontentstext id={"proColorSize"} style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>{data.sizeColor}</Tdcontentstext>
                                         </InfoTd2>
                                         <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
-                                            <Tdcontentstext style={{fontWeight:"bold"}}>{data.proTotalPrice/data.proQuan}</Tdcontentstext>
+                                            <Tdcontentstext style={{fontWeight:"bold"}}>{data.totTalPrice/data.quan}</Tdcontentstext>
                                             <Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext>
                                         </InfoTd2>
                                         <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",
                                             paddingLeft: 0, paddingRight: 0,textAlign:"center"}}>
-                                            <Tdcontentstext id={"proQuan"} style={{fontWeight:"bold"}}>{data.proQuan}</Tdcontentstext>
+                                            <Tdcontentstext id={"proQuan"} style={{fontWeight:"bold"}}>{data.quan}</Tdcontentstext>
                                         </InfoTd2>
                                         <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>-</Tdcontentstext></InfoTd2>
                                         <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>기본배송</Tdcontentstext></InfoTd2>
                                         <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>조건</Tdcontentstext></InfoTd2>
-                                        <InfoTd2 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",textAlign:"right"}}><Tdcontentstext style={{fontWeight:"bold"}}>{data.proTotalPrice}</Tdcontentstext><Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext></InfoTd2>
+                                        <InfoTd2 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",textAlign:"right"}}><Tdcontentstext style={{fontWeight:"bold"}}>{data.totTalPrice}</Tdcontentstext><Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext></InfoTd2>
                                     </tr>
                                 </tbody>
                             )
@@ -397,9 +424,9 @@ function OrderForm(){
                     </thead>
                     <tbody style={{textAlign: "center",height:"80px", display: "tablerowgroup", verticalAlign: "middle", borderColor: "inherit"}}>
                         <tr>
-                            <Howmuchtd>{totalPrice}<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
+                            <Howmuchtd>{(totalPrice + Number(2500))}<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
                             <Howmuchtd>0<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
-                            <Howmuchtd>{totalPrice}<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
+                            <Howmuchtd>{(totalPrice + Number(2500))}<HowmuchtdText>원</HowmuchtdText></Howmuchtd>
                         </tr>
                     </tbody>
                 </Howmuchtable>
@@ -417,7 +444,7 @@ function OrderForm(){
                 <FinalCheckh4>{switchtext}<HowmuchtdText style={{fontWeight:"normal",fontSize:"12px"}}>최종결제 금액</HowmuchtdText></FinalCheckh4>
                 <FinalCheckp>
                     <HowmuchtdText style={{fontWeight:"bold",fontSize:"28px"}}
-                    id="totalPrice">{totalPrice}</HowmuchtdText>원</FinalCheckp>
+                    id="totalPrice">{(totalPrice + Number(2500))}</HowmuchtdText>원</FinalCheckp>
                 <FinalCheckp style={{fontWeight:"normal",fontSize:"12px"}}> <input name='check' type={'checkbox'} style={{verticalAlign:"middle"}}></input>결제정보를 확인하였으며, 구매진행에 동의합니다.</FinalCheckp>
                 <ForpayButton><PayButton onClick={() => onClickPayment()}>결제하기</PayButton></ForpayButton>
                 </FinalCheck>
