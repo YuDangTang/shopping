@@ -60,6 +60,8 @@ function OrderForm(){
     const [datas, setDatas] = useState([]);
     const [totalPrice, setTotalPrice] = useState("");
     const [DBModel, setDBModel] = useState({});
+    const [pay, setPay] = useState("");
+    const [impID, setImpID] = useState("");
     useEffect(() => {
         const DB = location.state.obj;
         console.log("불로온거: ", DB);
@@ -81,7 +83,7 @@ function OrderForm(){
         }
     }, []);
     
-    const onClickPayment = () => {
+    const onClickPayment = async () => {
         const buyer = document.getElementsByName("buyer")[0].value;
         const joinAddress = document.getElementsByName("joinAddress")[0].value;
         const joinDetailAddress = document.getElementsByName("joinDetailAddress")[0].value;
@@ -180,40 +182,68 @@ function OrderForm(){
             buyer_name: buyer, // 구매자 이름
             buyer_tel: buyerTel, // 구매자 전화번호 (필수항목)
             buyer_addr: joinAddress + " " + joinDetailAddress,
-            pro_ID,
+            dbSave,
             buyer_email: 'l4279625@gmail.com', // 구매자 이메일
-            buyer_postalcode: '05258'
+            buyer_postalcode: '05258',
+
+            recipient, // 받는 사람 이름
+            recipAddress: recipAddress + " " + recipDetailAddress, // 받는사람 주소
+            recipientTel: recipientTel,
+            payPrice: {
+                cost: totalPrice,
+                payAmount: totalPrice,
+            },
+            userID: sessionStorage.getItem('id'),
         };
         IMP.request_pay(data, callback);
     }
-    
+    console.log("디비 갈거: ", DBModel)
     const callback = async (response) => {
         const {success, error_msg, imp_uid, merchant_uid, pay_method, paid_amount, status,
-            amount,
+            amount, dbSave,
             buyer_name, buyer_tel, buyer_addr} = response;
         if (success) {
             const db = {
                 userID: sessionStorage.getItem('id'),
-                buyer_name,
-                buyer_tel,
-                buyer_addr,
+                imp_uid,
                 amount: totalPrice,
+                cancel_amount: totalPrice,
             }
-            console.log("결제했눙?",db);
-            console.log("결제 디비에 저장해라요", DBModel);
-            await axios.post(`http://localhost:4000/order/OrderForm`, DBModel )
+            await axios.post(`http://localhost:4000/order/OrderForm`, db )
             .then((response) => {
                 if(response.data == "fail"){
                     alert("결제에 실패하였습니다.");
                 }else if(response.data == "success"){
-                    alert("결제가 완료되었습니다.");
+                    setPay("success");
+                    setImpID(imp_uid);
                 }
             }); 
+            
         } else {
             alert(`결제 실패 : ${error_msg}`);
         }
     }
-    
+    const saveDB = async () => {
+        console.log("결제 디비에 저장", DBModel);
+        DBModel.impID = impID;
+        await axios.post(`http://localhost:4000/order/OrderForm`, DBModel )
+        .then((response) => {
+            if(response.data == "fail"){
+                setPay("");
+                setImpID("");
+                alert("주문에 실패하였습니다. 다시 시도해주세요.");
+            }else if(response.data == "success"){
+                setPay("");
+                setImpID("");
+                alert("주문이 완료되었습니다.");
+            }
+        }); 
+    }
+    console.log(pay);
+    if(pay == "success"){
+        saveDB(DBModel);
+    }
+
     //주소 api 변수 및 핸들러들
     const [enroll_company, setEnroll_company] = useState({
         address: '',

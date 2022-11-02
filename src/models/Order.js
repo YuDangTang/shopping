@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
+    pay_ID : {type: String, required: true },
     pro_ID : [{
         proName: { type: String, required: true },
         colorSizeAmount: [{

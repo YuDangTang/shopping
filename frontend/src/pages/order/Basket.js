@@ -318,10 +318,10 @@ function Basket(){
                                 <Tdcontentstext>상품구매금액</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold"}}>{" " + totalPrice }</Tdcontentstext>
                                 <Tdcontentstext>+ 배송비</Tdcontentstext>
-                                <Tdcontentstext  style={{marginLeft:"6px 0 0"}}> 2,500</Tdcontentstext>
+                                <Tdcontentstext  style={{marginLeft:"6px 0 0"}}>{totalPrice == 0 ? 0 : "2,500"}</Tdcontentstext>
                                 <Tdcontentstext> = 합계:</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px", marginLeft: "10px" }}>
-                                    {" " + (Number(totalPrice)+Number(2500))}</Tdcontentstext>
+                                    {totalProPrice == 0 ? 0 : " " + (Number(totalPrice)+Number(2500))}</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px"}}>원</Tdcontentstext>
                              </InfoTd>
                         </tr>
@@ -354,10 +354,14 @@ function Basket(){
                         ? totalPrice
                         : totalProPrice
                     }<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
-                    <FinalTd style={{borderLeft: "1px solid #ebebeb"}}><FinalDiv><FinalDiv2>+</FinalDiv2>2,500<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
+                    <FinalTd style={{borderLeft: "1px solid #ebebeb"}}><FinalDiv><FinalDiv2>+</FinalDiv2>{
+                        totalProPrice == 0
+                        ? 0
+                        : "2,500"
+                    }<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
                     <FinalTd style={{borderLeft: "1px solid #ebebeb", color:"#5a5a5a"}}><FinalDiv><FinalDiv2>=</FinalDiv2>{
                         totalProPrice == 0
-                        ? Number(totalPrice)+Number(2500)
+                        ? 0
                         : totalProPrice
                     }<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
                     </tr>
