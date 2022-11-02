@@ -10,13 +10,15 @@ function Product(){
 
     const[datas, setDatas] = useState({}); // 해당 상품 객체를 집어넣는다.
 
-
+리액트    state
     //선택한 사이즈
     const[selectSize, setSelectSize] = useState("사이즈를 선택해주세요"); //사이즈 버튼 클릭시 최신화된다.
     const [selectColor, setSelectColor] = useState(""); //사이즈와 색상이 선택되면 넘겨줄 객체가 들어간다.
     //list로 객체들을 전부 상세로 보여줘도 좋지만 한 페이지에서 한 상품만 구매할 수 있게 만드는것도 방법이다.
     const [proTitle, setProTitle] = useState("");   // 상품명
     const [proPrice, setProPrice] = useState("");  //가격
+    const [buyPrice, setBuyPrice] = useState(""); //구매가격이랑 proPrice랑 곱해서 buyprice에 넣는다 맨 밑에서 사용
+    const [buyTotal, setBuyTotal] = useState("");
     const [objList, setObjList] = useState([]); //리스트 집어넣는곳
 
         //사이즈 버튼 클릭시 size값을 클릭한것으로 바꿔주기
@@ -73,24 +75,24 @@ function Product(){
         // 묶어서 객체화 하기 → 리스트에 순차적으러 집어 넣어 (상품명, 상품id, 사이즈, 색상, 상품 갯수, 상품 가격)
         const handleDetail = (proName, proId, proColor,    proSize,   proAmount  ,buyCount) => {
             
-            
+            setBuyTotal(Number(buyTotal) + 1);
+            setBuyPrice(buyPrice + Number(proPrice))
             //선택 사이즈 선택 색상
             console.log("select color : "+proName);
             console.log("select proId : "+proId);
             console.log("select proColor : "+proColor);
             console.log("select proSize : "+proSize);
             console.log("select proAmount : "+proAmount);
+            console.log("select buyCount : "+buyCount);
 
-            var objecting = {proName, proId, proColor, proSize, proAmount , buyCount};
-            console.log("create object : "+objecting);
-            console.log(objList)
-            
+            var objecting = {proName, proId, proColor, proSize, proAmount , buyCount};            
             
             let temp = objList;
 
             if(objList.length ===0){
                 temp.push(objecting);
                 setObjList(temp);
+                console.log(objList);
                 return setSelectSize("");
 
             } else{
@@ -102,6 +104,7 @@ function Product(){
                 }
                 temp.push(objecting);
                 setObjList(temp);
+                console.log(objList);
                 return setSelectSize("");
             }
         }
@@ -109,12 +112,31 @@ function Product(){
 
         //수량 변화시 함수 실행
         const changeNumber=(e, size, color)=>{
+
+            if(e.value > 100){
+                return alert("100보다 작은 수를 고르세요...");
+            }
+             if(e.value < 0){
+                return alert("0보다 큰 수를 고르세요...");
+            }
+            //사이즈와 컬러가 맞는 객체에 최신화해준다.
             for(var i = 0; i < objList.length; i++){
                 if(objList[i].proSize == size && objList[i].proColor == color){
                     objList[i].buyCount = e.value;
                 }
             }
-            console.log(objList);
+
+            //숫자가 변할때마다 전체 불러와서 총합 state 최신화
+            var temp=0;
+            for(var i = 0; i < objList.length; i++){
+                temp = Number(temp) + Number(objList[i].buyCount);
+                
+            }
+            setBuyTotal(temp)
+            var tmp = proPrice * buyTotal
+            setBuyPrice(tmp);
+
+
         }
 
 
@@ -124,7 +146,7 @@ function Product(){
             try{
                 const obj = {};
                 obj.id = param;
-                console.log("url: ", param)
+                // console.log("url: ", param)
                 await axios.post(`http://localhost:4000/product/${param}`, obj)
                 .then((response) => {
                     if(response.data == "fail"){
@@ -135,7 +157,7 @@ function Product(){
                         setDatas(data);
                         setProTitle(data.proName);
                         setProPrice(data.proPrice.price)
-                        console.log("데이터: ", data, "   이름: ", data.proName);
+                        console.log("db로부터 받아온 데이터: ", data, "   이름: ", data.proName);
                     }
                 }); 
 
@@ -266,7 +288,7 @@ function Product(){
                                                         <>
                                                             {
                                                                 datas.proSize[0].proColor[i].colorAmout.map(function(_id,j){
-                                                                    var  buyCount = 1; //각각의 수량 조정을 위해서
+                                                                    var  buyCount =1; //각각의 수량 조정을 위해서
                                                                     return(
                                                                         datas.proSize[0].proColor[i].colorAmout[j].amout == 0
                                                                         ? <Buttonbutton
@@ -299,7 +321,7 @@ function Product(){
                     {/* 컬러 선택시 선택 옵션 창 뜨기 리스트에있는 맵 돌려*/}
 
                     {   objList &&               
-                            objList.map((_id, i) =>{
+                            objList.slice(0).reverse().map((_id, i) =>{
                                 return(<>
                                 <hr/>
                                     <SelectTable>
@@ -311,14 +333,13 @@ function Product(){
                                         </OptionTd>
                                         <CountTd>
                                             <CountSpan >
-                                                <CountInput type = "number" defaultValue={1} name={"buyCount"} min={1} max={objList.proAmount} onChange={(e)=>changeNumber(e.currentTarget, objList[i].proSize, objList[i].proColor)} 
+                                                <CountInput type = "number" defaultValue={1} name={"buyCount"} min={1} max={100} onChange={(e)=>changeNumber(e.currentTarget, objList[i].proSize, objList[i].proColor)} 
                                                     ></CountInput>
                                                 {/* <img src='/assets/btn_count_up.gif' onClick={increase} style={{position:"absolute",left:"28px",top:"-1px",lineHeight:"18px",verticalAlign:"middle"}}/>
                                                 <img src='/assets/btn_count_down.gif' onClick={decrease} style={{position:"absolute",left:"28px",bottom:"0",top:"auto"}}/> */}
-                                            </CountSpan>
+                                            개</CountSpan>
                                         </CountTd>
                                         <SelectPrice>
-                                        {proPrice * Number(objList[i].buyCount)}원
                                         </SelectPrice>
                                         </SelectTr>
                                         
@@ -334,7 +355,8 @@ function Product(){
 
                          {/* //총 갯수 표시 */}
                     <Totalprice>
-                        TOTAL : {}개
+                        TOTAL : {buyTotal}개<br/>
+                        가격 : {buyTotal * proPrice}원
                     </Totalprice>
                     <Actionarea>
                         <Actionarea2>
