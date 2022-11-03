@@ -1,11 +1,21 @@
 import React, { useEffect, useState }  from 'react';
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 
 
 function Order(){
+
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+
+
+
+
+
+
     return(
         <Container>
             <Contents>
@@ -15,8 +25,8 @@ function Order(){
                 </Title>
                 <InfoTitleDiv><ControlInfo><ControlInfocontents>주문내역조회</ControlInfocontents></ControlInfo></InfoTitleDiv>
                 <OrderHistory>
-                <Historyboxfieldset>
-                <SelectDiv>
+                <Historyboxfieldset style={{display:"flex", flexDirection:"row"}}>
+                <SelectDiv> 
                     <SelectOption>
                         <OptionStyle>전체 주문처리상태</OptionStyle>
                     </SelectOption>
@@ -54,12 +64,32 @@ function Order(){
                         alt="6개월"></img>
                     </PeriodA>
                 </PrieodSpan>
-                <CalendarInput value={"0000-00-00"}></CalendarInput>
+                <div >
+                <CalendarInput
+                    selected={startDate}
+                    onChange={date => setStartDate(date)}
+                    dateFormat="yyyy-MM-dd"
+                    selectsStart
+                    startDate={startDate}
+                    endDate={endDate}
+                    />
+                </div>
                 <CalendarButt>
                     <img src="//img.echosting.cafe24.com/skin/admin_ko_KR/myshop/ico_cal.gif" style={{verticalAlign:"middle"}}></img>
                 </CalendarButt>
                  ~ 
-                <CalendarInput value={"0000-00-00"}></CalendarInput>
+                <div>
+                <CalendarInput
+                    selected={endDate}
+                    onChange={date => setStartDate(date)}
+                    dateFormat="yyyy-MM-dd"
+                    selectsEnd
+                    startDate={startDate}
+                    endDate={endDate}
+                    minDate={startDate}
+                    />
+                </div>
+                
                 <CalendarButt>
                     <img src="//img.echosting.cafe24.com/skin/admin_ko_KR/myshop/ico_cal.gif" style={{verticalAlign:"middle"}}></img>
                 </CalendarButt>
@@ -245,7 +275,8 @@ let PeriodA = styled.a` //기간선택 a
     cursor: pointer;
 `
 
-let CalendarInput = styled.input` //달력 Input
+let CalendarInput = styled(DatePicker)` //달력 Input
+    display: inline;
     width: 86px;
     height: 24px;
     margin: 0 0 0 2px;
