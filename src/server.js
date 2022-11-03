@@ -141,3 +141,61 @@ const login = async (req, res) => {
     }
 };
 app.post("/member/login", login);
+
+
+//유저정보 수정을 위한 유저정보 쏘기
+const GetInfo = async (req, res) => {
+    const userkey = req.body.userkey;
+
+    try {
+        const userInfo = await User.findOne({ "userId": userkey });
+
+        if (userInfo == null) {
+            return res.send("fail");   
+        } else {
+            return res.send(userInfo);
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+};
+app.post("/member/GetInfo", GetInfo);
+
+
+// //회원정보 수정
+const Modify = async (req, res) => {
+    try {
+        const { joinId,
+            joinPw,
+            joinName,
+            joinTel,
+            joinFullAddress, joinBirth } = req.body;
+
+            console.log("요청바디확인", req.body);
+            console.log("수정 전 비번 : ", joinPw);
+            const newPw = await User.modifyPw(joinPw);
+            console.log("수정 후 비번 : ",newPw);
+
+        const boo = await User.updateOne(
+            {userId : joinId}, 
+            { $set: 
+                { 
+                    userPw : newPw,
+                    userName: joinName,
+                    userTel: joinTel,
+                    userAddress: joinFullAddress,
+                    userBirth: joinBirth
+                }
+            });
+        if
+        (boo) {
+            return res.send("Success");
+        } else {
+            return res.send("fail");
+        }
+    } catch (err) {
+        console.log("에러임",err);
+    }
+};
+app.post("/member/Modify", Modify);
