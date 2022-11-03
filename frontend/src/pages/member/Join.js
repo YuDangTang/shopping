@@ -328,7 +328,7 @@ let Bigtable = styled.table` //밑테이블 기본 스타일
     border-collapse: collapse;
 `
 
-let Inputinput = styled.input` //인풋텍스트 스타일
+let Inputinput = styled.input.attrs({ maxLength: "16" })` //인풋텍스트 스타일
     height: 26px;
     line-height: 26px;
     padding: 0px 4px;
@@ -346,7 +346,7 @@ let Inputinput = styled.input` //인풋텍스트 스타일
     
 `
 
-let Inputinput2 = styled.input` //인풋텍스트 스타일
+let Inputinput2 = styled.input.attrs({ maxLength: "20" })` //인풋텍스트 스타일
     height: 26px;
     line-height: 26px;
     padding: 0px 4px;
