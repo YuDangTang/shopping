@@ -180,6 +180,7 @@ function Basket(){
                 {/* 정보 윗 부분 */}
                 <InfoTable style={{borderTop: "0.5px solid #ebebeb"}}>
                     <colgroup>
+                        <col style={{width:"27px"}}></col>
                         <col style={{width:"92px"}}></col>
                         <col style={{width:"auto"}}></col>
                         <col style={{width:"98px"}}></col>
@@ -188,6 +189,7 @@ function Basket(){
                         <col style={{width:"98px"}}></col>
                         <col style={{width:"85px"}}></col>
                         <col style={{width:"98px"}}></col>
+                        <col style={{width:"110px"}}></col>
                     </colgroup>
                     <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit"}}>
                             <InfoTh>
@@ -199,7 +201,7 @@ function Basket(){
                                 </input>
                             </InfoTh>
                             <InfoTh scope='col'>이미지</InfoTh>
-                            <InfoTh scope='col' style={{paddingLeft:"10px", width:"400px"}}>상품정보</InfoTh>
+                            <InfoTh scope='col'>상품정보</InfoTh>
                             <InfoTh scope='col'>판매가</InfoTh>
                             <InfoTh scope='col'>수량</InfoTh>
                             <InfoTh scope='col'>적립금</InfoTh>
@@ -227,16 +229,18 @@ function Basket(){
                                                     <form onSubmit={onSubmitHandler} >
                                                         <InfoTable>
                                                             <colgroup>
-                                                                <col style={{width:"92px"}}></col>
-                                                                <col style={{width:"auto"}}></col>
-                                                                <col style={{width:"98px"}}></col>
-                                                                <col style={{width:"75px"}}></col>
-                                                                <col style={{width:"98px"}}></col>
-                                                                <col style={{width:"98px"}}></col>
-                                                                <col style={{width:"85px"}}></col>
-                                                                <col style={{width:"98px"}}></col>
+                                                            <col style={{width:"27px"}}></col>
+                                                            <col style={{width:"92px"}}></col>                           
+                                                            <col style={{width:"auto"}}></col>
+                                                            <col style={{width:"98px"}}></col>
+                                                            <col style={{width:"75px"}}></col>
+                                                            <col style={{width:"98px"}}></col>
+                                                            <col style={{width:"98px"}}></col>
+                                                            <col style={{width:"85px"}}></col>
+                                                            <col style={{width:"98px"}}></col>
+                                                            <col style={{width:"110px"}}></col>
                                                             </colgroup>
-                                                            <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}} id={bas.productInfo.proName}>
+                                                            <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1",borderTop:"1px solid #ebebeb"}} id={bas.productInfo.proName}>
                                                             <InfoTd2 style={{paddingLeft:0,paddingRight:0}}>
                                                                 <input type={'checkbox'}  name={`select`} id={num}
                                                                 onChange={(e) => 
@@ -246,7 +250,7 @@ function Basket(){
                                                                 ></input>
                                                             </InfoTd2>
                                                                     <InfoTd2><Forimg src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg></InfoTd2>
-                                                                    <InfoTd2 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb",width:"400px"}}>
+                                                                    <InfoTd2 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
                                                                     <TdcontentsInput name={"proName"} defaultValue={bas.productInfo.proName} 
                                                                         style={{fontWeight:"bold"}} readonly onfocus="this.blur();">
                                                                         
@@ -257,16 +261,15 @@ function Basket(){
                                                                     </TdcontentsInput>
                                                                     </InfoTd2>
                                                                     <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
-                                                                        <span style={{display:"flex"}}><TdcontentsInput style={{fontWeight:"bold",textAlign:"right"}}
+                                                                        <TdcontentsInput style={{fontWeight:"bold",  width: "30px"}}
                                                                             name={"proPrice"} defaultValue={bas.productInfo.proPrice.price} readonly onfocus="this.blur();">
-                                                                            
                                                                         </TdcontentsInput>
                                                                         <Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext>
-                                                                        </span>
+
                                                                     </InfoTd2>
                                                                     <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}>
                                                                         <TdcontentsInputNumber type={"number"} 
-                                                                            style={{fontWeight:"bold", textAlign:"right", width:"50px"}}
+                                                                            style={{fontWeight:"bold", textAlign:"center", width:"50px"}}
                                                                             name={"proQuan"} defaultValue={pro.quan}>
                                                                         </TdcontentsInputNumber>
                                                                         <WhiteButton style={{width: "40px", height:"30px", marginTop:"10px",padding: "0px"}} 
@@ -276,9 +279,9 @@ function Basket(){
                                                                     <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>기본배송</Tdcontentstext></InfoTd2>
                                                                     <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext>0원</Tdcontentstext></InfoTd2>
                                                                     <InfoTd2 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",textAlign:"right"}}>
-                                                                        <TdcontentsInput style={{fontWeight:"bold"}}
+                                                                        <TdcontentsInput style={{fontWeight:"bold" ,  width: "30px"}}
                                                                             name={"proTotalPrice"} defaultValue={bas.productInfo.proPrice.price*pro.quan}  readonly onfocus="this.blur();">
-                                                                            </TdcontentsInput>
+                                                                        </TdcontentsInput>
                                                                         <Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext>
                                                                     </InfoTd2>
                                                                     <InfoTd2 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", paddingRight: 0,width:"98px"}}>
@@ -303,6 +306,7 @@ function Basket(){
                 {/* 정보 밑부분 */}
                 <InfoTable style={{borderTop : 0}}>
                 <colgroup>
+                        <col style={{width:"27px"}}></col>
                         <col style={{width:"92px"}}></col>
                         <col style={{width:"auto"}}></col>
                         <col style={{width:"98px"}}></col>
@@ -587,7 +591,21 @@ let TdcontentsInputNumber = styled.input ` //텍스트스타일
     font-size: 11px;
     margin: 6px 0 0;
     color: #757575;
+    height: 23px;
     font-weight: bold;
+    border: 1px solid #d4d8d9;
+    border-radius: 3px 0 0 3px;
+    cursor: pointer;
+        /* 마우스 클릭하고있을때 */
+        &:active{
+            border: 1px solid #d4d8d9;
+            border-radius: 3px 0 0 3px;
+        }
+        /* 마우스 한번클릭후 */
+        &:visited{
+            border: 1px solid #d4d8d9;
+            border-radius: 3px 0 0 3px;
+        }
 `
 
 let InfoTd2 = styled.td` //정보테이블 tbody td
