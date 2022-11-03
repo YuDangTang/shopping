@@ -35,7 +35,6 @@ const userSchema = new mongoose.Schema({
         type: Number, required: true, default: 0
     },
 });
-
 // Bcrypt로 비밀번호 암호화 하기
 userSchema.pre('save', function (next) {
     var user = this;
@@ -54,6 +53,45 @@ userSchema.pre('save', function (next) {
         next() // 그 외에는 그냥 내보냄
     }
 })
+
+
+// userSchema.statics.modifyPw = function(pw) {
+//     var user = pw;
+//     bcrypt.genSalt(saltRounds, function (err, salt) {
+//         if(err){
+//             return next(err);
+//         } else{
+//             bcrypt.hash(user, salt, function(err, hash){
+//                 if(err) { console.log("에러 : ", err); }
+//                 user = hash;
+//                 next();
+//             })
+//         }
+//     }
+// }
+
+
+userSchema.statics.modifyPw = async function(pw){
+    var user = pw;
+    // if (user.isModified('userPw')) { //비밀번호 수정 시에만 실행되도록
+    user = await bcrypt.hash(user, saltRounds);
+    // bcrypt.genSalt(saltRounds, function (err, salt, user) {
+    //     if (err)
+    //         bcrypt.hash(user, salt, function (err, hash) {
+    //             console.log("유저 : ", user);
+    //             if (err) {
+    //                 console.log("에러 : ", err);
+    //                 throw err;
+    //             }
+    //         user = hash;
+    //         return err;
+    //     })
+    //     return user; 
+    // })
+    console.log("USER: ", user); 
+    return user 
+    // } 
+}
 
 // 입력된 비밀번호와 데이터베이스에 있는 암호화된 비밀번호가 같은지 비교
 // => 평문을 암호화해서 비교
