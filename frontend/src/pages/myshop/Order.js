@@ -2,16 +2,68 @@ import React, { useEffect, useState }  from 'react';
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-
+import DateFilterData from "../../components/DateFilterData";
 
 
 function Order(){
 
+    const [btnClicked, setBtnClicked] = useState("3개월");
     const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(
+    new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000)
+    );
 
 
+      // 날짜 버튼 클릭, 기간 변경 기능
+  const handleBtnClicked = (e) => {
+    const { value } = e.target;
+    setBtnClicked(value);
+    const currentDate = new Date();
+    // 기본값: placeholder 내용
+    // 오늘 날짜
+    if (value === "오늘") {
+      setStartDate(new Date());
+      setEndDate(new Date());
+    }
+    // 1주일 전부터 오늘까지의 기간
+    if (value === "1주일") {
+      let weekAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+      setStartDate(weekAgo);
+      setEndDate(new Date());
+    }
+    // 1개월 전부터 오늘까지의 기간
+    if (value === "1개월") {
+      let oneMonthAgo = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth() - 1,
+        new Date().getDate()
+      );
+      setStartDate(oneMonthAgo);
+      setEndDate(new Date());
+    }
+    // 3개월 전부터 오늘까지의 기간
+    if (value === "3개월") {
+      let threeMonthAgo = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth() - 3,
+        new Date().getDate()
+      );
+      setStartDate(threeMonthAgo);
+      setEndDate(new Date());
+    }
+     // 6개월 전부터 오늘까지의 기간
+     if (value === "6개월") {
+        let threeMonthAgo = new Date(
+          new Date().getFullYear(),
+          new Date().getMonth() - 6,
+          new Date().getDate()
+        );
+        setStartDate(threeMonthAgo);
+        setEndDate(new Date());
+      }
+
+      console.log(value);
+    }
 
 
 
@@ -33,38 +85,17 @@ function Order(){
                 </SelectDiv>
 
                 <PrieodSpan>
-                    <PeriodA>
-                        <img src='//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date1.gif' 
-                        offimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date1.gif"
-                        onimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date1_on.gif"
-                        alt="오늘"></img>
-                    </PeriodA>
-                    <PeriodA>
-                        <img src="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date2.gif"
-                        offimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date2.gif"
-                        onimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date2_on.gif"
-                        alt="1주일"></img>
-                    </PeriodA>
-                    <PeriodA>
-                        <img src="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date3.gif"
-                        offimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date3.gif"
-                        onimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date3_on.gif"
-                        alt="1개월"></img>
-                    </PeriodA>
-                    <PeriodA>
-                        <img src="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date4.gif"
-                        offimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date4.gif"
-                        onimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date4_on.gif"
-                        alt="3개월"></img>
-                    </PeriodA>
-                    <PeriodA>
-                        <img src="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date5.gif"
-                        offimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date5.gif"
-                        onimage="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_date5_on.gif"
-                        alt="6개월"></img>
-                    </PeriodA>
+                {DateFilterData.map((el, idx) => ( //map 돌려서 데이터필터 컴포넌트 아이디 갯수만큼 버튼을 보여주자
+                    <PeriodInput
+                    onClick={handleBtnClicked}
+                    key={idx}
+                    backgroundColor={btnClicked === el.value}
+                    value = {el.value}
+                    placeholder = {el.value}
+                    />))}
+                    
                 </PrieodSpan>
-                <div >
+                <div>
                 <CalendarInput
                     selected={startDate}
                     onChange={date => setStartDate(date)}
@@ -75,13 +106,30 @@ function Order(){
                     />
                 </div>
                 <CalendarButt>
-                    <img src="//img.echosting.cafe24.com/skin/admin_ko_KR/myshop/ico_cal.gif" style={{verticalAlign:"middle"}}></img>
+                    <img src="//img.echosting.cafe24.com/skin/admin_ko_KR/myshop/ico_cal.gif" style={{verticalAlign:"middle"}}
+                    
+                    onClick={
+                        function ShowDate (){
+                           
+                                <DatePicker
+                                selected={startDate}
+                                onChange={date => setStartDate(date)}
+                                dateFormat="yyyy-MM-dd"
+                                selectsStart
+                                startDate={startDate}
+                                endDate={endDate}
+                                />
+                          
+                        }
+                    }
+                    
+                    ></img>
                 </CalendarButt>
                  ~ 
                 <div>
                 <CalendarInput
                     selected={endDate}
-                    onChange={date => setStartDate(date)}
+                    onChange={date => setEndDate(date)}
                     dateFormat="yyyy-MM-dd"
                     selectsEnd
                     startDate={startDate}
@@ -268,11 +316,22 @@ let PrieodSpan = styled.span` //기간선택 span
     vertical-align: middle;
 `
 
-let PeriodA = styled.a` //기간선택 a
-    margin: 0 0 0 -1px;    
-    text-decoration: none;
-    color: #666666;
+let PeriodInput = styled.input` //기간선택 button
+    margin: 0 0 0 -1px;
+    padding: 0; 
+    width: 39px;
+    height: 24px;
+    font-size: 11px;
+    border: 1.5px solid #d5d5d5;
+    border-radius: 2px;
+    color: #757575;
+    background-color: #fafafa;
+    text-align: center;
+    vertical-align: middle;
     cursor: pointer;
+    &:focus {
+      outline: none;
+  }
 `
 
 let CalendarInput = styled(DatePicker)` //달력 Input
