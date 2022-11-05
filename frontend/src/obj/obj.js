@@ -17,4 +17,3 @@ export const ProductObj = {
         profit: 0,
     },
 };
-

@@ -25,9 +25,13 @@
     "mongoose": "^6.6.5",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.20",
+    "parchment": "^2.0.1",
+    "quill-image-resize": "^3.0.9",
+    "quill-image-resize-module-react": "^3.0.0",
     "react": "^18.2.0",
     "react-daum-postcode": "^3.1.1",
     "react-dom": "^18.2.0",
+    "react-quill": "^2.0.0",
     "styled-components": "^5.3.6"
   },
   "devDependencies": {

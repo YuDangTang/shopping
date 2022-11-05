@@ -1,142 +1,124 @@
 import { useEffect, useState } from "react";
 import React, { Component } from "react";
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
-import { useParams, useNavigate } from "react-router-dom" // 1. useParams 라는 기능을 임포트한다.
+import { useParams } from "react-router-dom" // 1. useParams 라는 기능을 임포트한다.
 import axios from "axios";
+import PostComponent from '../../components/PostComponent';
+
+// const [content, setContent] = useState(''); //게시판 글 내용 
+
+//ㅇㅁㄴㅇ
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.bubble.css'
+
+
+// 선택 상품 컴포넌트
+  function CreateOption(props){
+    //원하는 객체를 받아와서 사용  
+    
+    const [num, setNum] = useState(1);
+    const [price, setPrice] = useState(props.selectObj.proOptionObjTmp.detailPrice);
+  
+    const increase = () =>{
+        if(num < props.selectObj.proOptionObjTmp.detailAmount){
+            setNum(num+1);
+        }else{
+            alert("재고가 부족합니다");
+            setNum(props.selectObj.proOptionObjTmp.detailAmount);
+        }
+    };
+
+    const decrease = () =>{
+        if(num < 2){
+            alert("갯수는 1개부터 가능합니다");
+            setNum(1);
+        }   
+        else{
+        setNum(num-1);
+        } 
+    };
+    
+      return (
+          <>  
+        <SelectTable>
+            <SelectTr >
+                <OptionTd>
+                {props.selectObj.detailTitle}<br></br>
+                - 사이즈 : {props.selectObj.proOptionObjTmp.detailSize} 색상 : {props.selectObj.proOptionObjTmp.detailColor}
+                </OptionTd>
+                <CountTd>
+                    <CountSpan >
+                        <CountInput type = "text" value={num} readonly/>
+                        <img src='/assets/btn_count_up.gif' onClick={increase} style={{position:"absolute",left:"28px",top:"-1px",lineHeight:"18px",verticalAlign:"middle"}}/>
+                        <img src='/assets/btn_count_down.gif' onClick={decrease} style={{position:"absolute",left:"28px",bottom:"0",top:"auto"}}/>
+                    </CountSpan>
+                </CountTd>
+                <SelectPrice>
+                {price * num}원
+                </SelectPrice>
+                </SelectTr>
+        </SelectTable>
+
+                {/* //총 갯수 표시 */}
+                <Totalprice>
+                    TOTAL : {num}개
+                </Totalprice>
+                <Actionarea>
+                    <Actionarea2>
+                    
+                        {/* db에 상품명, 판매가, 사이즈, 컬러, 수량 (누가샀는지 session에 존재) 보내줘  결제창으로*/}
+                        <Buynow>
+                            BUY IT NOW
+                        </Buynow>
+                        <div style={{display: "flex", flexdirection: "column"}}>
+                        <Buynow2>
+                            ADD TO CART
+                        </Buynow2>
+                        <Buynow3>
+                            WISH LIST
+                        </Buynow3>
+                        </div>
+                    </Actionarea2>
+        </Actionarea>
+    </>  
+    )
+  }
+
+
+
 
 
   //메인 상품 디테일==========================
 function Product(){
 
-    const[datas, setDatas] = useState({}); // 해당 상품 객체를 집어넣는다.
-
-리액트    state
+    const[datas, setDatas] = useState({}); // 모든 상품갹체를 집어넣는다.
     //선택한 사이즈
     const[selectSize, setSelectSize] = useState("사이즈를 선택해주세요"); //사이즈 버튼 클릭시 최신화된다.
-    const [selectColor, setSelectColor] = useState(""); //사이즈와 색상이 선택되면 넘겨줄 객체가 들어간다.
+    const [detailOptionBox, setDetailOptionBox] = useState(""); //사이즈와 색상이 선택되면 넘겨줄 객체가 들어간다.
     //list로 객체들을 전부 상세로 보여줘도 좋지만 한 페이지에서 한 상품만 구매할 수 있게 만드는것도 방법이다.
     const [proTitle, setProTitle] = useState("");   // 상품명
-    const [proPrice, setProPrice] = useState("");  //가격
-    const [buyPrice, setBuyPrice] = useState(""); //구매가격이랑 proPrice랑 곱해서 buyprice에 넣는다 맨 밑에서 사용
-    const [buyTotal, setBuyTotal] = useState("");
-    const [objList, setObjList] = useState([]); //리스트 집어넣는곳
 
-        //사이즈 버튼 클릭시 size값을 클릭한것으로 바꿔주기
+
+        //사이즈 버튼 클릭시 그에 맞는 색상 띄워주기
         const handleSelect = (e) => {
-            console.log("select size : " + e);
+            console.log("이이이이", e)
             return setSelectSize(e)
         }
-        const data = useNavigate();
-        //원하는 객체를 받아와서 사용  
-        const onClickBuy = async () =>{
-            //obj.proOptionObjTmp.detailAmount = num;
-            //console.log(obj);
-            if(sessionStorage.getItem('id') === null){
-                window.location.href = "/member/login";
-            }
-            // 일단 한가지 상품만
-            console.log(objList);
-            if(objList.length == 0){
-                alert("상품을 선택해주세요.");
-                return;
-            }
-            const cart = {
-                product: [],
-            };
-            cart.userID = sessionStorage.getItem('id');
-            cart.proName = objList[0].proName;
-            for(var i = 0; i < objList.length; i++){
-                const obj = {};
-                obj.proSize = objList[i].proSize;
-                obj.proColor = objList[i].proColor;
-                obj.proAmount = objList[i].buyCount;
-                cart.product.push(obj);
-            }
-            // cart.product = {};
-            // cart.product.proName = obj.detailTitle;
-            // cart.product.detailSize = obj.proOptionObjTmp.detailSize;
-            // cart.product.color = obj.proOptionObjTmp.detailColor;
-            // cart.product.quan = num;
-            console.log("cartObj:  ", cart)
-            await axios.post(`http://localhost:4000/product/${objList[0].proId}`, cart)
-            .then((response) => {
-                if(response.data == "fail"){
-                    alert("DB Error.");
-                }else if(response.data == "success"){
-                    var basket = window.confirm("장바구니로 이동하시겠습니까?");
-                    if(basket){
-                        window.location.href = "/order/basket";
-                    }
-                }
-            }); 
-            // data('/order/basket', { state: {obj} });
-        }
 
-        // 묶어서 객체화 하기 → 리스트에 순차적으러 집어 넣어 (상품명, 상품id, 사이즈, 색상, 상품 갯수, 상품 가격)
-        const handleDetail = (proName, proId, proColor,    proSize,   proAmount  ,buyCount) => {
-            
-            setBuyTotal(Number(buyTotal) + 1);
-            setBuyPrice(buyPrice + Number(proPrice))
+        //사용자가 모두 선택했을때
+        const handleDetail = (detailTitle, param, detailSize, detailColor,detailAmount, detailPrice) => {
             //선택 사이즈 선택 색상
-            console.log("select color : "+proName);
-            console.log("select proId : "+proId);
-            console.log("select proColor : "+proColor);
-            console.log("select proSize : "+proSize);
-            console.log("select proAmount : "+proAmount);
-            console.log("select buyCount : "+buyCount);
+            // console.log(detailSize); 
+            // console.log(detailColor);
+            // console.log(detailAmount);
+            // console.log(detailPrice);
 
-            var objecting = {proName, proId, proColor, proSize, proAmount , buyCount};            
-            
-            let temp = objList;
+            //{상품이름 :{사이즈, 색상, 갯수} }
+            var proOptionObjTmp = {detailSize, detailColor,detailAmount, detailPrice};
+            var proOptionObj = {detailTitle, param, proOptionObjTmp};
+            console.log(proOptionObj)
 
-            if(objList.length ===0){
-                temp.push(objecting);
-                setObjList(temp);
-                console.log(objList);
-                return setSelectSize("");
-
-            } else{
-                for(var i=0; i<objList.length ;i++ ){
-                    if(objList[i].proColor === objecting.proColor && objList[i].proSize === objecting.proSize){
-                        alert("중복된 값이 있습니다.");
-                        return setSelectSize("");
-                    }
-                }
-                temp.push(objecting);
-                setObjList(temp);
-                console.log(objList);
-                return setSelectSize("");
-            }
-        }
-
-
-        //수량 변화시 함수 실행
-        const changeNumber=(e, size, color)=>{
-
-            if(e.value > 100){
-                return alert("100보다 작은 수를 고르세요...");
-            }
-             if(e.value < 0){
-                return alert("0보다 큰 수를 고르세요...");
-            }
-            //사이즈와 컬러가 맞는 객체에 최신화해준다.
-            for(var i = 0; i < objList.length; i++){
-                if(objList[i].proSize == size && objList[i].proColor == color){
-                    objList[i].buyCount = e.value;
-                }
-            }
-
-            //숫자가 변할때마다 전체 불러와서 총합 state 최신화
-            var temp=0;
-            for(var i = 0; i < objList.length; i++){
-                temp = Number(temp) + Number(objList[i].buyCount);
-                
-            }
-            setBuyTotal(temp)
-            var tmp = proPrice * buyTotal
-            setBuyPrice(tmp);
-
-
+            return setDetailOptionBox(proOptionObj);
         }
 
 
@@ -146,7 +128,7 @@ function Product(){
             try{
                 const obj = {};
                 obj.id = param;
-                // console.log("url: ", param)
+                console.log("url: ", param)
                 await axios.post(`http://localhost:4000/product/${param}`, obj)
                 .then((response) => {
                     if(response.data == "fail"){
@@ -156,8 +138,7 @@ function Product(){
                         const data = response.data;
                         setDatas(data);
                         setProTitle(data.proName);
-                        setProPrice(data.proPrice.price)
-                        console.log("db로부터 받아온 데이터: ", data, "   이름: ", data.proName);
+                        console.log("데이터: ", data, "   이름: ", data.proName);
                     }
                 }); 
 
@@ -170,10 +151,31 @@ function Product(){
 
     useEffect(()=>{
         getData(param);
+
+        
     }, []);//처음 한번만 실행 없으면 계속실행함
 
     // console.log( "product페이지에서 받은 url 데이터는 "+useParams().id); //id값을 받아왔다.
     const param = useParams().id;
+
+
+    
+    var size = []; //상품의 크기값이 들어간다
+    var colorAmountObj = []; // 사이즈에대한 색상과 컬러값이 들어간다.
+    var detailOption = []; //디테일에 값들이 들어간다.
+    
+    
+    // const getProductDetail = async (id) => {
+    //     try {
+    //         console.log("가연스 확인 : ", id);
+    //         let response = await axios.get(`http://localhost:4000/product/${param}`);
+    //         const data = response.data;
+    //         console.log("가연스 데이타 확인 : ", data);
+
+    //     } catch (err) {
+    //         console.log()
+    //     }
+    // }
 
         return(
             <Contents>
@@ -188,15 +190,37 @@ function Product(){
                     ? <img style={{maxWidth:"100"}} src={"/" + datas.proImg[0]}/>
                     : null
                 }
+                {/* {datas.map(function(_id,i) {
+                    if(datas[i]._id===param){
+                        const proImg = `/${datas[i].proImg[0]}`;
+                        return(
+                        <img style={{maxWidth:"100"}} src={proImg}/>
+                        )   
+                    }
+                    })} */}
                 </Imgcontent>
                 </ImgArea>
                 <Info>  
+
+
                     {/* 파라미터로 상품이름 가지고오기 */}
                     {
                         datas.proName != null
                         ? <InfoTitle>{datas.proName}</InfoTitle>
                         : null
                     }
+                    {/* {
+                        datas.map(function(_id, i ){
+                            if(datas[i]._id===param){
+                                const meterTitle = datas[i].proName;
+                                return <InfoTitle>{meterTitle}</InfoTitle>
+                                
+                            }
+                        })
+                    } */}
+
+                {/* <InfoTitle>{proTitle}</InfoTitle> */}
+                       
                 
                 <table>
                     <tr>
@@ -214,6 +238,18 @@ function Product(){
                                 </td>
                             : null
                         }
+                        {/* {   //item price값 가져오기
+                            datas.map(function(_id,i) {
+                                if(datas[i].proName===param){
+                                    return  (<td  style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px"}}>
+                                        {datas[i].proPrice.price}
+                                        </td>)
+                                }
+                                })
+                        } */}
+                        {/* <td  style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px"}}>
+                            25000원
+                        </td> */}
                         
                     </tr>
                     <tr>
@@ -222,6 +258,9 @@ function Product(){
                         할인 판매가
                         </th>
                         </InfoDetailth>
+                        {/* <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color: "#B80000"}}>
+                        <strong>0 원</strong>
+                        </td> */}
                         {
                             datas.proName != null
                             ? <td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color: "#B80000"}}>
@@ -229,6 +268,15 @@ function Product(){
                             </td>
                             : null
                         }
+                        {/* {   //item sale price값 가져오기
+                            datas.map(function(_id,i) {
+                                if(datas[i].proName===param){
+                                    return  (<td style={{padding: "8px 0", verticalAlign: "middle", textalign: "left",fontSize:"12px",color: "#B80000"}}>
+                                        {datas[i].proPrice.profit}
+                                        </td>)
+                                }
+                                })
+                        } */}
 
                         
                     </tr>
@@ -259,15 +307,52 @@ function Product(){
                         {
                             datas.proName != null
                             ? (
-                                datas.proSize[0].proColor.map(data => {  //색별로 버튼을 만들어야한기때문에 map을 돌린다.
-                                    // var tmpSize = data.size //사이즈객체부터 임시 저장 tmpSize
-
-                                    return(<Buttonbutton onClick={(e) => handleSelect(e.target.value)} value={data.size}>{data.size}</Buttonbutton>); //클릭이벤트로 함수 싦행해서 클릭한 sizevalue 넘기기
+                                datas.proSize[0].proColor.map(data => {
+                                    var tmpSize = data.size
+                                    data.colorAmout.map(d => {
+                                        var tmpColor =  d.color;
+                                        var tmpAmount = d.amout;
+                                        var tmpPrice = datas.proPrice.price;
+                                        var objectBox = {tmpColor,tmpAmount, tmpPrice};
+                                        var objectLastBox = {tmpSize,objectBox}
+                                        colorAmountObj.push(objectLastBox);//우리가 사용할 Object를 얻었다.
+                                    })
+                                    return(<Buttonbutton onClick={(e) => handleSelect(e.target.value)} value={data.size}>{data.size}</Buttonbutton>);
                                 })
                             )
                             : null
                         }
-                      
+                        {/* {datas && 
+                            datas.map(function(_id, i) {
+                                if(datas[i].proName===param)  {    //datas id값을 id에 넣기
+                                    for(var j = 0;j<datas[i].proSize[0].proColor.length;j++){ // 
+
+                                        var tmpSize =  datas[i].proSize[0].proColor[j].size
+
+                                        for(var t=0; t<datas[i].proSize[0].proColor[j].colorAmout.length; t++){
+
+                                            var tmpColor =  datas[i].proSize[0].proColor[j].colorAmout[t].color;
+                                            var tmpAmount = datas[i].proSize[0].proColor[j].colorAmout[t].amout;
+                                            var tmpPrice = datas[i].proPrice.price;
+                                            var objectBox = {tmpColor,tmpAmount, tmpPrice};
+                                            var objectLastBox = {tmpSize,objectBox}
+                                            colorAmountObj.push(objectLastBox);//우리가 사용할 Object를 얻었다.
+                                            // console.log(colorAmountObj)
+                                            // colorAmountObj.asign(objectLastBox); 
+                                        }
+                                        size.push(<Buttonbutton onClick={(e) => handleSelect(e.target.value)} value={datas[i].proSize[0].proColor[j].size}>{datas[i].proSize[0].proColor[j].size}</Buttonbutton>); //리턴할것을 list에 집어 넣는다.
+                                        // console.log(colorAmountObj[0].objectBox.tmpColor); 블랙
+                                    }
+                                    for(var k = 0 ; k<size.length;k++){
+                                        // console.log(size.length)
+                                        return size
+                                    }
+                                }
+                            })
+                        } */}
+                            
+
+
                         </td>
                     </tr>
                     <tr>
@@ -276,109 +361,41 @@ function Product(){
                         {selectSize && <>
                             <th></th>
                             {
-                                datas != null
-                                ? (
-                                    //옵션 오브젝트에 쉽게 다가가기윈한 변수
-                                    
-                                        datas.proSize != null
-                                        ? datas.proSize[0].proColor.map(function(_id,i) {
-                                            console.log()
-                                                if(selectSize === datas.proSize[0].proColor[i].size){ //만약 선택한사이즈와 colorAmountObj[i]값이 같다면
-                                                    return(
-                                                        <>
-                                                            {
-                                                                datas.proSize[0].proColor[i].colorAmout.map(function(_id,j){
-                                                                    var  buyCount =1; //각각의 수량 조정을 위해서
-                                                                    return(
-                                                                        datas.proSize[0].proColor[i].colorAmout[j].amout == 0
-                                                                        ? <Buttonbutton
-                                                                        value={datas.proSize[0].proColor[i].colorAmout[j].color} >
-                                                                        {datas.proSize[0].proColor[i].colorAmout[j].color} ({"품절"})
-                                                                        </Buttonbutton>
-                                                                        : <Buttonbutton
-                                                                        value={datas.proSize[0].proColor[i].colorAmout[j].color} 
-                                                                        onClick={(e) => handleDetail(proTitle,   param,   e.target.value,    datas.proSize[0].proColor[i].size,    datas.proSize[0].proColor[i].colorAmout[j].amout,  buyCount )} >
-                                                                        {datas.proSize[0].proColor[i].colorAmout[j].color} ({datas.proSize[0].proColor[i].colorAmout[j].amout})
-                                                                        </Buttonbutton>
-                                                                    )
-                                                                    }
-                                                                )
-                                                            }
-                                                        </>
-                                                    );
+                                colorAmountObj.map(function(_id,i) {
+                                    console.log("selectSize: ", selectSize, "   colorAmountObj: ", colorAmountObj)
+                                    if(selectSize === colorAmountObj[i].tmpSize){
+                                        return(
+                                            <>
+                                                {
+                                                    colorAmountObj[i].objectBox.tmpAmount == 0
+                                                    ? <Buttonbutton
+                                                    value={colorAmountObj[i].objectBox.tmpColor} >
+                                                    {colorAmountObj[i].objectBox.tmpColor} ({"품절"})
+                                                    </Buttonbutton>
+                                                    : <Buttonbutton
+                                                    value={colorAmountObj[i].objectBox.tmpColor} 
+                                                    onClick={(e) => handleDetail(proTitle, param,  colorAmountObj[i].tmpSize,    e.target.value,    colorAmountObj[i].objectBox.tmpAmount,    colorAmountObj[i].objectBox.tmpPrice )} >
+                                                    {colorAmountObj[i].objectBox.tmpColor} ({colorAmountObj[i].objectBox.tmpAmount})
+                                                    </Buttonbutton>
                                                 }
-                                            })
-                                        : null
-                                    
-                                )
-                                : null
+                                            </>
+                                        );
+                                    }
+                                })
                             }
                             </>
                         }
                         </tr>
                         </table>
-
                     {/* 컬러 선택시 선택 옵션 창 뜨기 리스트에있는 맵 돌려*/}
-
-                    {   objList &&               
-                            objList.slice(0).reverse().map((_id, i) =>{
-                                return(<>
-                                <hr/>
-                                    <SelectTable>
-                                    <SelectTr >
-                                        <OptionTd >
-                                        [{proTitle}]<br></br>
-                                        <div> - 사이즈 :<strong>{objList[i].proSize}</strong></div>
-                                        <div> - 색상 : <strong>{objList[i].proColor}</strong></div>
-                                        </OptionTd>
-                                        <CountTd>
-                                            <CountSpan >
-                                                <CountInput type = "number" defaultValue={1} name={"buyCount"} min={1} max={100} onChange={(e)=>changeNumber(e.currentTarget, objList[i].proSize, objList[i].proColor)} 
-                                                    ></CountInput>
-                                                {/* <img src='/assets/btn_count_up.gif' onClick={increase} style={{position:"absolute",left:"28px",top:"-1px",lineHeight:"18px",verticalAlign:"middle"}}/>
-                                                <img src='/assets/btn_count_down.gif' onClick={decrease} style={{position:"absolute",left:"28px",bottom:"0",top:"auto"}}/> */}
-                                            개</CountSpan>
-                                        </CountTd>
-                                        <SelectPrice>
-                                        </SelectPrice>
-                                        </SelectTr>
-                                        
-                                    </SelectTable>
-                                    </>
-                                )
-                            })
-                    }
-
-
-
-
-
-                         {/* //총 갯수 표시 */}
-                    <Totalprice>
-                        TOTAL : {buyTotal}개<br/>
-                        가격 : {buyTotal * proPrice}원
-                    </Totalprice>
-                    <Actionarea>
-                        <Actionarea2>
-
-                            {/* db에 상품명, 판매가, 사이즈, 컬러, 수량 (누가샀는지 session에 존재) 보내줘  결제창으로*/}
-                            <Buynow>
-                                BUY IT NOW
-                            </Buynow>
-                            <div style={{display: "flex", flexdirection: "column"}}>
-                            <Buynow2 onClick={(e) => onClickBuy()}>
-                                ADD TO CART
-                            </Buynow2>
-                            <Buynow3>
-                                WISH LIST
-                            </Buynow3>
-                            </div>
-                        </Actionarea2>
-                    </Actionarea>
+                    {
+                        detailOptionBox && 
+                            <CreateOption selectObj={detailOptionBox}></CreateOption>
+                        }
                 </Info>
                 </ProductDetail>
+                <PostComponent proId={param}></PostComponent>
             </Contents>         
-            
         );
 };
 export default Product;
@@ -585,19 +602,8 @@ const OptionTd = styled.td`
     vertical-align: middle;
     font-weight: bold;
     line-height: 21px;
-    font-size:14px;
+    font-size: 12px;
     width: 220px;
-    
-    div {
-        color: gray;
-        font-size: 12px;
-
-
-        strong{
-            font-size: 14px;
-            /* color: black; */
-        }
-    }
 
 `
 const CountTd = styled.td`
@@ -617,7 +623,7 @@ const CountSpan = styled.span`
 `
 
 const CountInput = styled.input`
-    width: 50px;
+    width: 22px;
     padding: 0 2px 0 3px;
     border: 1px solid #d4d8d9;
     border-radius: 3px 0 0 3px;

@@ -33,8 +33,9 @@ import Basket from "./pages/order/Basket";
 import Order from "./pages/myshop/Order";
 import MyShop from "./pages/myshop/MyShop";
 import Product from "./pages/product/product.js";
+import UpdateDetail from './pages/admin/UpdateDetail.js';
+import PostProDetail from './pages/admin/PostProDetail.js';
 import Modify from './pages/member/Modify.js';
-import Review from './components/Review.js';
 
 function App() {
   // 로그인 상태 관리
@@ -66,7 +67,6 @@ function App() {
               <Route path="/myshop/Order" element={<Order />} />
               <Route path="/myshop/MyShop" element={<MyShop />} />
               <Route path="/product/:id" element={<Product />} /> 
-              <Route path="/product/:id/review" element={<Review />} /> 
 
               <Route path="/test" element={<Test/>}/>
 
@@ -79,6 +79,8 @@ function App() {
               <Route path="/admin/:id/stocks" element={<Stocks/>}></Route>
               <Route path="/admin/:id/update" element={<Update url={"update"}/>}></Route>
               <Route path="/admin/:id/update2" element={<Update url={"update2"}/>}></Route>
+              <Route path="/admin/:id/detailUpdate" element={<UpdateDetail />}></Route>
+              <Route path="/admin/:id/postProDetail" element={<PostProDetail />}></Route>
           </Routes>
           <Botbox/>
       </Router>

@@ -6,7 +6,7 @@ import { postRegProductName, postRegColor, postRegMat, getRegSize,
 
 	getRegProduct, getRegMat, getStocks, postStocks, getRegProductName,
 	getAdmin, postAdmin, getUpdate, postUpdate, getUpdate2, postUpdate2, 
-	getUpdate3, postUpdate3, getData
+	getUpdate3, postUpdate3, getData, postProDetail
 
 } from "../controllers/Admin/adminRegiserProductController.js";
 const adminRouter = express.Router();
@@ -45,6 +45,6 @@ adminRouter.route("/:id/update").get(getUpdate).post(postUpdate);
 adminRouter.route("/:id/update2").get(getUpdate2).post(postUpdate2);
 adminRouter.route("/:id/update3").get(getUpdate3).post(postUpdate3);
 adminRouter.route("/:id/detailUpdate").post(getData);
-
+adminRouter.route("/:id/postProDetail").post(postProDetail);
 
 export default adminRouter;

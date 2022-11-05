@@ -47,8 +47,7 @@ function Join() {
         }
 
         console.log('Success:', e);
-
-        onSubmitHandler(e)
+        onSubmitHandler(e);
     };
 
     //유효성 검사
@@ -120,8 +119,6 @@ function Join() {
         await axios.post('http://localhost:4000/member/Join', {
             joinId, joinPw, joinName, joinTel, joinFullAddress, joinBirth
         }).then((res) => {
-            console.log("여기에요");
-            console.log("여기여기 : ", res.data);
             if (res.data) {
                 alert('회원가입에 성공하였습니다');
                 window.location.href = '/member/login';
@@ -130,6 +127,11 @@ function Join() {
             }
         })
     };
+
+
+ 
+
+
 
     //주소 api 변수 및 핸들러들
     const [enroll_company, setEnroll_company] = useState({
@@ -146,6 +148,12 @@ function Join() {
         setPopup(!popup);
     }
 
+
+
+
+
+
+    
     return (
         <Container>
             <Contents>
@@ -328,7 +336,7 @@ let Bigtable = styled.table` //밑테이블 기본 스타일
     border-collapse: collapse;
 `
 
-let Inputinput = styled.input` //인풋텍스트 스타일
+let Inputinput = styled.input.attrs({ maxLength: "2" })` //인풋텍스트 스타일
     height: 26px;
     line-height: 26px;
     padding: 0px 4px;
