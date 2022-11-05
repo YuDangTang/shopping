@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-//아이템 선언
-
 const productSchema = new mongoose.Schema({
     proName: { type: String, required: true, unique: true },
     proKindName: { type: String, required: true },

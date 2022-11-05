@@ -119,38 +119,38 @@ function OrderForm(){
         for(var i = 0; i < datas.length; i++){
             const obj = {};
             obj.size = datas[i].sizeColor.split("/")[0].replace("[", "");
-            obj.sizeColorAmount = [];
+            obj.colorAmount = [];
             const dataObj = {
                 color: datas[i].sizeColor.split("/")[1].replace("]", ""),
-                amount: datas[i].quan
+                quan: datas[i].quan
             };
-            obj.sizeColorAmount.push(dataObj);
+            obj.colorAmount.push(dataObj);
             if(proNameArr.includes(datas[i].proName)){
                 for(var j = 0; j < pro_ID.length; j++){
                     if(pro_ID[j].proName == datas[i].proName){
                         const sizeColorObj = {
                             color: datas[i].sizeColor.split("/")[1].replace("]", ""),
-                            amount: datas[i].quan,
+                            quan: datas[i].quan,
                         };
                         let cnt = 0;
-                        for(var k = 0; k < pro_ID[j].colorSizeAmount.length; k++){
-                            if(pro_ID[j].colorSizeAmount[k].size == obj.size){
-                                pro_ID[j].colorSizeAmount[k].sizeColorAmount.push(sizeColorObj);
+                        for(var k = 0; k < pro_ID[j].cartQuan.length; k++){
+                            if(pro_ID[j].cartQuan[k].size == obj.size){
+                                pro_ID[j].cartQuan[k].colorAmount.push(sizeColorObj);
                                 cnt++;
                             }
                         }
                         if(cnt == 0){
-                            pro_ID[j].colorSizeAmount.push(obj);
+                            pro_ID[j].cartQuan.push(obj);
                         }
                     }
                 }
             }else{
                 const obj1 = {
-                    colorSizeAmount: [],
+                    cartQuan: [],
                 };
                 obj1.proName = datas[i].proName;
                 proNameArr.push(datas[i].proName);
-                obj1.colorSizeAmount.push(obj);
+                obj1.cartQuan.push(obj);
                 pro_ID.push(obj1);
             }
         }
@@ -226,6 +226,7 @@ function OrderForm(){
     const saveDB = async () => {
         console.log("결제 디비에 저장", DBModel);
         DBModel.impID = impID;
+        DBModel.id = datas.id;
         await axios.post(`http://localhost:4000/order/OrderForm`, DBModel )
         .then((response) => {
             if(response.data == "fail"){
@@ -236,6 +237,7 @@ function OrderForm(){
                 setPay("");
                 setImpID("");
                 alert("주문이 완료되었습니다.");
+                window.location.href="/order/basket";
             }
         }); 
     }

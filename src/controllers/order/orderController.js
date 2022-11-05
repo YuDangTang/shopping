@@ -3,10 +3,13 @@ import Cart from "../../models/Cart.js";
 import Product from "../../models/Product.js";
 import Order from "../../models/Order.js";
 import Payment from "../../models/Payment.js";
+import { cartSplice, cartProSplice, cartAmountSplice } from "./orderSplice.js";
+
 export const getBasket = (req, res) => {
     console.log("hI?");
     console.log(session.user);
 }
+
 export const postBasket = async(req, res) => {
     if(req.body.id != null){
         const user = req.body.id;
@@ -25,25 +28,50 @@ export const postBasket = async(req, res) => {
             return res.send(data);
         }
     }else if(req.body.deteId != null){
-        try{
-            // req.body.deteId
-            const del = await Cart.findOne({userID: req.body.userId});
-            for(var i = 0; i < del.products.length; i++){
-                if(del.products[i].proName == req.body.proName){
-                    for(var j = 0; j < del.products[i].cartQuan.length; j++){
-                        for(var k = 0; k < del.products[i].cartQuan[j].colorAmount.length; k++){
-                            if(del.products[i].cartQuan[j].colorAmount[k].id == req.body.deteId){
-                                del.products[i].cartQuan[j].colorAmount.splice(i, 1);
-                                try{
-                                    await Cart.updateOne({userID: req.body.userId}, {$set: {products: del.products}})
-                                    return res.send("success");
-                                }catch(error){console.log(error); return res.send("fail")}
-                            }
+        const del = await Cart.findOne({userID: req.body.userId});
+        outer: for(var i = 0; i < del.products.length; i++){
+            if(del.products[i].proName == req.body.proName){
+                for(var j = 0; j < del.products[i].cartQuan.length; j++){
+                    for(var k = 0; k < del.products[i].cartQuan[j].colorAmount.length; k++){
+                        if(del.products[i].cartQuan[j].colorAmount[k].id == req.body.deteId){
+                            console.log("지울거: ", del.products[i].cartQuan[j].colorAmount[k]);
+                            del.products[i].cartQuan[j].colorAmount.splice(k, 1);
+                            try{
+                                await Cart.updateOne({userID: req.body.userId}, 
+                                    {$set: {products: del.products}});
+                            }catch(error){console.log(error); return res.send("fail")}
+                            break outer;
                         }
-                    } 
+                    }
+                } 
+            }
+        }
+        const sizeArr = [];
+        const nameArr = [];
+        const cart = await Cart.findOne({userID: req.body.userId});
+        for(var i = 0; i < cart.products.length; i++){
+            for(var j = 0; j < cart.products[i].cartQuan.length; j++){
+                if(cart.products[i].cartQuan[j].colorAmount.length == 0){
+                    sizeArr.push(cart.products[i].cartQuan[j]);
                 }
             }
-        }catch(error){console.log(error); return res.send("fail")}
+        }
+        console.log("sizeArr : ", sizeArr);
+        
+        for(var i = 0; i < sizeArr.length; i++){
+            await cartSplice(req.body.userId, sizeArr[i]);
+        }
+        const cart3 = await Cart.findOne({userID: req.body.userId});
+        for(var i = 0; i < cart3.products.length; i++){
+            if(cart3.products[i].cartQuan.length == 0){
+                nameArr.push(cart3.products[i]);
+            }
+        }
+        
+        for(var i = 0; i < nameArr.length; i++){
+            await cartProSplice(req.body.userId, nameArr[i]);
+        }
+        return res.send("success");
     }else if(req.body.updateId != null){
         const data = req.body;
         try{
@@ -88,10 +116,6 @@ export const postOrderForm = async(req, res) => {
     }
     else if(req.body.buyer_name != null){
         const data = req.body;
-        // const cart = await Cart.findOne({userID: data.userID});
-        // for(var i = 0; i < cart.products.length; i++){
-
-        // }
         const find = await Payment.findOne({ imp_uid : data.impID});
         console.log(data.impID);
         console.log(find);
@@ -110,68 +134,47 @@ export const postOrderForm = async(req, res) => {
                 })
                 const cart = await Cart.findOne({userID: data.userID});
                 // 결제 후 장바구니 비우기 필요
-                for(var i = 0; i < cart.products.length; i++){
-                    for(var j = 0; j < data.pro_ID.length; j++){
-                        console.log("------------------------------------------------")
-                        console.log(cart.products[i].proName, data.pro_ID[j].proName)
-                        if(cart.products[i].proName == data.pro_ID[j].proName){
-                            let idx = 0;
-                            for(var k = 0; k < data.pro_ID[j].colorSizeAmount.length; k++){
-                                console.log(cart.products[i].cartQuan[idx].size, data.pro_ID[j].colorSizeAmount[k].size)
-                                if(cart.products[i].cartQuan[idx].size == data.pro_ID[j].colorSizeAmount[k].size){
-                                    // let idx2 = 0;
-                                    let idx2 = 0;
-                                    if(cart.products[i].cartQuan[idx].colorAmount[idx2].color != null){
-                                        for(var q = 0; q < data.pro_ID[j].colorSizeAmount[k].sizeColorAmount.length; q++){
-                                            console.log(cart.products[i].cartQuan[idx].colorAmount[k].color, 
-                                                data.pro_ID[j].colorSizeAmount[k].sizeColorAmount[q].color)
-                                            if(cart.products[i].cartQuan[idx].colorAmount[idx2].color
-                                                == data.pro_ID[j].colorSizeAmount[k].sizeColorAmount[q].color){
-                                                    cart.products[i].cartQuan[idx].colorAmount.splice(idx2, 1);
-                                            }
-                                        }
-                                    }
-                                    idx2++;
-                                }
-                            } 
-                            idx++;
-                        } 
-                    }
-                }
-                const sizeArr = [];
-                const nameArr = [];
+                let x = 0;
+                let y = 0;
+                const sizeColorArr = [];
                 for(var i = 0; i < cart.products.length; i++){
                     for(var j = 0; j < cart.products[i].cartQuan.length; j++){
-                        if(cart.products[i].cartQuan[j].colorAmount.length == 0){
-                            const arr = [];
-                            arr.push(i); arr.push(j);
-                            sizeArr.push(arr);
+                        for(var k = 0; k < cart.products[i].cartQuan[j].colorAmount.length; k++){
+                            if(x == data.id[y]){
+                                sizeColorArr.push(cart.products[i].cartQuan[j].colorAmount[k]);
+                                y++;
+                            }
+                            x++;
                         }
                     }
                 }
-                let size = 0;
-                let name = 0;
+                for(var i = 0; i < sizeColorArr.length; i++){
+                    await cartAmountSplice(data.userID, sizeColorArr[i]);
+                }
+                const sizeArr = [];
+                const nameArr = [];
+                const cart2 = await Cart.findOne({userID: data.userID});
+                for(var i = 0; i < cart2.products.length; i++){
+                    for(var j = 0; j < cart2.products[i].cartQuan.length; j++){
+                        if(cart2.products[i].cartQuan[j].colorAmount.length == 0){
+                            sizeArr.push(cart2.products[i].cartQuan[j]);
+                        }
+                    }
+                }
+                
                 for(var i = 0; i < sizeArr.length; i++){
-                    for(var j = 0; j < sizeArr[i].length ; j++){
-                        cart.products[sizeArr[j][0]].cartQuan.splice([sizeArr[j][1]-size], 1);
-                        size++;
+                    await cartSplice(data.userID, sizeArr[i]);
+                }
+                const cart3 = await Cart.findOne({userID: data.userID});
+                for(var i = 0; i < cart3.products.length; i++){
+                    if(cart3.products[i].cartQuan.length == 0){
+                        nameArr.push(cart3.products[i]);
                     }
                 }
-                for(var i = 0; i < cart.products.length; i++){
-                    console.log(cart.products[i].cartQuan.length)
-                    if(cart.products[i].cartQuan.length == 0){
-                        nameArr.push(i)
-                    }
-                }
+                
                 for(var i = 0; i < nameArr.length; i++){
-                    cart.products.splice(nameArr[i]-name, 1);
-                    name++;
+                    await cartProSplice(data.userID, nameArr[i]);
                 }
-                try{
-                    const updateData = await Cart.updateOne({userID: data.userID}, {$set: cart});
-                    if(!updateData){console.log("업데이트 실패"); return res.send("fail");}
-                    return res.send("success");
-                }catch(error){console.log(error); return res.send("fail");}
                 return res.send("success");
             }catch(error){console.log(error); return res.send("fail");}
         }

@@ -11,7 +11,6 @@ function Basket(){
     const [checkItems, setCheckItems] = useState([]);
     const [datas, setData] = useState([]);
     const [totalProPrice, setTotalPrice] = useState(0);
-    console.log("체크한 데이터 ;" ,datas);
      // 체크박스 단일 선택
      const handleSingleCheck = (target, id, proName, sizeColor, quan, price, totTalPrice) => {
         const checkbox = document.getElementsByName("select");
@@ -29,12 +28,12 @@ function Basket(){
         console.log(target.checked);
        if (target.checked) {
          // 단일 선택 시 체크된 아이템을 배열에 추가
-         setCheckItems([...checkItems, id]);
+         setCheckItems([...checkItems, Number(id)]);
          setData([...datas, obj]);
          setTotalPrice(totalProPrice+Number(totTalPrice));
        } else {
          // 단일 선택 해제 시 체크된 아이템을 제외한 배열 (필터)
-         setCheckItems(checkItems.filter((el) => el !== id));
+         setCheckItems(checkItems.filter((el) => el !== Number(id)));
          for(var i = 0; i < datas.length; i++){
             if(obj.proName == datas[i].proName && obj.sizeColor == datas[i].sizeColor){
                 datas.splice(i, 1);
@@ -51,9 +50,12 @@ function Basket(){
     const handleAllCheck = (checked) => {
         if(checked){
             const checkbox = document.getElementsByName("select");
+            const checkIdAarr = [];
             for(var i = 0; i < checkbox.length; i++){
                 checkbox[i].checked = true;
+                checkIdAarr.push(i);
             }
+            setCheckItems(checkIdAarr);
             const proName = document.getElementsByName("proName");
             const proSizeColor = document.getElementsByName("proSizeColor");
             const proPrice = document.getElementsByName("proPrice");
@@ -80,6 +82,7 @@ function Basket(){
                 checkbox[i].checked = false;
             }
             setData([]);
+            setCheckItems([]);
             setTotalPrice(0);
         }
     }
@@ -111,7 +114,7 @@ function Basket(){
         const obj = {};
         const updateAmount = e.target.previousSibling;
         console.log(updateAmount)
-        
+        checkItems.sort();
         obj.updateId = id;
         obj.size = size;
         obj.color = color;
@@ -151,6 +154,8 @@ function Basket(){
     const onClickSubmit = (e) => {
         e.preventDefault(); // 기본동작 막기
         const obj = datas;
+        checkItems.sort();
+        obj.id = checkItems;
         if(datas.length == 0){
             alert("상품을 선택해주세요.");
             return;
@@ -241,7 +246,7 @@ function Basket(){
                                                                 <input type={'checkbox'}  name={`select`} id={num}
                                                                 onChange={(e) => 
                                                                     handleSingleCheck(
-                                                                        e.currentTarget, num, bas.productInfo.proName, "["+cartQuan.size+"/"+pro.color+"]", pro.quan, bas.productInfo.proPrice.price,
+                                                                        e.currentTarget, e.currentTarget.id, bas.productInfo.proName, "["+cartQuan.size+"/"+pro.color+"]", pro.quan, bas.productInfo.proPrice.price,
                                                                         bas.productInfo.proPrice.price*pro.quan)}
                                                                 ></input>
                                                             </InfoTd2>

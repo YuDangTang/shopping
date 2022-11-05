@@ -4,11 +4,11 @@ const orderSchema = new mongoose.Schema({
     pay_ID : {type: String, required: true },
     pro_ID : [{
         proName: { type: String, required: true },
-        colorSizeAmount: [{
+        cartQuan: [{
             size: { type: String, required: true },
-            sizeColorAmount: [{
+            colorAmount: [{
                 color: { type: String, required: true },
-                amount: { type: String, required: true },
+                quan: { type: String, required: true },
             }]
         }]
     }],
