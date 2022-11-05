@@ -5,6 +5,7 @@ import Product from "../../models/Product.js";
 import Top from '../../models/size/Top.js';
 import Bottom from '../../models/size/Bottom.js';
 import Shoes from '../../models/size/Shoes.js';
+import ProductDetail from '../../models/ProductDetail.js'
 
 
 export const getAdmin = async(req, res) => {
@@ -286,7 +287,6 @@ export const getData = async (req, res) => {
                 const size = await Shoes.findOne({ "_id": pro.proSize[0].proSize_ID })
                 obj.product = pro;
                 obj.size = size;
-                // console.log("양시팔", obj);
                 return res.send(obj);
             }
         } else if (detail[0] != null) {
@@ -331,6 +331,42 @@ export const getData = async (req, res) => {
                         await Shoes.updateOne({ _id: detail[i].id }, { $set: search });
                     }
                 } catch (error) { console.log(error); }
+                return res.send("success");
+            }
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+export const postProDetail = async (req, res) => {
+    try {
+        const params = req.body.params;
+        const pro_idIn = req.body.pro_ID;
+        const contentIn = req.body.post_content;
+        const contentId = req.body.post_contentID;
+        if (params != null) {
+            const contentData = await ProductDetail.findOne({ "pro_ID": params.id });
+            if (contentData === null) {
+                return res.send("fail");
+            } else {
+                return res.send(contentData);
+            }
+        }
+        if (pro_idIn != null) {
+            const find = await ProductDetail.findOne({ "pro_ID": contentId });
+            if (find.pro_ID === null) {
+                const bool = await ProductDetail.create({
+                    pro_ID: pro_idIn,
+                    content: contentIn
+                });
+                if (bool) {
+                    return res.send("T");
+                }
+                else {
+                    return res.send("F");
+                }
+            } else {
+                await ProductDetail.updateOne({ "pro_ID": contentId }, { "$set": { "content": contentIn } });
                 return res.send("success");
             }
         }

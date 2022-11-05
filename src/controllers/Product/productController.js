@@ -1,5 +1,6 @@
 import Product from "../../models/Product.js";
 import Review from "../../models/Review.js";
+import ProductDetail from "../../models/ProductDetail.js";
 
 export const getProductDetail = async(req, res) => {
     
@@ -50,3 +51,12 @@ export const postProductReview = async(req, res) => {
     //     // userImg:reviewbox.userImg, //유저가 등록한 이미지(null 허용, 얘만 Array)
     // })
 } 
+export const postProBoard = async (req, res) => {
+    const id = req.body.proID;
+    const content = await ProductDetail.findOne({ "pro_ID": id });
+    if (content === null) {
+        return res.send("fail");
+    } else {
+        return res.send(content.content);
+    }
+}

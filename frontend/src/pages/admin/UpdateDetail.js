@@ -16,13 +16,6 @@ function DetailUpdate() {
                     setProduct(pro);
                     setProKindName(pro.proKindName);
                     setSizes(res.data.size.detail);
-
-                    // console.log("컵밥밥 : ", pro.proSize[0].proColor[0].size);
-                    // for (var i = 0; i < pro.proSize[0].proColor.length; i++){
-                    //     console.log(i, pro.proSize[0].proColor[i].size);
-                    //     setSizes(pro.proSize[0].proColor[i].size);
-                    // }
-                    // console.log("사이즈 배열 : ",sizes);
                 });
         }
     };
@@ -115,17 +108,17 @@ function DetailUpdate() {
                 <form onSubmit={onSubmitHandler}>
                     <table border={1} style={{ lineHeight: "2" }}>
                         <tr><td colSpan="2">상품 디테일 수정</td></tr>
-                            {sizes.map(size => {
-                                return (<>
-                                    <tr><td>사이즈</td><td style={{ paddingTop: "10px" }}>{size.size}</td></tr>
-                                    <tr><td>어깨</td><td><input type="text" name="shoulder" defaultValue={size.shoulder || ''} required /></td></tr>
-                                    <tr><td>가슴단면</td><td><input type="text" name="chest" defaultValue={size.chest || ''} required /></td></tr>
-                                    <tr><td>암홀</td><td><input type="text" name="armhole" defaultValue={size.armhole || ''} required /></td></tr>
-                                    <tr><td>팔통단면</td><td><input type="text" name="armholeSide" defaultValue={size.armholeSide || ''} required /></td></tr>
-                                    <tr><td>소매단면</td><td><input type="text" name="sleeveSide" defaultValue={size.sleeveSide || ''} required /></td></tr>
-                                    <tr><td>총기장</td><td><input type="text" name="totalLength" defaultValue={size.totalLength || ''} required /></td></tr>
-                                </>);
-                            })}
+                        {sizes.map(size => {
+                            return (<>
+                                <tr><td>사이즈</td><td style={{ paddingTop: "10px" }}>{size.size}</td></tr>
+                                <tr><td>어깨</td><td><input type="text" name="shoulder" defaultValue={size.shoulder || ''} required /></td></tr>
+                                <tr><td>가슴단면</td><td><input type="text" name="chest" defaultValue={size.chest || ''} required /></td></tr>
+                                <tr><td>암홀</td><td><input type="text" name="armhole" defaultValue={size.armhole || ''} required /></td></tr>
+                                <tr><td>팔통단면</td><td><input type="text" name="armholeSide" defaultValue={size.armholeSide || ''} required /></td></tr>
+                                <tr><td>소매단면</td><td><input type="text" name="sleeveSide" defaultValue={size.sleeveSide || ''} required /></td></tr>
+                                <tr><td>총기장</td><td><input type="text" name="totalLength" defaultValue={size.totalLength || ''} required /></td></tr>
+                            </>);
+                        })}
                     </table>
                     <input type="submit" value="수정" />
                 </form>
@@ -135,11 +128,11 @@ function DetailUpdate() {
         return (
             <>
                 <form onSubmit={onSubmitHandler} >
-                    <table border={1} style={{lineHeight:"2"}}>
+                    <table border={1} style={{ lineHeight: "2" }}>
                         <tr><td colSpan="2">상품 디테일 수정</td></tr>
                         {sizes.map(size => {
                             return (<>
-                                <tr><td>사이즈</td><td style={{paddingTop: "10px"}}>{size.size}</td></tr>
+                                <tr><td>사이즈</td><td style={{ paddingTop: "10px" }}>{size.size}</td></tr>
                                 <tr><td>허리단면</td><td><input type="text" name="waist" defaultValue={size.waist || ''} required /></td></tr>
                                 <tr><td>힙단면</td><td><input type="text" name="hip" defaultValue={size.hip || ''} required /></td></tr>
                                 <tr><td>허벅지단면</td><td><input type="text" name="thigh" defaultValue={size.thigh || ''} required /></td></tr>

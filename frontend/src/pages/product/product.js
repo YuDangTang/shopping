@@ -3,14 +3,13 @@ import React, { Component } from "react";
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 import { useParams, useNavigate } from "react-router-dom" // 1. useParams 라는 기능을 임포트한다.
 import axios from "axios";
-
+import PostComponent from '../../components/PostComponent';
 
   //메인 상품 디테일==========================
 function Product(){
 
     const[datas, setDatas] = useState({}); // 해당 상품 객체를 집어넣는다.
 
-리액트    state
     //선택한 사이즈
     const[selectSize, setSelectSize] = useState("사이즈를 선택해주세요"); //사이즈 버튼 클릭시 최신화된다.
     const [selectColor, setSelectColor] = useState(""); //사이즈와 색상이 선택되면 넘겨줄 객체가 들어간다.
@@ -377,6 +376,7 @@ function Product(){
                     </Actionarea>
                 </Info>
                 </ProductDetail>
+                <PostComponent proId={param}></PostComponent>
             </Contents>         
             
         );
