@@ -94,6 +94,8 @@ function Basket(){
             setBasket(response.data);
         }); 
     };
+
+    
     const onClickDelete = async(cartID, pro, proName) => {
         console.log("나는 카트 아이디: ", cartID, pro);
         const obj = {};

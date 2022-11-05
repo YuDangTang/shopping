@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt'
 import Product from "./models/Product.js";
 import orderRouter from "./routers/orderRouter.js";
 import Cart from "./models/Cart.js";
-
+import Order from "./models/Order.js";
 
 const PORT = 4000;	
 const app = express();
@@ -199,3 +199,24 @@ const Modify = async (req, res) => {
     }
 };
 app.post("/member/Modify", Modify);
+
+
+
+//주문내역 확인하기
+const GetOrderHistory = async (req, res) => {
+    const userkey = req.body.userkey;
+
+    try {
+        const userInfo = await Order.findOne({ "userId": userkey });
+
+        if (userInfo == null) {
+            return res.send("fail");   
+        } else {
+            return res.send(userInfo);
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+};
+app.post("/myshop/Order", GetOrderHistory);

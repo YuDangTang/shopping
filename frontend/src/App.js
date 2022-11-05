@@ -27,6 +27,7 @@ import Main from "./pages/Main.js";
 import Admin from "./pages/admin/Admin.js";
 import Login from"./pages/member/Login";
 import Join from "./pages/member/Join";
+import Modify from "./pages/member/Modify";
 import Basket from "./pages/order/Basket";
 import Order from "./pages/myshop/Order";
 import MyShop from "./pages/myshop/MyShop";
@@ -57,6 +58,7 @@ function App() {
               <Route path="/" element={<Main />} />
               <Route path="/member/login" element={<Login />} />
               <Route path="/member/Join" element={<Join />} />
+              <Route path="/member/Modify" element={<Modify />} />
               <Route path="/order/Basket" element={<Basket />} />
               <Route path="/order/OrderForm" element={<OrderForm />} />
               <Route path="/myshop/Order" element={<Order />} />

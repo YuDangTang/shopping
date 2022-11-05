@@ -20,7 +20,7 @@ function Modify(){
 
     useEffect(()=>{
 
-    const userkey =sessionStorage.getItem('id');
+    const userkey = sessionStorage.getItem('id');
 
     axios.post('http://localhost:4000/member/GetInfo', {userkey})
         .then((res) => {

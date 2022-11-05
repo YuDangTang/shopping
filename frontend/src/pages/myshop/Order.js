@@ -3,15 +3,62 @@ import styled from 'styled-components'; // react에 css 바로 사용 라이브�
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import DateFilterData from "../../components/DateFilterData";
-
+import axios from "axios";
 
 function Order(){
+
+
+
+    async function getData1() {
+        const userkey = {};
+        userkey.id = sessionStorage.getItem('id');
+        console.log("겟데이터 보냄")
+        await axios.post("http://localhost:4000/myshop/Order", userkey)
+        .then((response) => {
+            console.log("난 데이ㅓㅌ: ", response.data);
+        }); 
+    };
+     
+    //조회버튼 클릭시 주문 정보 가져오기
+    const getData2 = async () => {
+        const userkey = {};
+        userkey.id = sessionStorage.getItem('id');
+        console.log("겟데이터 보냄")
+        await axios.post("http://localhost:4000/myshop/Order", userkey)
+        .then((response) => {
+            console.log("난 데이ㅓㅌ: ", response.data);
+        }); 
+    };
+
+
+     //렌더링 되자마자 주문 정보 가져오기
+    useEffect(()=>{
+        getData1();
+    }, []);
+
+
+
+
+
+
+
+
+
+
+
+
 
     const [btnClicked, setBtnClicked] = useState("3개월");
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(
     new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000)
     );
+        
+    const conconcon =() => {
+        console.log("버튼눌림");
+    }
+
+
 
 
       // 날짜 버튼 클릭, 기간 변경 기능
@@ -103,30 +150,23 @@ function Order(){
                     selectsStart
                     startDate={startDate}
                     endDate={endDate}
+                    maxDate={new Date()}
                     />
                 </div>
-                <CalendarButt>
-                    <img src="//img.echosting.cafe24.com/skin/admin_ko_KR/myshop/ico_cal.gif" style={{verticalAlign:"middle"}}
-                    
-                    onClick={
-                        function ShowDate (){
-                           
-                                <DatePicker
-                                selected={startDate}
-                                onChange={date => setStartDate(date)}
-                                dateFormat="yyyy-MM-dd"
-                                selectsStart
-                                startDate={startDate}
-                                endDate={endDate}
-                                />
-                          
-                        }
-                    }
-                    
-                    ></img>
-                </CalendarButt>
-                 ~ 
                 <div>
+                <CalendarA
+                    selected={startDate}
+                    onChange={date => setStartDate(date)}
+                    dateFormat="yyyy-MM-dd"
+                    selectsStart
+                    startDate={startDate}
+                    endDate={endDate}
+                    maxDate={new Date()}
+                    value= ""
+                />
+                </div>
+                ~
+                <div style={{marginLeft: "5px"}}>
                 <CalendarInput
                     selected={endDate}
                     onChange={date => setEndDate(date)}
@@ -135,12 +175,22 @@ function Order(){
                     startDate={startDate}
                     endDate={endDate}
                     minDate={startDate}
+                    maxDate={new Date()}
                     />
                 </div>
-                
-                <CalendarButt>
-                    <img src="//img.echosting.cafe24.com/skin/admin_ko_KR/myshop/ico_cal.gif" style={{verticalAlign:"middle"}}></img>
-                </CalendarButt>
+                <div>
+                <CalendarA
+                    selected={endDate}
+                    onChange={date => setEndDate(date)}
+                    dateFormat="yyyy-MM-dd"
+                    selectsEnd
+                    startDate={startDate}
+                    endDate={endDate}
+                    minDate={startDate}
+                    maxDate={new Date()}
+                    value= ""
+                />
+                </div>
                 <CheckBut>조회</CheckBut>
                 </Historyboxfieldset>
                 <Ul>
@@ -171,7 +221,12 @@ function Order(){
                             <InfoTh>취소/교환/반품</InfoTh>
                         </tr>
                     </InfoTable>
-                    <InfoContentsP>주문 내역이 없습니다.</InfoContentsP>{/* 주문내역이 ㅇ벗을때만 이것 렌더링하기 */}
+
+
+
+
+
+                    {/* <InfoContentsP>주문 내역이 없습니다.</InfoContentsP>주문내역이 ㅇ벗을때만 이것 렌더링하기 */}
                 </OrderHistory>
 
 
@@ -279,6 +334,7 @@ let OrderHistory = styled.div ` //주문내역조회기능 div
 let Historyboxfieldset = styled.fieldset` //내용 fieldset
     margin: 0;
     vertical-align: top;
+    align-items: center;
     padding: 20px;
     margin-left: auto;
     margin-right: auto;
@@ -347,16 +403,21 @@ let CalendarInput = styled(DatePicker)` //달력 Input
     text-align: center;
 `
 
-let CalendarButt = styled.button` //달력 버튼
+let CalendarA = styled(DatePicker)` //달력 버튼
     width: 14px;
     height: 14px;
     margin: 0 5px 0 2px;
     background: none;
     overflow: visible;
+    vertical-align:middle;
+    align-items: center;
     padding: 0;
     border: 0;
     cursor: pointer;
+    background: url(//img.echosting.cafe24.com/skin/admin_ko_KR/myshop/ico_cal.gif)
 `
+
+
 
 let CheckBut = styled.button` //조회 버튼
     margin: 0;
