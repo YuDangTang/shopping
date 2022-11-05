@@ -12,7 +12,7 @@ function Basket(){
     const [datas, setData] = useState([]);
     const [totalProPrice, setTotalPrice] = useState(0);
      // 체크박스 단일 선택
-     const handleSingleCheck = (target, id, proName, sizeColor, quan, price, totTalPrice) => {
+     const handleSingleCheck = (target, id, proName, sizeColor, quan, cost, price, profit, totTalPrice) => {
         const checkbox = document.getElementsByName("select");
         let num2 = 0;
         for(var i = 0; i < checkbox.length; i++){
@@ -23,7 +23,7 @@ function Basket(){
         if(num2 == checkbox.length){document.getElementsByName("select-all")[0].checked = true;}
         else{document.getElementsByName("select-all")[0].checked = false;}
         const obj = {
-            proName, sizeColor, quan, price, totTalPrice
+            proName, sizeColor, quan, cost, price, profit, totTalPrice
         };
         console.log(target.checked);
        if (target.checked) {
@@ -59,6 +59,8 @@ function Basket(){
             const proName = document.getElementsByName("proName");
             const proSizeColor = document.getElementsByName("proSizeColor");
             const proPrice = document.getElementsByName("proPrice");
+            const proCost = document.getElementsByName("hiddenCost");
+            const proProfit = document.getElementsByName("hiddenProfit");
             const proQuan = document.getElementsByName("proQuan");
             const proTotalPrice = document.getElementsByName("proTotalPrice");
             const arr = [];
@@ -69,7 +71,9 @@ function Basket(){
                     proName: proName[i].value, 
                     sizeColor: proSizeColor[i].value, 
                     quan: Number(proQuan[i].value), 
+                    cost: Number(proCost[i].value),
                     price: Number(proPrice[i].value), 
+                    profit: Number(proProfit[i].value),
                     totTalPrice: Number(proTotalPrice[i].value)
                 };
                 arr.push(obj);
@@ -90,7 +94,6 @@ function Basket(){
     const getData = async () => {
         const cart = {};
         cart.id = sessionStorage.getItem('id');
-        console.log("겟데이터")
         await axios.post("http://localhost:4000/order/basket", cart)
         .then((response) => {
             console.log("난 데이ㅓㅌ: ", response.data);
@@ -127,6 +130,7 @@ function Basket(){
                 getData();
                 setCheckItems([]);
                 setData([]);
+                setBasket([]);
                 const checkbox = document.getElementsByName("select");
                 for(var i = 0; i < checkbox.length; i++){
                     checkbox[i].checked = false;
@@ -162,6 +166,25 @@ function Basket(){
         }
         console.log(obj);
         data('/order/OrderForm', { state: {obj} });
+    }
+
+    const onClickDeleteCartAll = async () => {
+        var delteAll = window.confirm("장바구니를 비우시겠습니까?");
+        if(!delteAll){return;}
+        const obj = {
+            all: "all",
+            userId: sessionStorage.getItem('id')
+        };
+        await axios.post("http://localhost:4000/order/basket", obj)
+        .then((response) => {
+            if(response.data == "success"){
+                getData();
+                setCheckItems([]);
+                setData([]);
+                setBasket([]);
+                setTotalPrice(0);
+            }else{alert("DB Error.")}
+        }); 
     }
 
     useEffect(() => {
@@ -243,12 +266,15 @@ function Basket(){
                                                             </colgroup>
                                                             <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}} id={bas.productInfo.proName}>
                                                             <InfoTd2 style={{paddingLeft:0,paddingRight:0}}>
-                                                                <input type={'checkbox'}  name={`select`} id={num}
-                                                                onChange={(e) => 
+                                                                <input type={'checkbox'}  name={`select`} id={num} onChange={(e) => 
                                                                     handleSingleCheck(
-                                                                        e.currentTarget, e.currentTarget.id, bas.productInfo.proName, "["+cartQuan.size+"/"+pro.color+"]", pro.quan, bas.productInfo.proPrice.price,
-                                                                        bas.productInfo.proPrice.price*pro.quan)}
-                                                                ></input>
+                                                                        e.currentTarget, e.currentTarget.id, bas.productInfo.proName, "["+cartQuan.size+"/"+pro.color+"]", pro.quan, 
+                                                                        bas.productInfo.proPrice.cost*pro.quan,
+                                                                        bas.productInfo.proPrice.price*pro.quan, bas.productInfo.proPrice.profit*pro.quan, bas.productInfo.proPrice.price*pro.quan)}
+                                                                />
+                                                                <input type={"hidden"} name={"hiddenCost"} defaultValue={bas.productInfo.proPrice.cost*pro.quan} />
+                                                                <input type={"hidden"} name={"hiddenProfit"} defaultValue={bas.productInfo.proPrice.profit*pro.quan} />
+                                                                
                                                             </InfoTd2>
                                                                     <InfoTd2><Forimg src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg></InfoTd2>
                                                                     <InfoTd2 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb",width:"400px"}}>
@@ -263,8 +289,7 @@ function Basket(){
                                                                     </InfoTd2>
                                                                     <InfoTd2 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
                                                                         <span style={{display:"flex"}}><TdcontentsInput style={{fontWeight:"bold",textAlign:"right"}}
-                                                                            name={"proPrice"} defaultValue={bas.productInfo.proPrice.price} readonly onfocus="this.blur();">
-                                                                            
+                                                                            name={"proPrice"} defaultValue={bas.productInfo.proPrice.price*pro.quan} readonly onfocus="this.blur();">
                                                                         </TdcontentsInput>
                                                                         <Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext>
                                                                         </span>
@@ -321,12 +346,14 @@ function Basket(){
                             <InfoTd colSpan={9}>
                                 <span style={{    float: "left", margin: "6px 0 0"}}>[기본배송]</span>
                                 <Tdcontentstext>상품구매금액</Tdcontentstext>
-                                <Tdcontentstext style={{fontWeight:"bold"}}>{" " + totalPrice }</Tdcontentstext>
+                                <Tdcontentstext style={{fontWeight:"bold"}}>{
+                                    totalProPrice == 0 ? (Number(totalPrice)) : (Number(totalProPrice))
+                                }</Tdcontentstext>
                                 <Tdcontentstext>+ 배송비</Tdcontentstext>
                                 <Tdcontentstext  style={{marginLeft:"6px 0 0"}}>{totalPrice == 0 ? 0 : "2,500"}</Tdcontentstext>
                                 <Tdcontentstext> = 합계:</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px", marginLeft: "10px" }}>
-                                    {totalProPrice == 0 ? 0 : " " + (Number(totalPrice)+Number(2500))}</Tdcontentstext>
+                                    {totalProPrice == 0 ? " " + ((Number(totalPrice))+Number(2500)) : " " + ((Number(totalProPrice)+Number(2500)))}</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px"}}>원</Tdcontentstext>
                              </InfoTd>
                         </tr>
@@ -338,7 +365,7 @@ function Basket(){
 
                 
                 <BasketControlInfo><BasketControlInfocontents>할인 적용 금액은 주문서작성의 결제예정금액에서 확인 가능합니다.</BasketControlInfocontents></BasketControlInfo>
-                <Clearbasket><ClearButton>장바구니비우기</ClearButton></Clearbasket>
+                <Clearbasket><ClearButton onClick={onClickDeleteCartAll}>장바구니비우기</ClearButton></Clearbasket>
                 <FinalTable>
                 <colgroup>
                     <col style={{width:"17%"}}></col>
@@ -356,7 +383,7 @@ function Basket(){
                     <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit"}}>
                     <FinalTd><FinalDiv>{ 
                         totalProPrice == 0
-                        ? totalPrice
+                        ? 0
                         : totalProPrice
                     }<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
                     <FinalTd style={{borderLeft: "1px solid #ebebeb"}}><FinalDiv><FinalDiv2>+</FinalDiv2>{
@@ -367,7 +394,7 @@ function Basket(){
                     <FinalTd style={{borderLeft: "1px solid #ebebeb", color:"#5a5a5a"}}><FinalDiv><FinalDiv2>=</FinalDiv2>{
                         totalProPrice == 0
                         ? 0
-                        : totalProPrice
+                        : totalProPrice+Number(2500)
                     }<FinalDiv2 style={{color: "#757575"}}>원</FinalDiv2></FinalDiv></FinalTd>
                     </tr>
                 </tbody>

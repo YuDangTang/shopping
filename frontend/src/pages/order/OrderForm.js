@@ -122,7 +122,10 @@ function OrderForm(){
             obj.colorAmount = [];
             const dataObj = {
                 color: datas[i].sizeColor.split("/")[1].replace("]", ""),
-                quan: datas[i].quan
+                quan: datas[i].quan,
+                cost: datas[i].cost,
+                price: datas[i].price,
+                profit: datas[i].profit
             };
             obj.colorAmount.push(dataObj);
             if(proNameArr.includes(datas[i].proName)){
@@ -131,6 +134,9 @@ function OrderForm(){
                         const sizeColorObj = {
                             color: datas[i].sizeColor.split("/")[1].replace("]", ""),
                             quan: datas[i].quan,
+                            cost: datas[i].cost,
+                            price: datas[i].price,
+                            profit: datas[i].profit
                         };
                         let cnt = 0;
                         for(var k = 0; k < pro_ID[j].cartQuan.length; k++){

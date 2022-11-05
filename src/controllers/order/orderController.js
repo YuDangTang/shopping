@@ -95,6 +95,11 @@ export const postBasket = async(req, res) => {
             }catch(error){console.log(error); return res.send("fail")}
             return res.send("success");
         }catch(error){console.log(error); return res.send("fail")}
+    }else if(req.body.all != null){
+        try{
+            await Cart.updateOne({userID: req.body.userId}, {$set: {products: []}})
+            return res.send("success");
+        }catch(error){console.log(error); return res.send("fail")}
     }
     return res.send([]);
 }

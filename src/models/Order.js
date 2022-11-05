@@ -9,6 +9,9 @@ const orderSchema = new mongoose.Schema({
             colorAmount: [{
                 color: { type: String, required: true },
                 quan: { type: String, required: true },
+                cost: { type: Number, required: true },
+                price: { type: Number, required: true },
+                profit: { type: Number, required: true }
             }]
         }]
     }],
