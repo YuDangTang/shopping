@@ -1,10 +1,17 @@
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
+
 
 //모든 페이지 최 상단 리모콘
 
 
 function Header(props){
+
+    const [search,setSearch] = useState(""); //검색어 저장
+
+
+
     //카테고리 리스트 출력
     const category = () =>{
         const catNames =["Home","best50","상의","하의"];
@@ -17,9 +24,24 @@ function Header(props){
         sessionStorage.clear();
         document.location.href = '/'
     }
+
+    const onChangeSearch = (e) => { //검색어 입력될때마다 작동
+        e.preventDefault();
+        console.log(e.target.value);
+        setSearch(e.target.value);
+    }
+
+    const onSearch = (e) => {
+        e.preventDefault(); //화면 새로고침기능 끄기
+        document.location.href = '/product/search/'+search; //search할때 파라미터로 데이터 보내면서 화면이동
+    }
+
     
     const isLogin = props.isLogin  //App.js로부터 프로퍼티를 받아서 true,false 확인
     const isLogin2 = sessionStorage.getItem("id");
+
+
+
 
     if (isLogin2) { //로그인 성공 시
         return (
@@ -70,7 +92,10 @@ function Header(props){
                     <SearchContaner>
                         <p>마이</p>
                         <p>장바구니</p>
-                        <input type={'input'}></input>
+                        <form onSubmit={e=> onSearch(e)}>
+                            <input type={'serch'} placeholder={"검색"} onChange={onChangeSearch}></input>
+                            <button type='submit'>검색</button>
+                        </form>
                     </SearchContaner>
                 </Main>
                 <hr></hr>
@@ -125,9 +150,11 @@ justify-content : space-between;
 position : relative;
 
 
+
 `
 let Banner = styled.a`
-width:100%;
+display: inline;
+width: 100%;
 float:left;
 font-size:32px;
 text-align:center;

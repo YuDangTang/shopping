@@ -10,15 +10,13 @@ function Product(){
 
     const[datas, setDatas] = useState({}); // 해당 상품 객체를 집어넣는다.
 
-리액트    state
     //선택한 사이즈
     const[selectSize, setSelectSize] = useState("사이즈를 선택해주세요"); //사이즈 버튼 클릭시 최신화된다.
-    const [selectColor, setSelectColor] = useState(""); //사이즈와 색상이 선택되면 넘겨줄 객체가 들어간다.
     //list로 객체들을 전부 상세로 보여줘도 좋지만 한 페이지에서 한 상품만 구매할 수 있게 만드는것도 방법이다.
     const [proTitle, setProTitle] = useState("");   // 상품명
     const [proPrice, setProPrice] = useState("");  //가격
     const [buyPrice, setBuyPrice] = useState(""); //구매가격이랑 proPrice랑 곱해서 buyprice에 넣는다 맨 밑에서 사용
-    const [buyTotal, setBuyTotal] = useState("");
+    const [buyTotal, setBuyTotal] = useState(""); //총 구매 갯수
     const [objList, setObjList] = useState([]); //리스트 집어넣는곳
 
         //사이즈 버튼 클릭시 size값을 클릭한것으로 바꿔주기
@@ -173,6 +171,7 @@ function Product(){
     }, []);//처음 한번만 실행 없으면 계속실행함
 
     // console.log( "product페이지에서 받은 url 데이터는 "+useParams().id); //id값을 받아왔다.
+    //router로 /id: 로 끝냈으니 뒤에 오면 id: 뒤에 값이다.
     const param = useParams().id;
 
         return(
