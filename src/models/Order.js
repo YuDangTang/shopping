@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema({
             size: { type: String, required: true },
             colorAmount: [{
                 color: { type: String, required: true },
-                quan: { type: String, required: true },
+                quan: { type: Number, required: true },
                 cost: { type: Number, required: true },
                 price: { type: Number, required: true },
                 profit: { type: Number, required: true }

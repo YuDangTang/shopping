@@ -9,6 +9,7 @@ import { postRegProductName, postRegColor, postRegMat, getRegSize,
 	getUpdate3, postUpdate3
 
 } from "../controllers/Admin/adminRegiserProductController.js";
+import { getChart, postChart } from "../controllers/Admin/adminController.js";
 const adminRouter = express.Router();
 try {
     fs.readdirSync('frontend/public/img'); // 폴더 확인 
@@ -34,6 +35,7 @@ const upload = multer({
 });
 
 adminRouter.route("/").get(getAdmin).post(postAdmin);
+adminRouter.route("/chart").get(getChart).post(postChart);
 adminRouter.route("/regProSzie").get(getRegSize);
 adminRouter.route("/regProName").get(getRegProductName).post(postRegProductName);
 adminRouter.get("/regProDetail", getRegMat);

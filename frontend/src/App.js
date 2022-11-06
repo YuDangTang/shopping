@@ -32,6 +32,8 @@ import Order from "./pages/myshop/Order";
 import MyShop from "./pages/myshop/MyShop";
 import Product from "./pages/product/product.js";
 import OrderForm from './pages/order/OrderForm.js';
+import Chart from './pages/admin/Chart.js';
+
 function App() {
   // 로그인 상태 관리
   const [isLogin, setIsLogin] = useState(false);
@@ -64,6 +66,7 @@ function App() {
               <Route path="/product/:id" element={<Product />} /> 
 
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/chart" element={<Chart />} />
               <Route path="/admin/regProName" element={<RegisterProName />}></Route>
               <Route path="/admin/regProSzie" element={<RegisterProSize />}></Route>
               <Route path="/admin/regProDetail" element={<RegisterProMat />}></Route>
