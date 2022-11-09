@@ -7,6 +7,10 @@ import axios from "axios";
 
 function Order(){
 
+    const [order, setorder] = useState([]); //리스폰스 데이타 객체 담기
+    const [payDate, setpayDate] = useState(""); //날짜 정보 담기
+
+
 
 
     async function getData1() {
@@ -16,6 +20,29 @@ function Order(){
         await axios.post("http://localhost:4000/myshop/Order", userkey)
         .then((response) => {
             console.log("난 데이ㅓㅌ: ", response.data);
+            console.log("주문자 이름 뽑기", response.data.user_ID);
+            console.log("주문 날짜 뽑기", response.data.payDate);
+            console.log("주문 번호 뽑기", response.data.pay_ID);
+            setorder(response.data);
+            
+            setpayDate(response.data.payDate);
+            for(var i = 0; i <= response.data.pro_ID.length; i++){
+                console.log("상품 갯수 뽑기", i);
+                console.log("주문상품 이름 순서대로 뽑기",response.data.pro_ID[i].proName);
+                for(var j = 0; j <= response.data.pro_ID[i].cartQuan.length; j++){
+                    console.log("사이즈 뽑기",response.data.pro_ID[i].cartQuan[j].size);
+                    for(var k = 0; k <= response.data.pro_ID[i].cartQuan[j].colorAmount.length; k++){
+                        console.log("꽌 뽑기",response.data.pro_ID[i].cartQuan[j].colorAmount[k].quan);
+                        
+                    }
+                }
+            }
+
+            // const datalist = order.map((orderlist) => (orderlist));
+            
+            // console.log("맵 사용해보기",datalist);
+      
+
         }); 
     };
      
@@ -33,20 +60,10 @@ function Order(){
 
      //렌더링 되자마자 주문 정보 가져오기
     useEffect(()=>{
+        
         getData1();
     }, []);
-
-
-
-
-
-
-
-
-
-
-
-
+    let num = -1;
 
     const [btnClicked, setBtnClicked] = useState("3개월");
     const [startDate, setStartDate] = useState(new Date());
@@ -57,8 +74,6 @@ function Order(){
     const conconcon =() => {
         console.log("버튼눌림");
     }
-
-
 
 
       // 날짜 버튼 클릭, 기간 변경 기능
@@ -202,7 +217,7 @@ function Order(){
                     <TitleH3Div><HH3>주문 상품 정보</HH3></TitleH3Div>
                     <InfoTable border="1">
                         <colgroup>
-                            <col style={{width:"115px"}}></col>
+                            <col style={{width:"140px"}}></col>
                             <col style={{width:"93px"}}></col>
                             <col style={{width:"auto"}}></col>
                             <col style={{width:"61px"}}></col>
@@ -224,15 +239,125 @@ function Order(){
 
 
 
+                     {/*반복시킬 정보 테이블*/}
+
+                {
+                    order.length != 0
+                    ? order.pro_ID.map(ord => {
+                        return(<>
+                        {
+                            ord.cartQuan.map(cartQuan =>{
+                                return(
+                                    cartQuan.colorAmount.map(orderorder =>{
+
+                                        num++;
+                                        return(
+                                            <>
+                        <InfoTable2>
+                        <colgroup>
+                            <col style={{width:"140px"}}></col>
+                            <col style={{width:"93px"}}></col>
+                            <col style={{width:"auto"}}></col>
+                            <col style={{width:"61px"}}></col>
+                            <col style={{width:"111px"}}></col>
+                            <col style={{width:"111px"}}></col>
+                            <col style={{width:"111px"}}></col>
+                        </colgroup>
+                                <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}}>
+                                <InfoTd22 style={{paddingLeft:0,paddingRight:0}}>
+                                <Tdcontentstext2>{payDate}</Tdcontentstext2>
+                                </InfoTd22>
+                                    <InfoTd22><Forimg2 src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg2></InfoTd22>
+                                    <InfoTd22 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
+                                    <TdcontentsInput2 name={"proName"}
+                                        style={{fontWeight:"bold"}} >
+                                                                    
+                                    </TdcontentsInput2><br></br>
+                                    <TdcontentsInput2 style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>
+                                                                        
+                                    </TdcontentsInput2>
+                                    </InfoTd22>
+                                    <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
+                                    <TdcontentsInput2 style={{fontWeight:"bold",  width: "30px"}}
+                                        name={"proPrice"}>
+                                    </TdcontentsInput2>
+                                    <Tdcontentstext2 style={{fontWeight:"bold"}}></Tdcontentstext2>
+                                    </InfoTd22>
+                                    
+                                    
+                                    {/* <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>기본배송</Tdcontentstext2></InfoTd22>
+                                    <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>0원</Tdcontentstext2></InfoTd22> */}
+                                    <InfoTd22 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",marginRight:"10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
+                                    <TdcontentsInput2 style={{fontWeight:"bold" ,  width: "30px"}}
+                                        name={"proTotalPrice"}>
+                                    </TdcontentsInput2>
+                                    <Tdcontentstext2 style={{fontWeight:"bold"}}>원</Tdcontentstext2>
+                                    </InfoTd22>
+                                    <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>-</Tdcontentstext2></InfoTd22>
+                                    <InfoTd22 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", textAlign:"center",paddingRight: 0,width:"98px"}}>
+                                    X
+                                    </InfoTd22>
+                                </tr>
+                        </InfoTable2>
+                                            </>
+                                        )
+                                    })
+                                )
+                            })
+                        }
+                        </>)
+                    })
+                    // <InfoTable2>
+                    //     <colgroup>
+                    //         <col style={{width:"140px"}}></col>
+                    //         <col style={{width:"93px"}}></col>
+                    //         <col style={{width:"auto"}}></col>
+                    //         <col style={{width:"61px"}}></col>
+                    //         <col style={{width:"111px"}}></col>
+                    //         <col style={{width:"111px"}}></col>
+                    //         <col style={{width:"111px"}}></col>
+                    //     </colgroup>
+                    //             <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1",borderTop:"1px solid #ebebeb"}}>
+                    //             <InfoTd22 style={{paddingLeft:0,paddingRight:0}}>
+                    //             <Tdcontentstext2>{payDate}</Tdcontentstext2>
+                    //             </InfoTd22>
+                    //                 <InfoTd22><Forimg2 src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg2></InfoTd22>
+                    //                 <InfoTd22 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
+                    //                 <TdcontentsInput2 name={"proName"}
+                    //                     style={{fontWeight:"bold"}} >
+                                                                        
+                    //                 </TdcontentsInput2><br></br>
+                    //                 <TdcontentsInput2 style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>
+                                                                        
+                    //                 </TdcontentsInput2>
+                    //                 </InfoTd22>
+                    //                 <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
+                    //                 <TdcontentsInput2 style={{fontWeight:"bold",  width: "30px"}}
+                    //                     name={"proPrice"}>
+                    //                 </TdcontentsInput2>
+                    //                 <Tdcontentstext2 style={{fontWeight:"bold"}}></Tdcontentstext2>
+                    //                 </InfoTd22>
+                                    
+                                    
+                    //                 {/* <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>기본배송</Tdcontentstext2></InfoTd22>
+                    //                 <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>0원</Tdcontentstext2></InfoTd22> */}
+                    //                 <InfoTd22 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",marginRight:"10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
+                    //                 <TdcontentsInput2 style={{fontWeight:"bold" ,  width: "30px"}}
+                    //                     name={"proTotalPrice"}>
+                    //                 </TdcontentsInput2>
+                    //                 <Tdcontentstext2 style={{fontWeight:"bold"}}>원</Tdcontentstext2>
+                    //                 </InfoTd22>
+                    //                 <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>-</Tdcontentstext2></InfoTd22>
+                    //                 <InfoTd22 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", textAlign:"center",paddingRight: 0,width:"98px"}}>
+                    //                 X
+                    //                 </InfoTd22>
+                    //             </tr>
+                    //     </InfoTable2>
 
 
-                    {/* <InfoContentsP>주문 내역이 없습니다.</InfoContentsP>주문내역이 ㅇ벗을때만 이것 렌더링하기 */}
+                    :<InfoContentsP>주문 내역이 없습니다.</InfoContentsP>
+                }
                 </OrderHistory>
-
-
-
-
-
             </Contents>
         </Container>
     )
@@ -483,4 +608,120 @@ let InfoContentsP = styled.p` //정보 내용 P
     padding: 50px 0;
     text-align: center;
     font-size: 11px;
+`
+
+
+let InfoTable2 = styled.table `  //정보 테이블
+    /* border-top: 1px solid #ebebeb; */
+    line-height: 1.5;
+    position: relative;
+    width: 100%;
+    border: 1;
+    border-spacing: 0;
+    border-collapse: collapse;
+`
+
+
+let InfoTd22 = styled.td` //정보테이블 tbody td
+    padding: 15px 10px 14px;
+    border-color: #ebebeb;
+    /* border-top: 1px solid #ebebeb; */
+    border-bottom: 0.7px solid #ebebeb;
+    color: #757575;
+    vertical-align: middle;
+    word-break: break-all;
+    word-wrap: break-word;
+` 
+
+let Forimg2 = styled.img` //img
+    max-width: 75px;
+    vertical-align: middle;
+    margin: 0 2px;
+    border: none;
+`
+
+let TdcontentsInput2 = styled.input ` //텍스트스타일
+    font-size: 11px;
+    margin: 6px 0 0;
+    color: #757575;
+    font-weight: bold;
+    border: none;
+    pointer-events: none;
+`
+
+
+let Tdcontentstext2 = styled.text ` //텍스트스타일
+    font-size: 11px;
+    margin: 6px 0 0;
+    color: #757575;
+`
+
+let TdcontentsInputNumber2 = styled.input ` //텍스트스타일
+    font-size: 11px;
+    margin: 6px 0 0;
+    color: #757575;
+    height: 23px;
+    font-weight: bold;
+    border: 1px solid #d4d8d9;
+    border-radius: 3px 0 0 3px;
+    cursor: pointer;
+        /* 마우스 클릭하고있을때 */
+        &:active{
+            border: 1px solid #d4d8d9;
+            border-radius: 3px 0 0 3px;
+        }
+        /* 마우스 한번클릭후 */
+        &:visited{
+            border: 1px solid #d4d8d9;
+            border-radius: 3px 0 0 3px;
+        }
+`
+
+let WhiteButton2 = styled.button` //상품삭제버튼
+    
+    font-size: 11px;
+    line-height: 11px;
+    display: inline-block;
+    padding: 12px 15px 15px;
+    border: 1px solid #ebebeb;
+    border-radius: 0px;
+    background: #fff;
+    margin: 1px 0 0;
+    vertical-align: middle;
+    -webkit-padding-before: 13px;
+    -webkit-padding-after: 14px;
+    text-decoration: none;
+    color: #666666;
+    &:hover{  
+    text-decoration: none;
+    color: #ccc;
+    border-color: #ccc !important;
+    cursor: pointer;
+    }
+`
+
+
+
+
+let BlackButton2 = styled.button` //주문하기버튼
+    background: #333 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+    font-size: 11px;
+    line-height: 11px;
+    display: inline-block;
+    padding: 12px 15px 15px;
+    border-radius: 0px;
+    background: #fff;
+    margin: 1px 0 0;
+    vertical-align: middle;
+    -webkit-padding-before: 13px;
+    -webkit-padding-after: 14px;
+    &:hover{  
+    background: #fff !important;
+    color: #8f8f8f !important;
+    border-color: #8f8f8f !important;
+    cursor: pointer;
+    }
+    
 `
