@@ -139,7 +139,7 @@ app.post("/member/login", login);
 
 // })
 
-//리뷰 저장
+
 const review = async (req, res) => {
     try {
         const { 
@@ -167,6 +167,7 @@ const review = async (req, res) => {
         console.log(err);
     }
 };
+
 app.post("/product/:id/review", review);
 
 
@@ -190,9 +191,4 @@ const reviewvew = async (req, res) => {
     }
 };
 app.post("/product/:id/reviewview", reviewvew); //보내준 값들은 reviewview로 갑니다유
-
-
-
-
-
 

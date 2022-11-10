@@ -1,5 +1,6 @@
 import Product from "../../models/Product.js";
 import Review from "../../models/Review.js";
+import ProductDetail from "../../models/ProductDetail.js";
 
 export const getProductDetail = async(req, res) => {
     
@@ -40,3 +41,12 @@ export const postProductReview = async(req, res) => {
     // return res.send("fail");//proreviw가 없으면 fail이라는 문구를 보내줘유
   
 } 
+export const postProBoard = async (req, res) => {
+    const id = req.body.proID;
+    const content = await ProductDetail.findOne({ "pro_ID": id });
+    if (content === null) {
+        return res.send("fail");
+    } else {
+        return res.send(content.content);
+    }
+}
