@@ -9,14 +9,11 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 function Review(){
 
-    // const onSubmithandler = (event) =>{
-    //     event.preventDefalut();
-
-    //     let body = {
-            
-    //     }
-    // }
     const [text, setText] = useState(""); //리뷰텍스트 받아올 useState
+
+    //리뷰 데이터 정보
+    const [rev, setRev] = useState([]);//리뷰 데이터 받을 useState
+
     const param = useParams().id;//url잘라옴(상품)
     const onChange = (e) =>{
         setText(e.target.value);
@@ -28,17 +25,18 @@ function Review(){
 
     // db연결해서 리뷰데이터 insert해주기
     const addData = async (e) => {
-        e.preventDefault(); // 기본동작 막기
+        e.preventDefault(); // 기본동작 막기, submit으로 새로고침 안 되게 막아줌
         // console.log("이건 되는 코드임?: "+param.document.getElementsByName("good").value)
         try{
             const obj = {};
             // const ra =document.getElementsByName('good')[i].value
-            for(var i=0; i<document.getElementsByName('good').length; i++){ //라디오 버튼 set돌려줄 반복문
+            //라디오 버튼 set돌려줄 반복문
+            for(var i=0; i<document.getElementsByName('good').length; i++){ 
                 setRd(document.getElementsByName('good')[i].value);
 
             }
             const rbox = text;
-            const useridtset = sessionStorage.getItem('id');
+            const useridtset = sessionStorage.getItem('id');//로그인 한 user id가져옴
 
             obj.pro_id = param;     // 상품 아이디 가져와유 -> 나옴
             obj.proGPA = rd;           // 좋아유 싫어유 -> 나옴 근데 좋아유만 나와
@@ -46,19 +44,38 @@ function Review(){
 
             obj.proReview = rbox;      // 리뷰텍스트 -> 나옴
             obj.userId = useridtset;   // 유저아이디 -> 나옴
+
+            console.log("전부 다 나오나요?"+param, + rd, + rbox, + useridtset)
             
             await axios.post(`http://localhost:4000/product/${param}/review`, obj)
-            console.log("hi~")
             .then((response)=>{
-                console.log("hihi" + response.data);
-                if(response.data === "fail"){
-                    alert("리뷰 작성하지 않았어유.");
+                if(response.data == "fail"){
+                    alert("리뷰 없음.");
                     return;
                 }else{
-                    alert("리뷰 작성 성공했어유.");
-                    window.location.href = '/product/:id';
+                    const reviewdata = response.data[0];
+                    setRev(reviewdata);
+                    // response.data[0].proPrice.cost
+                    console.log("상품 아이디: "+response.data[0].pro_ID)
+                    console.log("종아유 싫어유?: "+response.data[0].proGPA)
+                    console.log("리뷰 텍스트: "+response.data[0].proReview)
+                    console.log("유저 아이디: "+response.data[0].userId)
+
+                    console.log("데이터: "+reviewdata, "좋아요: "+reviewdata.proGPA);
+
                 }
             })
+            // console.log("hi~")
+            // .then((response)=>{
+            //     console.log("hihi" + response.data);
+            //     if(response.data === "fail"){
+            //         alert("리뷰 작성하지 않았어유.");
+            //         return;
+            //     }else{
+            //         alert("리뷰 작성 성공했어유.");
+            //         window.location.href = '/product/:id';
+            //     }
+            // })
 
 
         }catch(err){
