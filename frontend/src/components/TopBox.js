@@ -93,7 +93,7 @@ function Header(props){
                         <p>마이</p>
                         <p>장바구니</p>
                         <form onSubmit={e=> onSearch(e)}>
-                            <input type={'serch'} placeholder={"검색"} onChange={onChangeSearch}></input>
+                            <input type={'serch'} placeholder={"검색"} onChange={onChangeSearch} defaultValue={""}></input>
                             <button type='submit'>검색</button>
                         </form>
                     </SearchContaner>

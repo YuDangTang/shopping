@@ -51,10 +51,10 @@ function Basket(){
                                 <Tdcontentstext> = 합계:</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px", marginLeft: "10px" }}>22,500</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px"}}>원</Tdcontentstext>
-                             </InfoTd>
+                            </InfoTd>
                         </tr>
                     </tfoot>
-                  
+
                     <tbody style={{textalign: "center"}}> 
                     <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}}>
                         <InfoTd2><Forimg src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg></InfoTd2>

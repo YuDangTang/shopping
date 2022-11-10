@@ -138,7 +138,7 @@ function Product(){
         }
 
 
-
+        //  보낸다?
         //db연결하고 상품 테이블 가지고와 products에 저장하고 지역 state에 setDatas 해준다.
         const getData = async (param) => {
             try{
