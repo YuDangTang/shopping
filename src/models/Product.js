@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 //아이템 선언
-
+// 디비 설계 관리자페이지에서 데이터 넣을때 사용 보낼때도 사용, db
 const productSchema = new mongoose.Schema({
     proName: { type: String, required: true, unique: true },
     proKindName: { type: String, required: true },

@@ -34,6 +34,8 @@ const handelListening = () =>
 //     res.send("Hello World");
 // });
 
+
+//main에 사용할 함수 모든 상품 가져온다.
 const getMain = async(req,res) =>{
     try{
         const products = await Product.find({});//상품 모든것을 긁어와 await에 저장해라
@@ -111,6 +113,8 @@ const login = async (req, res) => {
         loginId,
         loginPw
     } = req.body;
+    console.log("로그인 id 콘솔",loginId);
+    console.log("로그인 id 콘솔",loginPw);
     try {
         const pw = await User.findOne({ "userId": loginId });
         if (pw == null) {
@@ -190,5 +194,39 @@ const reviewvew = async (req, res) => {
         console.log(err);
     }
 };
+
 app.post("/product/:id/reviewview", reviewvew); //보내준 값들은 reviewview로 갑니다유
+
+app.post("/member/GetInfo", GetInfo);
+
+
+
+
+//검색기능 검색어가 포함된 상품만 가져온다. 이 코드 밑에는 db에서 가져오는 코드
+
+//객체로 많은값을 받아올때는 cosnt ={ ??,??} = req.body 형식으로 하면된다.
+const search = async ( req,res) =>{
+    var proSearch = req.body.tmp;
+    console.log("서치에서 받은 req",proSearch);
+    try{
+        const tmp = new RegExp(`[${proSearch}]`, 'g');
+        // const productSearch = await Product.find({proName:{ $regex: /^{proSearch}/i}})
+        const productSearch = await Product.find({"proName":{'$regex': tmp}});
+        console.log("프로덕트서치",productSearch);
+        if(productSearch ==null){
+            console.log('fail에 들어왔습니다')
+            return res.send("fail");
+
+        }else{
+            console.log('객체를 가지고 리턴합니다')
+            return res.send(productSearch);
+        }
+
+
+    }catch(err){
+        console.log("서버에서 검색값을 불러오는중 에러발생" +err);
+    }
+}
+app.post("/product/search/DataSite", search); //해당 주소로 객체를 쏴준다. 받기도 함
+//굳이 url 쏴주는 곳은 동적으로 받을 필요가 없다.그냥 주고받는 장소는 한곳이면 되니까.
 

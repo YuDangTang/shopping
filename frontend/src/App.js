@@ -35,6 +35,8 @@ import MyShop from "./pages/myshop/MyShop";
 import Product from "./pages/product/product.js";
 import Modify from './pages/member/Modify.js';
 import Review from './components/Review.js';
+import Search from './pages/product/Search';
+
 import UpdateDetail from './pages/admin/UpdateDetail.js';
 import PostProDetail from './pages/admin/PostProDetail.js';
 
@@ -57,18 +59,22 @@ function App() {
   return (
     <>
       <Router>
-        <GlobalStyles />
-        <TopBox />
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/member/login" element={<Login />} />
-          <Route path="/member/Join" element={<Join />} />
-          <Route path="/member/Join" element={<Modify />} />
-          <Route path="/order/Basket" element={<Basket />} />
-          <Route path="/myshop/Order" element={<Order />} />
-          <Route path="/myshop/MyShop" element={<MyShop />} />
-          <Route path="/product/:id" element={<Product />} />
-          <Route path="/product/:id/review" element={<Review />} />
+
+        <GlobalStyles/>
+        <TopBox/>
+          <Routes>
+              <Route path="/" element={<Main />} />
+              <Route path="/member/login" element={<Login />} />
+              <Route path="/member/Join" element={<Join />} />
+              <Route path="/member/Join" element={<Modify/>}/>
+              <Route path="/order/Basket" element={<Basket />} />
+              <Route path="/myshop/Order" element={<Order />} />
+              <Route path="/myshop/MyShop" element={<MyShop />} />
+              <Route path="/product/:id" element={<Product />} /> 
+              <Route path="/product/:id/review" element={<Review />} /> 
+              <Route path="/product/search/:searchName" element={<Search />} /> 
+
+
 
           <Route path="/test" element={<Test />} />
 
