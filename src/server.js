@@ -143,7 +143,7 @@ app.post("/member/login", login);
 
 // })
 
-//리뷰
+
 const review = async (req, res) => {
     try {
         const { 
@@ -171,28 +171,32 @@ const review = async (req, res) => {
         console.log(err);
     }
 };
+
 app.post("/product/:id/review", review);
 
 
-
-//유저정보 수정을 위한 유저정보 쏘기
-const GetInfo = async (req, res) => {
-    const userkey = req.body.userkey;
-    console.log("req:"+ req+",   "+"res:"+res);
-    // console.log("서치에서 받은 req", req);
+//리뷰 전체 보내기
+const reviewvew = async (req, res) => {
     try {
-        const userInfo = await User.findOne({ "userId": userkey });
-
-        if (userInfo == null) {
-            return res.send("fail");   
-        } else {
-            return res.send(userInfo);
+        // //개수 보여줘유
+        // const reviewcount = await Review.find({}).count();
+        // console.log("review에 있는 전체 개수: "+reviewcount);
+        console.log("????: "+req.body.pro_ID)
+        
+        const proreview = await Review.find({pro_ID: req.body.pro_ID});//Review collection에 있는 pro_ID값만 가져와서 proreview에 넣어줘유
+        console.log("하이요" + proreview);
+        if(proreview != null){//proreview가 있으면 보내줘유
+            return res.send(proreview);
         }
+        return res.send("fail");//proreview가 없으면 fail문구를 보내줘유
     }
     catch (err) {
         console.log(err);
     }
 };
+
+app.post("/product/:id/reviewview", reviewvew); //보내준 값들은 reviewview로 갑니다유
+
 app.post("/member/GetInfo", GetInfo);
 
 
@@ -225,3 +229,4 @@ const search = async ( req,res) =>{
 }
 app.post("/product/search/DataSite", search); //해당 주소로 객체를 쏴준다. 받기도 함
 //굳이 url 쏴주는 곳은 동적으로 받을 필요가 없다.그냥 주고받는 장소는 한곳이면 되니까.
+
