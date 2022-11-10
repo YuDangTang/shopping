@@ -265,33 +265,33 @@ function Order(){
                         </colgroup>
                                 <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}}>
                                 <InfoTd22 style={{paddingLeft:0,paddingRight:0}}>
-                                <Tdcontentstext2>{payDate}</Tdcontentstext2>
+                                <Tdcontentstext2>{order.payDate}</Tdcontentstext2>
                                 </InfoTd22>
                                     <InfoTd22><Forimg2 src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg2></InfoTd22>
                                     <InfoTd22 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
                                     <TdcontentsInput2 name={"proName"}
-                                        style={{fontWeight:"bold"}} >
-                                                                    
+                                        value={"["+ord.proName+"]"}
+                                        style={{fontWeight:"bold"}} >                                                                   
                                     </TdcontentsInput2><br></br>
-                                    <TdcontentsInput2 style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>
-                                                                        
+                                    <TdcontentsInput2 name={"proName"} style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}
+                                        value={"["+cartQuan.size+"]"+"["+orderorder.color+"]"}                               
+                                    >                                                                
                                     </TdcontentsInput2>
                                     </InfoTd22>
-                                    <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
-                                    <TdcontentsInput2 style={{fontWeight:"bold",  width: "30px"}}
-                                        name={"proPrice"}>
+                                    <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}> 
+                                    <TdcontentsInput2 style={{margin: "6px 4px 0", fontWeight:"bold",  width: "20px", }}
+                                        name={"proquan"} value={orderorder.quan}>
                                     </TdcontentsInput2>
-                                    <Tdcontentstext2 style={{fontWeight:"bold"}}></Tdcontentstext2>
                                     </InfoTd22>
                                     
                                     
                                     {/* <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>기본배송</Tdcontentstext2></InfoTd22>
                                     <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>0원</Tdcontentstext2></InfoTd22> */}
                                     <InfoTd22 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",marginRight:"10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
-                                    <TdcontentsInput2 style={{fontWeight:"bold" ,  width: "30px"}}
-                                        name={"proTotalPrice"}>
-                                    </TdcontentsInput2>
-                                    <Tdcontentstext2 style={{fontWeight:"bold"}}>원</Tdcontentstext2>
+                                    {/* <TdcontentsInput2 style={{fontWeight:"bold" ,  width: "35px",textAlign:"left"}}
+                                        name={"proPrice"} value={orderorder.price}>
+                                    </TdcontentsInput2> */}
+                                    <Tdcontentstext2 style={{fontWeight:"bold"}}>{orderorder.price} 원</Tdcontentstext2>
                                     </InfoTd22>
                                     <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>-</Tdcontentstext2></InfoTd22>
                                     <InfoTd22 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", textAlign:"center",paddingRight: 0,width:"98px"}}>
