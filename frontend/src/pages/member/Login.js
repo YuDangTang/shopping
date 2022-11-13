@@ -19,6 +19,11 @@ function Login() {
                     sessionStorage.setItem('id', loginId);
                     window.location.href = "/";
                 }
+                else if (response.data === "admin") {
+                    alert("관리자 로그인 성공");
+                    sessionStorage.setItem('id', loginId);
+                    window.location.href = "/admin";
+                }
                 else {
                     alert("아이디 혹은 비밀번호를 확인해 주세요");
                     e.target.loginId.value = "";

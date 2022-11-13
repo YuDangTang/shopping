@@ -22,8 +22,12 @@ const userSchema = new mongoose.Schema({
     }, 
     userAddress: {
         type: String, required: true,
-        minLength: 15, maxLength: 100
-    }, //임시최소길이
+        minLength: 11, maxLength: 30
+    },
+    userDetailAddress: {
+        type: String, required: true,
+        minLength: 3, maxLength: 20
+    },
     userBirth: {
         type: Number, required: true, //trim:true,
         minLength: 8, maxLength: 8

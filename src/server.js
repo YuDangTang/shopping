@@ -9,6 +9,9 @@ import bcrypt from 'bcrypt'
 import Product from "./models/Product.js";
 import orderRouter from "./routers/orderRouter.js";
 import Cart from "./models/Cart.js";
+// 리뷰 import 추가함
+import Review from "./models/Review.js";
+// import reviewRouter from"./routers/reviewRouter";
 
 
 const PORT = 4000;	
@@ -67,13 +70,14 @@ const join = async (req, res) => {
             joinPw,
             joinName,
             joinTel,
-            joinFullAddress, joinBirth } = req.body;
+            joinAddress, joinDetailAddress, joinBirth } = req.body;
         const boo = await User.create({
             userId: joinId,
             userPw: joinPw,
             userName: joinName,
             userTel: joinTel,
-            userAddress: joinFullAddress,
+            userAddress: joinAddress,
+            userDetailAddress: joinDetailAddress,
             userBirth: joinBirth,
         });
         if (boo) {
@@ -128,9 +132,9 @@ const login = async (req, res) => {
         const byID = await bcrypt.compare(loginPw, checkPw);
         if (byID) {
             req.session.user = loginId;
-            console.log("나 로그인함: ", req.session.user);
-            // const user = req.session.user;
-            // console.log("user: ", user);
+            if (req.session.user === "admin1") {
+                return res.send("admin");
+            }
             return res.send("sucess");
         } else {
             return res.send("fail");
@@ -141,3 +145,39 @@ const login = async (req, res) => {
     }
 };
 app.post("/member/login", login);
+
+// // 리뷰 부분 추가함
+// app.post('/add', function(req, res){
+//     res.send("리뷰 데이터 전송 완료");
+
+// })
+
+//리뷰
+const review = async (req, res) => {
+    try {
+        const {
+            // order_ID,
+            pro_ID,
+            proGPA,
+            proReview,
+            userId,
+            // userImg 
+        } = req.body;
+        const rv = await Review.create({
+            // order_ID: order_ID,
+            pro_ID: pro_ID, //상품 id
+            proGPA: proGPA, //조아유 싫어유
+            proReview: proReview, //상품 리뷰
+            userId: userId, //유저 id
+            // userImg:userImg, //유저가 등록한 이미지(null 허용, 얘만 Array)
+        });
+        if (rv) {
+            return res.send("Success");
+        } else {
+            return res.send("fail");
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+app.post("/product/:id/review", review);

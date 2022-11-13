@@ -3,7 +3,15 @@ import Cart from "../../models/Cart.js";
 import Product from "../../models/Product.js";
 import Order from "../../models/Order.js";
 import Payment from "../../models/Payment.js";
+import User from "../../models/User.js";
 import { cartSplice, cartProSplice, cartAmountSplice } from "./orderSplice.js";
+
+export const postInfo = async (req, res) => {
+    const id = req.body.userkey;
+    const info = await User.findOne({ userId: id });
+    console.log(info);
+    return res.send(info);
+}
 
 export const getBasket = (req, res) => {
     console.log("hI?");

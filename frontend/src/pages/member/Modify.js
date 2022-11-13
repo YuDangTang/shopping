@@ -1,6 +1,6 @@
 function Modify(){
     return(
-        <h2>장바구니 입니다.</h2>
+        <h2>내정보 수정 입니다.</h2>
     )
 }
 export default Modify;
