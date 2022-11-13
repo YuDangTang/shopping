@@ -139,20 +139,12 @@ function Basket(){
             }else{alert("DB Error.")}
         }); 
     }
-    const onSubmitHandler = async (e) => {
+    const onSubmitHandler = async (e, id, proName, sizeColor, quan, cost, price, profit, totTalPrice) => {
         e.preventDefault(); // 기본동작 막기
-
-        const colorSize = e.target.proSizeColor.value;
-        const ob = {};
-        ob.proName = e.target.proName.value;
-        ob.sizeColor = colorSize;
-        ob.price = e.target.proPrice.value;
-        ob.quan = Number(e.target.proQuan.value);
-        ob.totTalPrice = Number(e.target.proTotalPrice.value);
-        // console.log("단품가격: ", e.target.proPrice.value);
-        const obj = [];
-        obj.push(ob);
-        console.log(obj);
+        const obj = [{
+            proName, sizeColor, quan, cost, price, profit, totTalPrice
+        }];
+        obj.id = [Number(id)];
         data('/order/OrderForm', { state: {obj} });
     }
     const onClickSubmit = (e) => {
@@ -191,6 +183,7 @@ function Basket(){
         getData();
     }, [])
     let num = -1;
+    let num2 = -1;
     let totalPrice = 0;
     return(
         <Container>
@@ -252,7 +245,7 @@ function Basket(){
                                                 totalPrice += bas.productInfo.proPrice.price*pro.quan;
                                                 return(
                                                     <>
-                                                    <form onSubmit={onSubmitHandler} >
+                                                    <form>
                                                         <InfoTable>
                                                             <colgroup>
                                                                 <col style={{width:"92px"}}></col>
@@ -312,7 +305,10 @@ function Basket(){
                                                                         <Tdcontentstext style={{fontWeight:"bold"}}>원</Tdcontentstext>
                                                                     </InfoTd2>
                                                                     <InfoTd2 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", paddingRight: 0,width:"98px"}}>
-                                                                        <BlackButton type={"submit"}>주문하기</BlackButton>
+                                                                        <BlackButton type={"button"} onClick={(e) => 
+                                                                    onSubmitHandler(e, num, bas.productInfo.proName, "["+cartQuan.size+"/"+pro.color+"]", pro.quan, 
+                                                                        bas.productInfo.proPrice.cost*pro.quan,
+                                                                        bas.productInfo.proPrice.price*pro.quan, bas.productInfo.proPrice.profit*pro.quan, bas.productInfo.proPrice.price*pro.quan)}>주문하기</BlackButton>
                                                                         <WhiteButton type={"button"} onClick={(e) => onClickDelete(bas.carInfo._id, pro, bas.productInfo.proName)}>상품삭제</WhiteButton>
                                                                     </InfoTd2>
                                                                 </tr>
