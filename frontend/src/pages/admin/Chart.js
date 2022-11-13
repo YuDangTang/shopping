@@ -106,6 +106,7 @@ function Chart(){
         }
         if(num == 0){
           chart.options.text = "수량";
+          chart.options.title.text = "수량통계";
           for(var i = 0; i < data.proYear.length; i++){
             chart.options.labels.push(data.proYear[i]);
             for(var j = 0; j < data.products.length; j++){
@@ -117,6 +118,7 @@ function Chart(){
           chartDataArr.push(chart);
         }else if(num == 1){
           chart.options.text = "수익";
+          chart.options.title.text = "수익통계";
           for(var i = 0; i < data.proYear.length; i++){
             chart.options.labels.push(data.proYear[i]);
             for(var j = 0; j < data.products.length; j++){

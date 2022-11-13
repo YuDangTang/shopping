@@ -5,12 +5,10 @@ export const getChart = async(req, res) => {
 }
 export const postChart = async(req, res) => {
     var findAll;
-    console.log(req.body);
     if(req.body.type == "년도별" || req.body.type == "날짜"){
         if(req.body.type == "년도별"){
             findAll = await Order.find({}, {pro_ID:1});
         }else if(req.body.type == "날짜"){
-            console.log(req.body.date1, req.body.date2)
             findAll = await Order.find({
                 payDate: {$gte: new Date(req.body.date1), $lte: new Date(req.body.date2)}}, 
                 {pro_ID:1}
@@ -89,7 +87,6 @@ export const postChart = async(req, res) => {
                 const name = await Product.findOne({proName: findAll[i].pro_ID[j].proName});
                 let year = findAll[i].payDate.toString();
                 year = Number(year.split(" ")[3]);
-                console.log(year);
                 if(!yearArr.includes(year)){ 
                     yearArr.push(year);
                     const obj2 = {
