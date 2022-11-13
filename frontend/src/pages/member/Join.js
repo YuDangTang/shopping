@@ -74,11 +74,11 @@ function Join() {
         setRegTel(regExp5.test(e.target.value));
     };
     const handleInputAddress = (e) => {
-        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣]{11,30}$/
+        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣]{4,30}$/
         setRegAddress(regExp6.test(e.target.value));
     };
     const handleInputDetailAddress = (e) => {
-        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣]{3,20}$/
+        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣\s]{3,20}$/
         setRegAddress(regExp6.test(e.target.value));
     };
     const handleInputBirth = (e) => {
@@ -346,7 +346,7 @@ let Inputinput = styled.input.attrs({ maxLength: "16" })` //인풋텍스트 스�
     
 `
 
-let Inputinput2 = styled.input.attrs({ maxLength: "30" })` //인풋텍스트 스타일
+let Inputinput2 = styled.input.attrs({ maxLength: "20" })` //인풋텍스트 스타일
     height: 26px;
     line-height: 26px;
     padding: 0px 4px;
