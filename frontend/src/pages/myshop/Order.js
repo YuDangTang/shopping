@@ -1,14 +1,16 @@
-import React, { useEffect, useState }  from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import DateFilterData from "../../components/DateFilterData";
 import axios from "axios";
 
-function Order(){
+function Order() {
 
     const [order, setorder] = useState([]); //리스폰스 데이타 객체 담기
     const [payDate, setpayDate] = useState(""); //날짜 정보 담기
+    const [realStartDate, setrealStartDate] = useState(new Date());
+    const [realEndDate, setrealEndDate] = useState(new Date());
 
 
 
@@ -18,215 +20,209 @@ function Order(){
         userkey.id = sessionStorage.getItem('id');
         console.log("겟데이터 보냄")
         await axios.post("http://localhost:4000/myshop/Order", userkey)
-        .then((response) => {
-            console.log("난 데이ㅓㅌ: ", response.data);
-            console.log("주문자 이름 뽑기", response.data.user_ID);
-            console.log("주문 날짜 뽑기", response.data.payDate);
-            console.log("주문 번호 뽑기", response.data.pay_ID);
-            setorder(response.data);
-            
-            setpayDate(response.data.payDate);
-            for(var i = 0; i <= response.data.pro_ID.length; i++){
-                console.log("상품 갯수 뽑기", i);
-                console.log("주문상품 이름 순서대로 뽑기",response.data.pro_ID[i].proName);
-                for(var j = 0; j <= response.data.pro_ID[i].cartQuan.length; j++){
-                    console.log("사이즈 뽑기",response.data.pro_ID[i].cartQuan[j].size);
-                    for(var k = 0; k <= response.data.pro_ID[i].cartQuan[j].colorAmount.length; k++){
-                        console.log("꽌 뽑기",response.data.pro_ID[i].cartQuan[j].colorAmount[k].quan);
-                        
-                    }
-                }
-            }
+            .then((response) => {
+                console.log("난 데이ㅓㅌ: ", response.data);
+                setorder(response.data);
+                setpayDate(response.data.payDate);
+            });
 
-            // const datalist = order.map((orderlist) => (orderlist));
-            
-            // console.log("맵 사용해보기",datalist);
-      
 
-        }); 
+            let threeMonthAgo2 = new Date(
+                new Date().getFullYear(),
+                new Date().getMonth() - 3,
+                new Date().getDate()
+            );
+            setrealStartDate(threeMonthAgo2);
+           
     };
-     
+
     //조회버튼 클릭시 주문 정보 가져오기
     const getData2 = async () => {
-        const userkey = {};
-        userkey.id = sessionStorage.getItem('id');
-        console.log("겟데이터 보냄")
-        await axios.post("http://localhost:4000/myshop/Order", userkey)
-        .then((response) => {
-            console.log("난 데이ㅓㅌ: ", response.data);
-        }); 
+        setrealStartDate(startDate);
+        setrealEndDate(endDate);
     };
 
-
-     //렌더링 되자마자 주문 정보 가져오기
-    useEffect(()=>{
-        
+    
+    //렌더링 되자마자 주문 정보 가져오기
+    useEffect(() => {
         getData1();
     }, []);
-    let num = -1;
+
+    
 
     const [btnClicked, setBtnClicked] = useState("3개월");
     const [startDate, setStartDate] = useState(new Date());
+
+
+    
+   
+
     const [endDate, setEndDate] = useState(
-    new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000)
+        new Date(new Date().getTime() + 0 * 24 * 60 * 60 * 1000)
     );
-        
-    const conconcon =() => {
-        console.log("버튼눌림");
+    
+ 
+
+
+    // 날짜 버튼 클릭, 기간 변경 기능
+    const handleBtnClicked = (e) => {
+        const { value } = e.target;
+        setBtnClicked(value);
+        const currentDate = new Date();
+        // 기본값: placeholder 내용
+        // 오늘 날짜
+        if (value === "오늘") {
+            setStartDate(new Date());
+            setEndDate(new Date());
+        }
+        // 1주일 전부터 오늘까지의 기간
+        if (value === "1주일") {
+            let weekAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+            setStartDate(weekAgo);
+            setEndDate(new Date());
+        }
+        // 1개월 전부터 오늘까지의 기간
+        if (value === "1개월") {
+            let oneMonthAgo = new Date(
+                new Date().getFullYear(),
+                new Date().getMonth() - 1,
+                new Date().getDate()
+            );
+            setStartDate(oneMonthAgo);
+            setEndDate(new Date());
+        }
+        // 3개월 전부터 오늘까지의 기간
+        if (value === "3개월") {
+            let threeMonthAgo = new Date(
+                new Date().getFullYear(),
+                new Date().getMonth() - 3,
+                new Date().getDate()
+            );
+            setStartDate(threeMonthAgo);
+            setEndDate(new Date());
+        }
+        // 6개월 전부터 오늘까지의 기간
+        if (value === "6개월") {
+            let threeMonthAgo = new Date(
+                new Date().getFullYear(),
+                new Date().getMonth() - 6,
+                new Date().getDate()
+            );
+            setStartDate(threeMonthAgo);
+            setEndDate(new Date());
+        }
+
+        console.log(value);
     }
 
 
-      // 날짜 버튼 클릭, 기간 변경 기능
-  const handleBtnClicked = (e) => {
-    const { value } = e.target;
-    setBtnClicked(value);
-    const currentDate = new Date();
-    // 기본값: placeholder 내용
-    // 오늘 날짜
-    if (value === "오늘") {
-      setStartDate(new Date());
-      setEndDate(new Date());
-    }
-    // 1주일 전부터 오늘까지의 기간
-    if (value === "1주일") {
-      let weekAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-      setStartDate(weekAgo);
-      setEndDate(new Date());
-    }
-    // 1개월 전부터 오늘까지의 기간
-    if (value === "1개월") {
-      let oneMonthAgo = new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() - 1,
-        new Date().getDate()
-      );
-      setStartDate(oneMonthAgo);
-      setEndDate(new Date());
-    }
-    // 3개월 전부터 오늘까지의 기간
-    if (value === "3개월") {
-      let threeMonthAgo = new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() - 3,
-        new Date().getDate()
-      );
-      setStartDate(threeMonthAgo);
-      setEndDate(new Date());
-    }
-     // 6개월 전부터 오늘까지의 기간
-     if (value === "6개월") {
-        let threeMonthAgo = new Date(
-          new Date().getFullYear(),
-          new Date().getMonth() - 6,
-          new Date().getDate()
-        );
-        setStartDate(threeMonthAgo);
-        setEndDate(new Date());
-      }
+    console.log("렌더링 되자마자 3개월 기원",realStartDate.toISOString());
+    console.log("바뀐 시작 날짜 : ", realStartDate.toISOString());
+    console.log("바뀐 끝 날짜:",realEndDate.toISOString());
 
-      console.log(value);
+    if(realStartDate.toISOString() <= order.payDate){
+        console.log("값은 확인했다.")
+        console.log(realStartDate.toISOString());
+        console.log(order.payDate);
     }
+  
 
-
-
-
-    return(
+    return (
         <Container>
             <Contents>
                 <Path>현재위치 -- 현재위치</Path>
                 <Title>
-                <Titletext>ORDER</Titletext>
+                    <Titletext>ORDER</Titletext>
                 </Title>
                 <InfoTitleDiv><ControlInfo><ControlInfocontents>주문내역조회</ControlInfocontents></ControlInfo></InfoTitleDiv>
                 <OrderHistory>
-                <Historyboxfieldset style={{display:"flex", flexDirection:"row"}}>
-                <SelectDiv> 
-                    <SelectOption>
-                        <OptionStyle>전체 주문처리상태</OptionStyle>
-                    </SelectOption>
-                </SelectDiv>
+                    <Historyboxfieldset style={{ display: "flex", flexDirection: "row" }}>
+                        <SelectDiv>
+                            <SelectOption>
+                                <OptionStyle>전체 주문처리상태</OptionStyle>
+                            </SelectOption>
+                        </SelectDiv>
 
-                <PrieodSpan>
-                {DateFilterData.map((el, idx) => ( //map 돌려서 데이터필터 컴포넌트 아이디 갯수만큼 버튼을 보여주자
-                    <PeriodInput
-                    onClick={handleBtnClicked}
-                    key={idx}
-                    backgroundColor={btnClicked === el.value}
-                    value = {el.value}
-                    placeholder = {el.value}
-                    />))}
-                    
-                </PrieodSpan>
-                <div>
-                <CalendarInput
-                    selected={startDate}
-                    onChange={date => setStartDate(date)}
-                    dateFormat="yyyy-MM-dd"
-                    selectsStart
-                    startDate={startDate}
-                    endDate={endDate}
-                    maxDate={new Date()}
-                    />
-                </div>
-                <div>
-                <CalendarA
-                    selected={startDate}
-                    onChange={date => setStartDate(date)}
-                    dateFormat="yyyy-MM-dd"
-                    selectsStart
-                    startDate={startDate}
-                    endDate={endDate}
-                    maxDate={new Date()}
-                    value= ""
-                />
-                </div>
-                ~
-                <div style={{marginLeft: "5px"}}>
-                <CalendarInput
-                    selected={endDate}
-                    onChange={date => setEndDate(date)}
-                    dateFormat="yyyy-MM-dd"
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    minDate={startDate}
-                    maxDate={new Date()}
-                    />
-                </div>
-                <div>
-                <CalendarA
-                    selected={endDate}
-                    onChange={date => setEndDate(date)}
-                    dateFormat="yyyy-MM-dd"
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    minDate={startDate}
-                    maxDate={new Date()}
-                    value= ""
-                />
-                </div>
-                <CheckBut>조회</CheckBut>
-                </Historyboxfieldset>
-                <Ul>
-                    <li style={{fontSize:"11px",padding: "0 0 0 9px"}}> - 기본적으로 최근 3개월간의 자료가 조회되며, 기간 검색시 지난 주문내역을 조회하실 수 있습니다.</li>
-                    <li style={{fontSize:"11px",padding: "0 0 0 9px"}}> - 주문번호를 클릭하시면 해당 주문에 대한 상세내역을 확인하실 수 있습니다.</li>
-                </Ul>             
+                        <PrieodSpan>
+                            {DateFilterData.map((el, idx) => ( //map 돌려서 데이터필터 컴포넌트 아이디 갯수만큼 버튼을 보여주자
+                                <PeriodInput
+                                    onClick={handleBtnClicked}
+                                    key={idx}
+                                    backgroundColor={btnClicked === el.value}
+                                    value={el.value}
+                                    placeholder={el.value}
+                                />))}
+
+                        </PrieodSpan>
+                        <div>
+                            <CalendarInput
+                                selected={startDate}
+                                onChange={date => setStartDate(date)}
+                                dateFormat="yyyy-MM-dd"
+                                selectsStart
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
+                            />
+                        </div>
+                        <div>
+                            <CalendarA
+                                selected={startDate}
+                                onChange={date => setStartDate(date)}
+                                dateFormat="yyyy-MM-dd"
+                                selectsStart
+                                startDate={startDate}
+                                endDate={endDate}
+                                maxDate={new Date()}
+                                value=""
+                            />
+                        </div>
+                        ~
+                        <div style={{ marginLeft: "5px" }}>
+                            <CalendarInput
+                                selected={endDate}
+                                onChange={date => setEndDate(date)}
+                                dateFormat="yyyy-MM-dd"
+                                selectsEnd
+                                startDate={startDate}
+                                endDate={endDate}
+                                minDate={startDate}
+                                maxDate={new Date()}
+                            />
+                        </div>
+                        <div>
+                            <CalendarA
+                                selected={endDate}
+                                onChange={date => setEndDate(date)}
+                                dateFormat="yyyy-MM-dd"
+                                selectsEnd
+                                startDate={startDate}
+                                endDate={endDate}
+                                minDate={startDate}
+                                maxDate={new Date()}
+                                value=""
+                            />
+                        </div>
+                        <CheckBut onClick={getData2}>조회</CheckBut>
+                    </Historyboxfieldset>
+                    <Ul>
+                        <li style={{ fontSize: "11px", padding: "0 0 0 9px" }}> - 기본적으로 최근 3개월간의 자료가 조회되며, 기간 검색시 지난 주문내역을 조회하실 수 있습니다.</li>
+                    </Ul>
                 </OrderHistory>
                 <OrderHistory>
                     <TitleH3Div><HH3>주문 상품 정보</HH3></TitleH3Div>
                     <InfoTable border="1">
                         <colgroup>
-                            <col style={{width:"140px"}}></col>
-                            <col style={{width:"93px"}}></col>
-                            <col style={{width:"auto"}}></col>
-                            <col style={{width:"61px"}}></col>
-                            <col style={{width:"111px"}}></col>
-                            <col style={{width:"111px"}}></col>
-                            <col style={{width:"111px"}}></col>
+                            <col style={{ width: "140px" }}></col>
+                            <col style={{ width: "93px" }}></col>
+                            <col style={{ width: "auto" }}></col>
+                            <col style={{ width: "61px" }}></col>
+                            <col style={{ width: "111px" }}></col>
+                            <col style={{ width: "111px" }}></col>
+                            <col style={{ width: "111px" }}></col>
                         </colgroup>
 
-                        <tr style={{borderBottom:"1px solid #ebebeb"}}>
+                        <tr style={{ borderBottom: "1px solid #ebebeb" }}>
                             <InfoTh>주문일자<br></br>[주문번호]</InfoTh>
                             <InfoTh>이미지</InfoTh>
                             <InfoTh>상품정보</InfoTh>
@@ -239,124 +235,139 @@ function Order(){
 
 
 
-                     {/*반복시킬 정보 테이블*/}
+                    {/*반복시킬 정보 테이블*/}
 
+
+                   
                 {
-                    order.length != 0
-                    ? order.pro_ID.map(ord => {
-                        return(<>
-                        {
-                            ord.cartQuan.map(cartQuan =>{
-                                return(
-                                    cartQuan.colorAmount.map(orderorder =>{
+                    realStartDate.toISOString()<=order.payDate && order.payDate <= realEndDate.toISOString()
+                        ?
+                        order.length != 0
+                            ? order.pro_ID.map(ord => {                       
+                                // if(realStartDate.toISOString()<=order.payDate && order.payDate <= realEndDate.toISOString()){
+                                return (<>
+                                    {
+                                        ord.cartQuan.map(cartQuan => {
+                                            return (
+                                                cartQuan.colorAmount.map(orderorder => {
+                                                    // if(realStartDate<=order.payDate&& order.paydate<=realEndDate){
+                                                    return (
+                                                        <>
 
-                                        num++;
-                                        return(
-                                            <>
-                        <InfoTable2>
-                        <colgroup>
-                            <col style={{width:"140px"}}></col>
-                            <col style={{width:"93px"}}></col>
-                            <col style={{width:"auto"}}></col>
-                            <col style={{width:"61px"}}></col>
-                            <col style={{width:"111px"}}></col>
-                            <col style={{width:"111px"}}></col>
-                            <col style={{width:"111px"}}></col>
-                        </colgroup>
-                                <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1"}}>
-                                <InfoTd22 style={{paddingLeft:0,paddingRight:0}}>
-                                <Tdcontentstext2>{order.payDate}</Tdcontentstext2>
-                                </InfoTd22>
-                                    <InfoTd22><Forimg2 src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg2></InfoTd22>
-                                    <InfoTd22 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
-                                    <TdcontentsInput2 name={"proName"}
-                                        value={"["+ord.proName+"]"}
-                                        style={{fontWeight:"bold"}} >                                                                   
-                                    </TdcontentsInput2><br></br>
-                                    <TdcontentsInput2 name={"proName"} style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}
-                                        value={"["+cartQuan.size+"]"+"["+orderorder.color+"]"}                               
-                                    >                                                                
-                                    </TdcontentsInput2>
-                                    </InfoTd22>
-                                    <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}> 
-                                    <TdcontentsInput2 style={{margin: "6px 4px 0", fontWeight:"bold",  width: "20px", }}
-                                        name={"proquan"} value={orderorder.quan}>
-                                    </TdcontentsInput2>
-                                    </InfoTd22>
-                                    
-                                    
-                                    {/* <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>기본배송</Tdcontentstext2></InfoTd22>
+                                                            
+                                                            <InfoTable2>
+                                                                <colgroup>
+                                                                    <col style={{ width: "140px" }}></col>
+                                                                    <col style={{ width: "93px" }}></col>
+                                                                    <col style={{ width: "auto" }}></col>
+                                                                    <col style={{ width: "61px" }}></col>
+                                                                    <col style={{ width: "111px" }}></col>
+                                                                    <col style={{ width: "111px" }}></col>
+                                                                    <col style={{ width: "111px" }}></col>
+                                                                </colgroup>
+                                                                <tr style={{ display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border: "1" }}>
+                                                                    <InfoTd22 style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                                                        <Tdcontentstext2>{order.payDate}</Tdcontentstext2>
+                                                                    </InfoTd22>
+                                                                    <InfoTd22><Forimg2 src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg2></InfoTd22>
+                                                                    <InfoTd22 style={{ paddingLeft: "10px", bordercolor: "#ebebeb", borderRight: "1px solid #ebebeb" }}>
+                                                                        <TdcontentsInput2 name={"proName"}
+                                                                            value={"[" + ord.proName + "]"}
+                                                                            style={{ fontWeight: "bold" }} >
+                                                                        </TdcontentsInput2><br></br>
+                                                                        <TdcontentsInput2 name={"proName"} style={{ margin: "9px 0 0", color: "#707070", lineheight: "16px" }}
+                                                                            value={"[" + cartQuan.size + "]" + "[" + orderorder.color + "]"}
+                                                                        >
+                                                                        </TdcontentsInput2>
+                                                                    </InfoTd22>
+                                                                    <InfoTd22 style={{ paddingright: "10px", borderRight: "1px solid #ebebeb", textAlign: "right" }}>
+                                                                        <TdcontentsInput2 style={{ margin: "6px 4px 0", fontWeight: "bold", width: "20px", }}
+                                                                            name={"proquan"} value={orderorder.quan}>
+                                                                        </TdcontentsInput2>
+                                                                    </InfoTd22>
+
+
+                                                                    {/* <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>기본배송</Tdcontentstext2></InfoTd22>
                                     <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>0원</Tdcontentstext2></InfoTd22> */}
-                                    <InfoTd22 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",marginRight:"10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
-                                    {/* <TdcontentsInput2 style={{fontWeight:"bold" ,  width: "35px",textAlign:"left"}}
+                                                                    <InfoTd22 style={{ paddingright: "10px", paddingLeft: 0, paddingRight: "10ox", marginRight: "10px", borderRight: "1px solid #ebebeb", textAlign: "right" }}>
+                                                                        {/* <TdcontentsInput2 style={{fontWeight:"bold" ,  width: "35px",textAlign:"left"}}
                                         name={"proPrice"} value={orderorder.price}>
                                     </TdcontentsInput2> */}
-                                    <Tdcontentstext2 style={{fontWeight:"bold"}}>{orderorder.price} 원</Tdcontentstext2>
-                                    </InfoTd22>
-                                    <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>-</Tdcontentstext2></InfoTd22>
-                                    <InfoTd22 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", textAlign:"center",paddingRight: 0,width:"98px"}}>
-                                    X
-                                    </InfoTd22>
-                                </tr>
-                        </InfoTable2>
-                                            </>
-                                        )
-                                    })
-                                )
+                                                                        <Tdcontentstext2 style={{ fontWeight: "bold" }}>{orderorder.price} 원</Tdcontentstext2>
+                                                                    </InfoTd22>
+                                                                    <InfoTd22 style={{ paddingright: "10px", borderRight: "1px solid #ebebeb", paddingLeft: 0, paddingRight: 0, textAlign: "center" }}><Tdcontentstext2>-</Tdcontentstext2></InfoTd22>
+                                                                    <InfoTd22 style={{ paddingright: "10px", borderLeft: "1px solid #ebebeb", textAlign: "center", paddingRight: 0, width: "98px" }}>
+                                                                        X
+                                                                    </InfoTd22>
+                                                                </tr>
+                                                            </InfoTable2>
+                                                        </>
+                                                    )
+                                                // }else{
+                                                //     return(
+                                                //         <InfoContentsP>주문 내역이 없습니다.</InfoContentsP>
+                                                //     )
+                                                // }
+                                                })
+                                            )
+                                        })
+                                    }
+                                </>)
+                                // }else{
+                                //     return <InfoContentsP>주문 내역이 없습니다.</InfoContentsP>
+                                // }
                             })
-                        }
-                        </>)
-                    })
-                    // <InfoTable2>
-                    //     <colgroup>
-                    //         <col style={{width:"140px"}}></col>
-                    //         <col style={{width:"93px"}}></col>
-                    //         <col style={{width:"auto"}}></col>
-                    //         <col style={{width:"61px"}}></col>
-                    //         <col style={{width:"111px"}}></col>
-                    //         <col style={{width:"111px"}}></col>
-                    //         <col style={{width:"111px"}}></col>
-                    //     </colgroup>
-                    //             <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1",borderTop:"1px solid #ebebeb"}}>
-                    //             <InfoTd22 style={{paddingLeft:0,paddingRight:0}}>
-                    //             <Tdcontentstext2>{payDate}</Tdcontentstext2>
-                    //             </InfoTd22>
-                    //                 <InfoTd22><Forimg2 src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg2></InfoTd22>
-                    //                 <InfoTd22 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
-                    //                 <TdcontentsInput2 name={"proName"}
-                    //                     style={{fontWeight:"bold"}} >
-                                                                        
-                    //                 </TdcontentsInput2><br></br>
-                    //                 <TdcontentsInput2 style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>
-                                                                        
-                    //                 </TdcontentsInput2>
-                    //                 </InfoTd22>
-                    //                 <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
-                    //                 <TdcontentsInput2 style={{fontWeight:"bold",  width: "30px"}}
-                    //                     name={"proPrice"}>
-                    //                 </TdcontentsInput2>
-                    //                 <Tdcontentstext2 style={{fontWeight:"bold"}}></Tdcontentstext2>
-                    //                 </InfoTd22>
-                                    
-                                    
-                    //                 {/* <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>기본배송</Tdcontentstext2></InfoTd22>
-                    //                 <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>0원</Tdcontentstext2></InfoTd22> */}
-                    //                 <InfoTd22 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",marginRight:"10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
-                    //                 <TdcontentsInput2 style={{fontWeight:"bold" ,  width: "30px"}}
-                    //                     name={"proTotalPrice"}>
-                    //                 </TdcontentsInput2>
-                    //                 <Tdcontentstext2 style={{fontWeight:"bold"}}>원</Tdcontentstext2>
-                    //                 </InfoTd22>
-                    //                 <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>-</Tdcontentstext2></InfoTd22>
-                    //                 <InfoTd22 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", textAlign:"center",paddingRight: 0,width:"98px"}}>
-                    //                 X
-                    //                 </InfoTd22>
-                    //             </tr>
-                    //     </InfoTable2>
+                            // <InfoTable2>
+                            //     <colgroup>
+                            //         <col style={{width:"140px"}}></col>
+                            //         <col style={{width:"93px"}}></col>
+                            //         <col style={{width:"auto"}}></col>
+                            //         <col style={{width:"61px"}}></col>
+                            //         <col style={{width:"111px"}}></col>
+                            //         <col style={{width:"111px"}}></col>
+                            //         <col style={{width:"111px"}}></col>
+                            //     </colgroup>
+                            //             <tr style={{display: "table-row", verticalalign: "inherit", bordercolor: "inherit", border:"1",borderTop:"1px solid #ebebeb"}}>
+                            //             <InfoTd22 style={{paddingLeft:0,paddingRight:0}}>
+                            //             <Tdcontentstext2>{payDate}</Tdcontentstext2>
+                            //             </InfoTd22>
+                            //                 <InfoTd22><Forimg2 src="//www.fromdayone.co.kr/web/product/tiny/202112/4b1c9e539d03ec2c7c5d537b1126b100.webp"></Forimg2></InfoTd22>
+                            //                 <InfoTd22 style={{paddingLeft: "10px",bordercolor: "#ebebeb",borderRight:"1px solid #ebebeb"}}>
+                            //                 <TdcontentsInput2 name={"proName"}
+                            //                     style={{fontWeight:"bold"}} >
+
+                            //                 </TdcontentsInput2><br></br>
+                            //                 <TdcontentsInput2 style={{margin: "9px 0 0", color: "#707070", lineheight: "16px"}}>
+
+                            //                 </TdcontentsInput2>
+                            //                 </InfoTd22>
+                            //                 <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
+                            //                 <TdcontentsInput2 style={{fontWeight:"bold",  width: "30px"}}
+                            //                     name={"proPrice"}>
+                            //                 </TdcontentsInput2>
+                            //                 <Tdcontentstext2 style={{fontWeight:"bold"}}></Tdcontentstext2>
+                            //                 </InfoTd22>
 
 
-                    :<InfoContentsP>주문 내역이 없습니다.</InfoContentsP>
-                }
+                            //                 {/* <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>기본배송</Tdcontentstext2></InfoTd22>
+                            //                 <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>0원</Tdcontentstext2></InfoTd22> */}
+                            //                 <InfoTd22 style={{paddingright: "10px",paddingLeft: 0, paddingRight: "10ox",marginRight:"10px",borderRight:"1px solid #ebebeb",textAlign:"right"}}>
+                            //                 <TdcontentsInput2 style={{fontWeight:"bold" ,  width: "30px"}}
+                            //                     name={"proTotalPrice"}>
+                            //                 </TdcontentsInput2>
+                            //                 <Tdcontentstext2 style={{fontWeight:"bold"}}>원</Tdcontentstext2>
+                            //                 </InfoTd22>
+                            //                 <InfoTd22 style={{paddingright: "10px",borderRight:"1px solid #ebebeb",paddingLeft: 0, paddingRight: 0,textAlign:"center"}}><Tdcontentstext2>-</Tdcontentstext2></InfoTd22>
+                            //                 <InfoTd22 style={{paddingright: "10px",borderLeft:"1px solid #ebebeb", textAlign:"center",paddingRight: 0,width:"98px"}}>
+                            //                 X
+                            //                 </InfoTd22>
+                            //             </tr>
+                            //     </InfoTable2>
+
+
+                        : <InfoContentsP>주문 내역이 없습니다.</InfoContentsP>
+                    : <InfoContentsP>주문 내역이 없습니다.</InfoContentsP>
+                    }
                 </OrderHistory>
             </Contents>
         </Container>
@@ -428,7 +439,7 @@ let ControlInfo = styled.ul` //안내 바
     height: 44px;
     position: relative;
     font-size: 0;
-` 
+`
 
 let ControlInfocontents = styled.li` //내용
     border-left: 1px solid #c9c9c9;
@@ -451,7 +462,7 @@ let ControlInfocontents = styled.li` //내용
    
 `
 
-let OrderHistory = styled.div ` //주문내역조회기능 div
+let OrderHistory = styled.div` //주문내역조회기능 div
     margin: 0;
     padding: 0;
 `
@@ -611,7 +622,7 @@ let InfoContentsP = styled.p` //정보 내용 P
 `
 
 
-let InfoTable2 = styled.table `  //정보 테이블
+let InfoTable2 = styled.table`  //정보 테이블
     /* border-top: 1px solid #ebebeb; */
     line-height: 1.5;
     position: relative;
@@ -631,7 +642,7 @@ let InfoTd22 = styled.td` //정보테이블 tbody td
     vertical-align: middle;
     word-break: break-all;
     word-wrap: break-word;
-` 
+`
 
 let Forimg2 = styled.img` //img
     max-width: 75px;
@@ -640,7 +651,7 @@ let Forimg2 = styled.img` //img
     border: none;
 `
 
-let TdcontentsInput2 = styled.input ` //텍스트스타일
+let TdcontentsInput2 = styled.input` //텍스트스타일
     font-size: 11px;
     margin: 6px 0 0;
     color: #757575;
@@ -650,13 +661,13 @@ let TdcontentsInput2 = styled.input ` //텍스트스타일
 `
 
 
-let Tdcontentstext2 = styled.text ` //텍스트스타일
+let Tdcontentstext2 = styled.text` //텍스트스타일
     font-size: 11px;
     margin: 6px 0 0;
     color: #757575;
 `
 
-let TdcontentsInputNumber2 = styled.input ` //텍스트스타일
+let TdcontentsInputNumber2 = styled.input` //텍스트스타일
     font-size: 11px;
     margin: 6px 0 0;
     color: #757575;
