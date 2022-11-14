@@ -189,7 +189,6 @@ function OrderForm(){
             buyer_tel: buyerTel, // 구매자 전화번호 (필수항목)
             buyer_addr: joinAddress + " " + joinDetailAddress,
             dbSave,
-            buyer_email: 'l4279625@gmail.com', // 구매자 이메일
             buyer_postalcode: '05258',
 
             recipient, // 받는 사람 이름
