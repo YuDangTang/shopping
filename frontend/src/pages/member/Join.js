@@ -11,9 +11,9 @@ function Join() {
     const [regTel, setRegTel] = useState(false);
     const [regAddress, setRegAddress] = useState(false);
     const [regBirth, setRegBirth] = useState(false);
+    const [checkId, setCheckId] = useState(false); //아이디 중복검사
 
-    //유저 아이디
-    const [userId, setUserId] = useState(false);
+    const [userId, setUserId] = useState(false); //유저 아이디
 
     const onFinish = (e) => {
         e.preventDefault(); // 기본동작 막기
@@ -43,6 +43,10 @@ function Join() {
         }
         if (regBirth === false) {
             alert("생년월일을 확인하세요.");
+            return;
+        }
+        if (checkId === false) {
+            alert("아이디 중복을 확인하세요.");
             return;
         }
 
@@ -100,7 +104,8 @@ function Join() {
                 }
                 else {
                     alert("사용 가능한 아이디 입니다");
-                    const joinP = document.getElementsByName("joinPw");
+                    setCheckId(true);
+                    console.log("화긴 : ", checkId);
                 }
             })
             .catch(function (err) {
