@@ -12,7 +12,7 @@ function Category(){
 
     //db연결하고 상품 테이블 가지고와 products에 저장하고 지역 state에 setDatas 해준다.
     const getData = async () => {
-        try{
+        try {
             const response = await axios.get('http://localhost:4000');
             const products = response.data;
             // console.log(products);

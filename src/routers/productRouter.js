@@ -9,4 +9,5 @@ productRouter.route("/:id").get(getProductDetail).post(postProductDetail);
 productRouter.route("/:id/review").get(getProductReview).post(postProductReview);
 productRouter.route("/:id/postCommend").post(postProBoard);
 
+ 
 export default productRouter;

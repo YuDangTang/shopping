@@ -30,8 +30,7 @@ function Review(){
         try{
             const obj = {};
             // const ra =document.getElementsByName('good')[i].value
-            //라디오 버튼 set돌려줄 반복문
-            for(var i=0; i<document.getElementsByName('good').length; i++){ 
+            for(var i=0; i<document.getElementsByName('good').length; i++){ //라디오 버튼 set돌려줄 반복문
                 setRd(document.getElementsByName('good')[i].value);
 
             }

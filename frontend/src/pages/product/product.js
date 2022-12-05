@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import styled from 'styled-components'; // react에 css 바로 사용 라이브러리
 import { useParams, useNavigate } from "react-router-dom" // 1. useParams 라는 기능을 임포트한다.
 import axios from "axios";
+import PostComponent from '../../components/PostComponent';
 
 // 리뷰 추가
 import Reviewview from "../../components/Reviewview";
@@ -117,6 +118,12 @@ function Product(){
                 return setSelectSize("");
             }
         }
+        setBuyTotal(temp)
+        var tmp = proPrice * buyTotal
+        setBuyPrice(tmp);
+
+
+    }
 
 
         //수량 변화시 함수 실행
@@ -158,10 +165,10 @@ function Product(){
                 // console.log("url: ", param)
                 await axios.post(`http://localhost:4000/product/${param}`, obj)
                 .then((response) => {
-                    if(response.data == "fail"){
+                    if (response.data == "fail") {
                         alert("해당 상품은 존재하지 않습니다.");
-                        return; 
-                    }else{
+                        return;
+                    } else {
                         const data = response.data;
                         setDatas(data);
                         setProTitle(data.proName);
@@ -170,16 +177,16 @@ function Product(){
                         console.log("db로부터 받아온 데이터: ", data, "   이름: ", data.proName);
 
                     }
-                }); 
+                });
 
 
-            }catch(err){
-                console.log('DB연결하고 데이터 가져오는데 에러발생...');
-            }
-        };
+        } catch (err) {
+            console.log('DB연결하고 데이터 가져오는데 에러발생...');
+        }
+    };
 
 
-    useEffect(()=>{
+    useEffect(() => {
         getData(param);
     }, []);//처음 한번만 실행 없으면 계속실행함
 
@@ -187,27 +194,27 @@ function Product(){
     //router로 /id: 로 끝냈으니 뒤에 오면 id: 뒤에 값이다.
     const param = useParams().id;
 
-        return(
-            <Contents>
-                <Lilpath>
-                    페이지 - 페이지
-                </Lilpath>
-                <ProductDetail>
+    return (
+        <Contents>
+            <Lilpath>
+                페이지 - 페이지
+            </Lilpath>
+            <ProductDetail>
                 <ImgArea>
-                <Imgcontent>
-                {
-                    datas.proName != null
-                    ? <img style={{maxWidth:"100"}} src={"/" + datas.proImg[0]}/>
-                    : null
-                }
-                </Imgcontent>
+                    <Imgcontent>
+                        {
+                            datas.proName != null
+                                ? <img style={{ maxWidth: "100" }} src={"/" + datas.proImg[0]} />
+                                : null
+                        }
+                    </Imgcontent>
                 </ImgArea>
-                <Info>  
+                <Info>
                     {/* 파라미터로 상품이름 가지고오기 */}
                     {
                         datas.proName != null
-                        ? <InfoTitle>{datas.proName}</InfoTitle>
-                        : null
+                            ? <InfoTitle>{datas.proName}</InfoTitle>
+                            : null
                     }
                 
                 <table>
@@ -327,8 +334,7 @@ function Product(){
                                 )
                                 : null
                             }
-                            </>
-                        }
+
                         </tr>
                         </table>
 
@@ -371,12 +377,10 @@ function Product(){
 
 
 
-                         {/* //총 갯수 표시 */}
+                    {/* //총 갯수 표시 */}
                     <Totalprice>
-
-                        TOTAL : {buyTotal}개<br/>
+                        TOTAL : {buyTotal}개<br />
                         가격 : {buyTotal * proPrice}원
-
                     </Totalprice>
                     <Actionarea>
                         <Actionarea2>
@@ -385,24 +389,22 @@ function Product(){
                             <Buynow>
                                 BUY IT NOW
                             </Buynow>
-                            <div style={{display: "flex", flexdirection: "column"}}>
-                            <Buynow2 onClick={(e) => onClickBuy()}>
-                                ADD TO CART
-                            </Buynow2>
-                            <Buynow3>
-                                WISH LIST
-                            </Buynow3>
+                            <div style={{ display: "flex", flexdirection: "column" }}>
+                                <Buynow2 onClick={(e) => onClickBuy()}>
+                                    ADD TO CART
+                                </Buynow2>
+                                <Buynow3>
+                                    WISH LIST
+                                </Buynow3>
                             </div>
                         </Actionarea2>
                     </Actionarea>
                 </Info>
-                </ProductDetail>
+            </ProductDetail>
+            <PostComponent proId={param}></PostComponent>
+        </Contents>
 
-                <PostComponent proId={param}></PostComponent>
-
-            </Contents>         
-            
-        );
+    );
 };
 export default Product;
 
@@ -532,7 +534,7 @@ const Actionarea2 = styled.div` //결제버튼지역2
     padding: 20px 0 10px;
     text-align: center;
 `
-const Buynow = styled.button `//buy it now 버튼
+const Buynow = styled.button`//buy it now 버튼
     width: 100%;
     margin-bottom: 1%;
     font-size: 11px;
@@ -549,7 +551,7 @@ const Buynow = styled.button `//buy it now 버튼
     cursor : pointer;
   }
 `
-const Buynow2 = styled.button `//buy it now 밑에 버튼1
+const Buynow2 = styled.button`//buy it now 밑에 버튼1
     margin-right: 1%;
     width: 49.5%;
     float: left;
@@ -567,7 +569,7 @@ const Buynow2 = styled.button `//buy it now 밑에 버튼1
     cursor : pointer;
   }
 `
-const Buynow3 = styled.button `//buy it now 밑에 버튼2
+const Buynow3 = styled.button`//buy it now 밑에 버튼2
     width: 49.5%;
     float: left;
     border: 1px solid #ccc;
@@ -611,6 +613,17 @@ const OptionTd = styled.td`
     font-size:14px;
     width: 220px;
     
+    div {
+        color: gray;
+        font-size: 12px;
+
+
+        strong{
+            font-size: 14px;
+            /* color: black; */
+        }
+    }
+
     div {
         color: gray;
         font-size: 12px;

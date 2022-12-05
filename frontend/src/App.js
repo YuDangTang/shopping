@@ -33,13 +33,14 @@ import Basket from "./pages/order/Basket";
 import Order from "./pages/myshop/Order";
 import MyShop from "./pages/myshop/MyShop";
 import Product from "./pages/product/product.js";
-import Modify from './pages/member/Modify.js';
-import Review from './components/Review.js';
+import OrderForm from './pages/order/OrderForm.js';
+import Chart from './pages/admin/Chart.js';
 import Search from './pages/product/Search';
 
+import Modify from './pages/member/Modify.js';
+import Review from './components/Review.js';
 import UpdateDetail from './pages/admin/UpdateDetail.js';
 import PostProDetail from './pages/admin/PostProDetail.js';
-
 function App() {
   // 로그인 상태 관리
   const [isLogin, setIsLogin] = useState(false);
@@ -59,39 +60,38 @@ function App() {
   return (
     <>
       <Router>
+        <GlobalStyles />
+        <TopBox />
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/member/login" element={<Login />} />
+          <Route path="/member/Join" element={<Join />} />
+          <Route path="/member/Modify" element={<Modify />} />
+          <Route path="/order/Basket" element={<Basket />} />
+          <Route path="/order/OrderForm" element={<OrderForm />} />
+          <Route path="/myshop/Order" element={<Order />} />
+          <Route path="/myshop/MyShop" element={<MyShop />} />
+          <Route path="/product/:id" element={<Product />} />
+          <Route path="/product/:id/review" element={<Review />} />
+          <Route path="/product/search/:searchName" element={<Search />} /> 
 
-        <GlobalStyles/>
-        <TopBox/>
-          <Routes>
-              <Route path="/" element={<Main />} />
-              <Route path="/member/login" element={<Login />} />
-              <Route path="/member/Join" element={<Join />} />
-              <Route path="/member/Join" element={<Modify/>}/>
-              <Route path="/order/Basket" element={<Basket />} />
-              <Route path="/myshop/Order" element={<Order />} />
-              <Route path="/myshop/MyShop" element={<MyShop />} />
-              <Route path="/product/:id" element={<Product />} /> 
-              <Route path="/product/:id/review" element={<Review />} /> 
-              <Route path="/product/search/:searchName" element={<Search />} /> 
-
-
-
-          <Route path="/test" element={<Test />} />
+          <Route path="/test" element={<Test/>} />
 
           <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/chart" element={<Chart />} />
           <Route path="/admin/regProName" element={<RegisterProName />}></Route>
           <Route path="/admin/regProSzie" element={<RegisterProSize />}></Route>
           <Route path="/admin/regProDetail" element={<RegisterProMat />}></Route>
           <Route path="/admin/regProMaterial" element={<RegisterMaterial />}></Route>
-          <Route path="/admin/regProColor" element={<RegisterColor />}></Route>
-          <Route path="/admin/:id/stocks" element={<Stocks />}></Route>
-          <Route path="/admin/:id/update" element={<Update url={"update"} />}></Route>
-          <Route path="/admin/:id/update2" element={<Update url={"update2"} />}></Route>
+          <Route path="/admin/regProColor" element={<RegisterColor/>}></Route>
+          <Route path="/admin/:id/stocks" element={<Stocks/>}></Route>
+          <Route path="/admin/:id/update" element={<Update url={"update"}/>}></Route>
+          <Route path="/admin/:id/update2" element={<Update url={"update2"}/>}></Route>
           <Route path="/admin/:id/detailUpdate" element={<UpdateDetail />}></Route>
           <Route path="/admin/:id/postProDetail" element={<PostProDetail />}></Route>
         </Routes>
-        <Botbox />
-      </Router>
+        <Botbox/>
+    </Router>
     </>
   );
 };

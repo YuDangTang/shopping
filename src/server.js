@@ -7,13 +7,16 @@ import productRouter from "./routers/productRouter.js"
 import User from "./models/User.js"
 import bcrypt from 'bcrypt'
 import Product from "./models/Product.js";
+import orderRouter from "./routers/orderRouter.js";
+import Cart from "./models/Cart.js";
 // 리뷰 import 추가함
 import Review from "./models/Review.js";
 // import reviewRouter from"./routers/reviewRouter";
-
+import Order from "./models/Order.js";
 
 const PORT = 4000;	
 const app = express();
+
 
 app.use(cors());
 app.use(express.json());
@@ -58,6 +61,7 @@ app.get("/",getMain);
 
 app.use("/admin", adminRouter);
 app.use("/product", productRouter);
+app.use("/order", orderRouter);
 
 app.listen(PORT, handelListening);
 
@@ -68,16 +72,24 @@ const join = async (req, res) => {
             joinPw,
             joinName,
             joinTel,
-            joinFullAddress, joinBirth } = req.body;
+            joinAddress, joinDetailAddress, joinBirth } = req.body;
         const boo = await User.create({
             userId: joinId,
             userPw: joinPw,
             userName: joinName,
             userTel: joinTel,
-            userAddress: joinFullAddress,
+            userAddress: joinAddress,
+            userDetailAddress: joinDetailAddress,
             userBirth: joinBirth,
         });
         if (boo) {
+            await Cart.create({
+                userID: joinId,
+                // products: [{
+                //     proName: cart.proName,
+                //     cartQuan,
+                // }],
+            });
             return res.send("Success");
         } else {
             return res.send("fail");
@@ -124,8 +136,9 @@ const login = async (req, res) => {
         const byID = await bcrypt.compare(loginPw, checkPw);
         if (byID) {
             req.session.user = loginId;
-            // const user = req.session.user;
-            // console.log("user: ", user);
+            if (req.session.user === "admin1") {
+                return res.send("admin");
+            }
             return res.send("sucess");
         } else {
             return res.send("fail");
@@ -172,9 +185,6 @@ const review = async (req, res) => {
     }
 };
 
-app.post("/product/:id/review", review);
-
-
 //리뷰 전체 보내기
 const reviewvew = async (req, res) => {
     try {
@@ -189,6 +199,24 @@ const reviewvew = async (req, res) => {
             return res.send(proreview);
         }
         return res.send("fail");//proreview가 없으면 fail문구를 보내줘유
+    }catch (err) {
+        console.log(err);
+    }
+};
+app.post("/product/:id/review", review);
+
+//유저정보 수정을 위한 유저정보 쏘기
+const GetInfo = async (req, res) => {
+    const userkey = req.body.userkey;
+
+    try {
+        const userInfo = await User.findOne({ "userId": userkey });
+
+        if (userInfo == null) {
+            return res.send("fail");
+        } else {
+            return res.send(userInfo);
+        }
     }
     catch (err) {
         console.log(err);
@@ -196,8 +224,6 @@ const reviewvew = async (req, res) => {
 };
 
 app.post("/product/:id/reviewview", reviewvew); //보내준 값들은 reviewview로 갑니다유
-
-app.post("/member/GetInfo", GetInfo);
 
 
 
@@ -230,3 +256,65 @@ const search = async ( req,res) =>{
 app.post("/product/search/DataSite", search); //해당 주소로 객체를 쏴준다. 받기도 함
 //굳이 url 쏴주는 곳은 동적으로 받을 필요가 없다.그냥 주고받는 장소는 한곳이면 되니까.
 
+app.post("/member/GetInfo", GetInfo);
+
+
+// //회원정보 수정
+const Modify = async (req, res) => {
+    try {
+        const { joinId,
+            joinPw,
+            joinName,
+            joinTel,
+            joinAddress, joinDetailAddress, joinBirth } = req.body;
+
+        console.log("요청바디확인", req.body);
+        console.log("수정 전 비번 : ", joinPw);
+        const newPw = await User.modifyPw(joinPw);
+        console.log("수정 후 비번 : ", newPw);
+
+        const boo = await User.updateOne(
+            { userId: joinId },
+            {
+                $set:
+                {
+                    userPw: newPw,
+                    userName: joinName,
+                    userTel: joinTel,
+                    userAddress: joinAddress,
+                    userDetailAddress: joinDetailAddress,
+                    userBirth: joinBirth
+                }
+            });
+        if
+            (boo) {
+            console.log("안녕`~~~~");
+            return res.send("Success");
+        } else {
+            return res.send("fail");
+        }
+    } catch (err) {
+        console.log("에러임", err);
+    }
+};
+app.post("/member/Modify", Modify);
+
+
+//주문내역 확인하기
+const GetOrderHistory = async (req, res) => {
+    const userkey = req.body.userkey;
+
+    try {
+        const userInfo = await Order.findOne({ "userId": userkey });
+
+        if (userInfo == null) {
+            return res.send("fail");
+        } else {
+            return res.send(userInfo);
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+};
+app.post("/myshop/Order", GetOrderHistory);

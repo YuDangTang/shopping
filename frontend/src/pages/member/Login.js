@@ -19,6 +19,11 @@ function Login() {
                     sessionStorage.setItem('id', loginId);
                     window.location.href = "/";
                 }
+                else if (response.data === "admin") {
+                    alert("관리자 로그인 성공");
+                    sessionStorage.setItem('id', loginId);
+                    window.location.href = "/admin";
+                }
                 else {
                     alert("아이디 혹은 비밀번호를 확인해 주세요");
                     e.target.loginId.value = "";
@@ -96,7 +101,7 @@ let Inputbox = styled.div `  //로그인박스2
     overflow: hidden;
 `
 
-let Inputttt = styled.input `  //아이디박스
+let Inputttt = styled.input.attrs({ maxLength: "16" })` //아이디박스
     padding: 0 15px;
     width: 100%;
     height: 50px;
@@ -107,7 +112,7 @@ let Inputttt = styled.input `  //아이디박스
     box-sizing: border-box;
     border-bottom: 1px solid #e1e1e1;
 `
-let Inputttt2 = styled.input `  //비번박스
+let Inputttt2 = styled.input.attrs({ maxLength: "16" })`  //비번박스
     padding: 0 15px;
     width: 100%;
     height: 50px;

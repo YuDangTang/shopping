@@ -6,37 +6,52 @@ import { useNavigate } from 'react-router-dom';
 
 
 function Modify(){
-
-
     //유저 정보
     const [userId, setUserId] = useState("");
     const [userPw, setUserpw] = useState("");
     const [userName, setuserName] = useState("");
     const [userTel, setuserTel] = useState("");
-    const [userAddress, setuserAddress] = useState("");
+    const [userDetailAddress, setuserDetailAddress] = useState("");
     const [userBirth, setBirth] = useState("");
+    const [enroll_company, setEnroll_company] = useState({
+        address: '',
+    });
+
+    //주소 api 변수 및 핸들러들
+    const [popup, setPopup] = useState(false);
+    const handleInput = (e) => {
+        setEnroll_company({
+            ...enroll_company,
+            [e.target.name]: e.target.value,
+        });
+    }
+    const handleComplete = (data) => {
+        setPopup(!popup);
+    }
 
 
+    useEffect(() => {
 
-    useEffect(()=>{
+        const userkey = sessionStorage.getItem('id');
 
-    const userkey =sessionStorage.getItem('id');
+        axios.post('http://localhost:4000/member/GetInfo', { userkey })
+            .then((res) => {
 
-    axios.post('http://localhost:4000/member/GetInfo', {userkey})
-        .then((res) => {
-
-        console.log("내정보수정에 유저정보 받기 : ", res.data.userId);
+                console.log("내정보수정에 유저정보 받기 : ", res.data.userId);
 
 
-        setUserId(res.data.userId);
-        setUserpw(res.data.userPw);
-        setuserName(res.data.userName);
-        setuserTel("0"+res.data.userTel);
-        setuserAddress(res.data.userAddress);
-        setBirth(res.data.userBirth);
+                setUserId(res.data.userId);
+                setUserpw(res.data.userPw);
+                setuserName(res.data.userName);
+                setuserTel("0" + res.data.userTel);
+                setEnroll_company({
+                    address: res.data.userAddress
+                });
+                setuserDetailAddress(res.data.userDetailAddress);
+                setBirth(res.data.userBirth);
 
-    })
-  });
+            })
+    }, []);
 
 
 
@@ -102,7 +117,11 @@ function Modify(){
         setRegTel(regExp5.test(e.target.value));
     };
     const handleInputAddress = (e) => {
-        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣]{0,100}$/
+        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣]{11,30}$/
+        setRegAddress(regExp6.test(e.target.value));
+    };
+    const handleInputDetailAddress = (e) => {
+        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣\s]{3,20}$/
         setRegAddress(regExp6.test(e.target.value));
     };
     const handleInputBirth = (e) => {
@@ -141,15 +160,14 @@ function Modify(){
         const joinName = e.target.joinName.value;
         const joinTel = e.target.joinTel.value;
         const joinAddress = e.target.joinAddress.value;
+        console.log("나와라 : ", joinAddress);
         const joinDetailAddress = e.target.joinDetailAddress.value;
-        const joinFullAddress = joinAddress + " " + joinDetailAddress;
         const joinBirth = e.target.joinBirth.value;
-        console.log("리퀘스트데이타",joinId, joinPw, joinName, joinTel, joinFullAddress, joinBirth);
+        console.log("리퀘스트데이타", joinId, joinPw, joinName, joinTel, joinAddress, joinDetailAddress, joinBirth);
         await axios.post('http://localhost:4000/member/Modify', {
-            joinId, joinPw, joinName, joinTel, joinFullAddress, joinBirth
+            joinId, joinPw, joinName, joinTel, joinAddress, joinDetailAddress, joinBirth
         }).then((res) => {
-            console.log("여기에요");
-            console.log("리스폰스데이타 : ", res.data);
+            console.log("리스폰스데이타 넹 : ", res.data);
             if (res.data === "Success") {
                 alert('회원정보 수정에 성공하였습니다');
                 window.location.href = '/';
@@ -159,23 +177,7 @@ function Modify(){
         })
     };
 
-
-    //주소 api 변수 및 핸들러들
-    const [enroll_company, setEnroll_company] = useState({
-        address: '',
-    });
-    const [popup, setPopup] = useState(false);
-    const handleInput = (e) => {
-        setEnroll_company({
-            ...enroll_company,
-            [e.target.name]: e.target.value,
-        })
-    }
-    const handleComplete = (data) => {
-        setPopup(!popup);
-    }
-
-    return(
+    return (
         <Container>
             <Contents>
                 <Path>현재 위치 -- 현재위치</Path>
@@ -204,7 +206,7 @@ function Modify(){
                             <tr style={{ display: "table-row", verticalalign: "inherit", bordercolor: "inherit" }}>
                                 <Tableth>아이디</Tableth>
                                 <Tabletd><Inputinput id="joinId" name="joinId" minlength="4" maxlength="12" value={userId}></Inputinput>
-                                (영문, 숫자 4~12 글자)
+                                    (영문, 숫자 4~12 글자)
                                 </Tabletd>
                             </tr>
 
@@ -236,9 +238,9 @@ function Modify(){
 
                             <tr style={{ className: "address_search", display: "table-row", verticalalign: "inherit", bordercolor: "inherit" }}>
                                 <Tableth>주소</Tableth>
-                                <Tabletd><Inputinput2 className="user_enroll_text" type="text" id="joinrTel" name="joinAddress" minlength="11" maxlength="11" onChange={handleInput} value={enroll_company.address}></Inputinput2>
+                                <Tabletd><Inputinput2 className="user_enroll_text" type="text" id="joinAddress" name="joinAddress" minlength="11" maxlength="30" onChange={handleInput} value={enroll_company.address}></Inputinput2>
                                     <InsertButton type="button" onClick={handleComplete}>주소검색</InsertButton><br></br>
-                                    <Inputinput2 className="user_enroll_text" type="text" id="joinrTel" name="joinDetailAddress" minlength="11" maxlength="30" onChange={handleInputAddress}></Inputinput2> 상세주소
+                                    <Inputinput2 className="user_enroll_text" type="text" id="joinDetailAddress" name="joinDetailAddress" minlength="3" maxlength="20" defaultValue={userDetailAddress} onChange={handleInputDetailAddress}></Inputinput2> 상세주소
                                     {popup && <Post company={enroll_company} setcompany={setEnroll_company}></Post >}
                                 </Tabletd>
                             </tr>
@@ -313,7 +315,7 @@ let Thankyou = styled.div` //감사합니다 큰div
     padding: 0;
 `
 
-let ThankyouDiv =styled.div` //감사합니다 작은div
+let ThankyouDiv = styled.div` //감사합니다 작은div
     border-width: 1px;
     border-color: #ebebeb;
     clear: both;
@@ -332,7 +334,7 @@ let ThankyouContents = styled.div` //감사합니다 내용 div
     width: 100%;
     box-sizing: border-box;
 `
-let ThankyouContentsStyle1 = styled.span ` //감사합니다 내용 스타일
+let ThankyouContentsStyle1 = styled.span` //감사합니다 내용 스타일
     font-size: 11px;
     color: #404040;
 `
@@ -419,7 +421,7 @@ let Inputinput = styled.input.attrs({ maxLength: "12" })` //인풋텍스트 스�
     
 `
 
-let Inputinput2 = styled.input.attrs({ maxLength: "12" })` //인풋텍스트 스타일
+let Inputinput2 = styled.input.attrs({ maxLength: "16" })` //인풋텍스트 스타일
     height: 26px;
     line-height: 26px;
     padding: 0px 4px;

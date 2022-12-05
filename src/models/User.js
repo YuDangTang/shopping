@@ -22,8 +22,12 @@ const userSchema = new mongoose.Schema({
     }, 
     userAddress: {
         type: String, required: true,
-        minLength: 15, maxLength: 100
-    }, //임시최소길이
+        minLength: 11, maxLength: 30
+    },
+    userDetailAddress: {
+        type: String, required: true,
+        minLength: 3, maxLength: 20
+    },
     userBirth: {
         type: Number, required: true, //trim:true,
         minLength: 8, maxLength: 8
@@ -54,6 +58,28 @@ userSchema.pre('save', function (next) {
         next() // 그 외에는 그냥 내보냄
     }
 })
+
+userSchema.statics.modifyPw = async function (pw) {
+    var user = pw;
+    // if (user.isModified('userPw')) { //비밀번호 수정 시에만 실행되도록
+    user = await bcrypt.hash(user, saltRounds);
+    // bcrypt.genSalt(saltRounds, function (err, salt, user) {
+    //     if (err)
+    //         bcrypt.hash(user, salt, function (err, hash) {
+    //             console.log("유저 : ", user);
+    //             if (err) {
+    //                 console.log("에러 : ", err);
+    //                 throw err;
+    //             }
+    //         user = hash;
+    //         return err;
+    //     })
+    //     return user; 
+    // })
+    console.log("USER: ", user);
+    return user
+    // } 
+}
 
 // 입력된 비밀번호와 데이터베이스에 있는 암호화된 비밀번호가 같은지 비교
 // => 평문을 암호화해서 비교
