@@ -123,10 +123,7 @@ function OrderForm() {
             obj.colorAmount = [];
             const dataObj = {
                 color: datas[i].sizeColor.split("/")[1].replace("]", ""),
-                quan: datas[i].quan,
-                cost: datas[i].cost,
-                price: datas[i].price,
-                profit: datas[i].profit
+                quan: datas[i].quan
             };
             obj.colorAmount.push(dataObj);
             if (proNameArr.includes(datas[i].proName)) {
@@ -135,9 +132,6 @@ function OrderForm() {
                         const sizeColorObj = {
                             color: datas[i].sizeColor.split("/")[1].replace("]", ""),
                             quan: datas[i].quan,
-                            cost: datas[i].cost,
-                            price: datas[i].price,
-                            profit: datas[i].profit
                         };
                         let cnt = 0;
                         for (var k = 0; k < pro_ID[j].cartQuan.length; k++) {
@@ -190,6 +184,7 @@ function OrderForm() {
             buyer_tel: buyerTel, // 구매자 전화번호 (필수항목)
             buyer_addr: joinAddress + " " + joinDetailAddress,
             dbSave,
+            buyer_email: 'l4279625@gmail.com', // 구매자 이메일
             buyer_postalcode: '05258',
 
             recipient, // 받는 사람 이름
@@ -252,10 +247,12 @@ function OrderForm() {
         saveDB(DBModel);
     }
 
+    {/* 가연 */ }
+    //라디오 버튼으로 정보 입력 및 초기화
+    const [state, setState] = useState(""); // 라디오 상태 저장
     const [buyerName, setBuyerName] = useState("");
-    const [enroll_company, setEnroll_company] = useState({
-        address: '',
-    });
+    // const [buyerAddr, setBuyerAddr] = useState("");
+    const [buyerAddr, setBuyerAddr] = useState("");
     const [buyerDetAddr, setBuyerDetAddr] = useState("");
     const [buyerTel, setBuyerTel] = useState("");
 
@@ -264,24 +261,34 @@ function OrderForm() {
         axios.post(`http://localhost:4000/order/OrderForm/GetInfo`, { userkey })
             .then((res) => {
                 setBuyerName(res.data.userName);
-                setEnroll_company({
-                    address: res.data.userAddress
-                });
+                setBuyerAddr(res.data.userAddress);
+                console.log("흑흑.. : ", buyerAddr);
                 setBuyerDetAddr(res.data.userDetailAddress);
                 const zero = 0;
                 const tel = res.data.userTel;
                 const inputTel = zero + "" + tel;
                 setBuyerTel(inputTel);
             })
-    }, []);
+    })
 
     //주소 api 변수 및 핸들러들
+    const [enroll_company, setEnroll_company] = useState({
+        address: '',
+    });
     const [popup, setPopup] = useState(false);
+
+    // const handleInput = (e) => {
+    //     setEnroll_company({
+    //         ...enroll_company,
+    //         [e.target.name]: e.target.value,
+    //     })
+    //     setBuyerAddr(enroll_company.address);
+    // }
     const handleInput = (e) => {
         setEnroll_company({
             ...enroll_company,
             [e.target.name]: e.target.value,
-        });
+        })
     }
     const handleComplete = (data) => {
         setPopup(!popup);
@@ -290,6 +297,7 @@ function OrderForm() {
     const [enroll_company2, setEnroll_company2] = useState({
         address: '',
     });
+
     const [popup2, setPopup2] = useState(false);
     const handleInput2 = (e) => {
         setEnroll_company2({
@@ -297,9 +305,11 @@ function OrderForm() {
             [e.target.name]: e.target.value,
         })
     }
+
     const handleComplete2 = (data) => {
         setPopup2(!popup2);
     }
+
 
     //버튼 클릭시 보여주고 가리는 기능
     const [showing, setShowing] = useState(false);
@@ -307,6 +317,7 @@ function OrderForm() {
 
     //무통장입금,카카오페이 텍스트변환
     const [switchtext, setswitchtext] = useState();
+
 
     const toggleShowing = () => {
         if (showing2 === true) {
@@ -325,30 +336,6 @@ function OrderForm() {
         if (showing2 === false) {
             setShowing2(prevShowing2 => !prevShowing2);
             setswitchtext("카카오페이 ");
-        }
-    }
-
-    //라디오 버튼
-    const checkRadio = () => {
-        const ra1 = document.getElementById("inforadio1");
-        const ra2 = document.getElementById("inforadio2");
-
-        const name = document.getElementsByName("recipient");
-        const address1 = document.getElementsByName("recipAddress");
-        const address2 = document.getElementsByName("recipDetailAddress");
-        const callnum = document.getElementsByName("recipientTel");
-
-        if (ra1.checked === true) {
-            name[0].value = document.getElementsByName("buyer")[0].value;
-            address1[0].value = document.getElementsByName("joinAddress")[0].value;
-            address2[0].value = document.getElementsByName("joinDetailAddress")[0].value;
-            callnum[0].value = document.getElementsByName("userTel")[0].value;
-        }
-        else if (ra2.checked === true) {
-            name[0].value = "";
-            address1[0].value = "";
-            address2[0].value = "";
-            callnum[0].value = "";
         }
     }
 
@@ -446,18 +433,19 @@ function OrderForm() {
                                         <Tableth>주문하시는 분</Tableth>
                                         <Tabletd>
                                             <OrderInput style={{ width: "180px" }}
-                                                name="buyer" id = "buyer" defaultValue={buyerName}></OrderInput>
+                                                name="buyer" defaultValue={buyerName}></OrderInput>
                                         </Tabletd>
                                     </tr>
                                     <tr>
                                         <Tableth>주소</Tableth>
                                         <Tabletd>
+                                            {/* 가연 */}
                                             <OrderInput className="user_enroll_text" type="text"
-                                                id="joinrTel" name="joinAddress" minlength="11" maxlength="11" onChange={handleInput} value={enroll_company.address} style={{ width: "280px" }}></OrderInput>
+                                                id="joinrTel" name="joinAddress" minlength="11" maxlength="11" onChange={handleInput} value={buyerAddr} style={{ width: "280px" }}></OrderInput>
                                             <AdressButton type="button" onClick={handleComplete}>주소검색</AdressButton><br></br>
                                             <OrderInput className="user_enroll_text" type="text"
                                                 name="joinDetailAddress" minlength="3" maxlength="20" defaultValue={buyerDetAddr} style={{ width: "280px" }} ></OrderInput> 상세주소
-                                            {popup && <Post company={enroll_company} setcompany={setEnroll_company}></Post >}
+                                            {popup && <Post company={buyerAddr} setcompany={setBuyerAddr}></Post >}
                                         </Tabletd>
                                     </tr>
                                     <tr>
@@ -481,8 +469,9 @@ function OrderForm() {
                                     <tr>
                                         <Tableth>배송지 선택</Tableth>
                                         <Tabletd>
-                                            <div><input type="radio" name="state" id="inforadio1" onClick={checkRadio}/>주문자 정보와 동일
-                                                <input type="radio" name="state" id="inforadio2" onClick={checkRadio} />새로운 배송지</div>
+                                            {/* 가연 */}
+                                            <div><input type="radio" name="state" />주문자 정보와 동일
+                                                <input type="radio" name="state" />새로운 배송지</div>
                                         </Tabletd>
                                     </tr>
                                     <tr>

@@ -74,7 +74,11 @@ function Join() {
         setRegTel(regExp5.test(e.target.value));
     };
     const handleInputAddress = (e) => {
-        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣]{0,100}$/
+        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣]{4,30}$/
+        setRegAddress(regExp6.test(e.target.value));
+    };
+    const handleInputDetailAddress = (e) => {
+        var regExp6 = /^(?=.*[a-z0-9가-힣])[a-zA-Z0-9가-힣\s]{3,20}$/
         setRegAddress(regExp6.test(e.target.value));
     };
     const handleInputBirth = (e) => {
@@ -97,7 +101,6 @@ function Join() {
                 else {
                     alert("사용 가능한 아이디 입니다");
                     const joinP = document.getElementsByName("joinPw");
-                    joinP.focus();
                 }
             })
             .catch(function (err) {
@@ -114,14 +117,11 @@ function Join() {
         const joinTel = e.target.joinTel.value;
         const joinAddress = e.target.joinAddress.value;
         const joinDetailAddress = e.target.joinDetailAddress.value;
-        const joinFullAddress = joinAddress + " " + joinDetailAddress;
         const joinBirth = e.target.joinBirth.value;
-        console.log(joinId, joinPw, joinName, joinTel, joinFullAddress, joinBirth);
+        console.log(joinId, joinPw, joinName, joinTel, joinAddress, joinDetailAddress, joinBirth);
         await axios.post('http://localhost:4000/member/Join', {
-            joinId, joinPw, joinName, joinTel, joinFullAddress, joinBirth
+            joinId, joinPw, joinName, joinTel, joinAddress, joinDetailAddress, joinBirth
         }).then((res) => {
-            console.log("여기에요");
-            console.log("여기여기 : ", res.data);
             if (res.data) {
                 alert('회원가입에 성공하였습니다');
                 window.location.href = '/member/login';
@@ -188,14 +188,14 @@ function Join() {
 
                             <tr style={{ display: "table-row", verticalalign: "inherit", bordercolor: "inherit" }}>
                                 <Tableth>비밀번호</Tableth>
-                                <Tabletd><Inputinput type="password" id="joinPw" name="joinPw" maxlength="12" onChange={handleInputPw}></Inputinput>
+                                <Tabletd><Inputinput type="password" id="joinPw" name="joinPw" maxlength="16" onChange={handleInputPw}></Inputinput>
                                     (영문 대소문자/숫자 2가지 이상 조합, 8자~16자)
                                 </Tabletd>
                             </tr>
 
                             <tr style={{ display: "table-row", verticalalign: "inherit", bordercolor: "inherit" }}>
                                 <Tableth>비밀번호 확인</Tableth>
-                                <Tabletd><Inputinput type="password" id="joinPwChk" name="joinPwChk" maxlength="12" onChange={handleInputCPw}></Inputinput>
+                                <Tabletd><Inputinput type="password" id="joinPwChk" name="joinPwChk" maxlength="16" onChange={handleInputCPw}></Inputinput>
                                     (영문 대소문자/숫자 2가지 이상 조합, 8자~16자)
                                 </Tabletd>
                             </tr>
@@ -214,9 +214,9 @@ function Join() {
 
                             <tr style={{ className: "address_search", display: "table-row", verticalalign: "inherit", bordercolor: "inherit" }}>
                                 <Tableth>주소</Tableth>
-                                <Tabletd><Inputinput2 className="user_enroll_text" type="text" id="joinrTel" name="joinAddress" minlength="11" maxlength="11" onChange={handleInput} value={enroll_company.address}></Inputinput2>
+                                <Tabletd><Inputinput2 className="user_enroll_text" type="text" id="joinAddress" name="joinAddress" minlength="11" maxlength="30" onChange={handleInputAddress} value={enroll_company.address}></Inputinput2>
                                     <InsertButton type="button" onClick={handleComplete}>주소검색</InsertButton><br></br>
-                                    <Inputinput2 className="user_enroll_text" type="text" id="joinrTel" name="joinDetailAddress" minlength="11" maxlength="30" onChange={handleInputAddress}></Inputinput2> 상세주소
+                                    <Inputinput2 className="user_enroll_text" type="text" id="joinDetialAddress" name="joinDetailAddress" minlength="3" maxlength="20" onChange={handleInputDetailAddress}></Inputinput2> 상세주소
                                     {popup && <Post company={enroll_company} setcompany={setEnroll_company}></Post >}
                                 </Tabletd>
                             </tr>
@@ -328,7 +328,7 @@ let Bigtable = styled.table` //밑테이블 기본 스타일
     border-collapse: collapse;
 `
 
-let Inputinput = styled.input` //인풋텍스트 스타일
+let Inputinput = styled.input.attrs({ maxLength: "16" })` //인풋텍스트 스타일
     height: 26px;
     line-height: 26px;
     padding: 0px 4px;
@@ -346,7 +346,7 @@ let Inputinput = styled.input` //인풋텍스트 스타일
     
 `
 
-let Inputinput2 = styled.input` //인풋텍스트 스타일
+let Inputinput2 = styled.input.attrs({ maxLength: "20" })` //인풋텍스트 스타일
     height: 26px;
     line-height: 26px;
     padding: 0px 4px;

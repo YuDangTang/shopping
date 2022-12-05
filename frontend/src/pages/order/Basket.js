@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function Basket(){
+function Basket() {
     const [baskets, setBasket] = useState([]);
     const navigate = useNavigate();
     const data = useNavigate();
@@ -15,43 +15,43 @@ function Basket(){
      const handleSingleCheck = (target, id, proName, sizeColor, quan, cost, price, profit, totTalPrice) => {
         const checkbox = document.getElementsByName("select");
         let num2 = 0;
-        for(var i = 0; i < checkbox.length; i++){
-            if(checkbox[i].checked){
+        for (var i = 0; i < checkbox.length; i++) {
+            if (checkbox[i].checked) {
                 num2++;
             }
         }
-        if(num2 == checkbox.length){document.getElementsByName("select-all")[0].checked = true;}
-        else{document.getElementsByName("select-all")[0].checked = false;}
+        if (num2 == checkbox.length) { document.getElementsByName("select-all")[0].checked = true; }
+        else { document.getElementsByName("select-all")[0].checked = false; }
         const obj = {
             proName, sizeColor, quan, cost, price, profit, totTalPrice
         };
         console.log(target.checked);
-       if (target.checked) {
-         // 단일 선택 시 체크된 아이템을 배열에 추가
-         setCheckItems([...checkItems, Number(id)]);
-         setData([...datas, obj]);
-         setTotalPrice(totalProPrice+Number(totTalPrice));
-       } else {
-         // 단일 선택 해제 시 체크된 아이템을 제외한 배열 (필터)
-         setCheckItems(checkItems.filter((el) => el !== Number(id)));
-         for(var i = 0; i < datas.length; i++){
-            if(obj.proName == datas[i].proName && obj.sizeColor == datas[i].sizeColor){
-                datas.splice(i, 1);
-                break;
+        if (target.checked) {
+            // 단일 선택 시 체크된 아이템을 배열에 추가
+            setCheckItems([...checkItems, Number(id)]);
+            setData([...datas, obj]);
+            setTotalPrice(totalProPrice + Number(totTalPrice));
+        } else {
+            // 단일 선택 해제 시 체크된 아이템을 제외한 배열 (필터)
+            setCheckItems(checkItems.filter((el) => el !== Number(id)));
+            for (var i = 0; i < datas.length; i++) {
+                if (obj.proName == datas[i].proName && obj.sizeColor == datas[i].sizeColor) {
+                    datas.splice(i, 1);
+                    break;
+                }
             }
-         }
-         setData(datas);
-         setTotalPrice(totalProPrice-Number(totTalPrice));
-        //  setData(datas.filter((el) => el !== obj));
-       }
-     };
+            setData(datas);
+            setTotalPrice(totalProPrice - Number(totTalPrice));
+            //  setData(datas.filter((el) => el !== obj));
+        }
+    };
 
-      // 체크박스 전체 선택
+    // 체크박스 전체 선택
     const handleAllCheck = (checked) => {
-        if(checked){
+        if (checked) {
             const checkbox = document.getElementsByName("select");
             const checkIdAarr = [];
-            for(var i = 0; i < checkbox.length; i++){
+            for (var i = 0; i < checkbox.length; i++) {
                 checkbox[i].checked = true;
                 checkIdAarr.push(i);
             }
@@ -65,7 +65,7 @@ function Basket(){
             const proTotalPrice = document.getElementsByName("proTotalPrice");
             const arr = [];
             let total = 0;
-            for(var i = 0; i < proName.length; i++){
+            for (var i = 0; i < proName.length; i++) {
                 total += Number(proTotalPrice[i].value);
                 const obj = {
                     proName: proName[i].value, 
@@ -80,9 +80,9 @@ function Basket(){
             }
             setData(arr);
             setTotalPrice(total);
-        }else{
+        } else {
             const checkbox = document.getElementsByName("select");
-            for(var i = 0; i < checkbox.length; i++){
+            for (var i = 0; i < checkbox.length; i++) {
                 checkbox[i].checked = false;
             }
             setData([]);
@@ -95,25 +95,25 @@ function Basket(){
         const cart = {};
         cart.id = sessionStorage.getItem('id');
         await axios.post("http://localhost:4000/order/basket", cart)
-        .then((response) => {
-            console.log("난 데이ㅓㅌ: ", response.data);
-            setBasket(response.data);
-        }); 
+            .then((response) => {
+                console.log("난 데이ㅓㅌ: ", response.data);
+                setBasket(response.data);
+            });
     };
-    const onClickDelete = async(cartID, pro, proName) => {
+    const onClickDelete = async (cartID, pro, proName) => {
         console.log("나는 카트 아이디: ", cartID, pro);
         const obj = {};
         obj.deteId = pro._id;
         obj.userId = sessionStorage.getItem('id');
         obj.proName = proName;
         await axios.post("http://localhost:4000/order/basket", obj)
-        .then((response) => {
-            if(response.data == "success"){
-                getData();
-            }else{alert("DB Error.")}
-        }); 
+            .then((response) => {
+                if (response.data == "success") {
+                    getData();
+                } else { alert("DB Error.") }
+            });
     }
-    const onClickUpdate = async(e, size, color, id) => {
+    const onClickUpdate = async (e, size, color, id) => {
         const obj = {};
         const updateAmount = e.target.previousSibling;
         console.log(updateAmount)
@@ -152,12 +152,31 @@ function Basket(){
         const obj = datas;
         checkItems.sort();
         obj.id = checkItems;
-        if(datas.length == 0){
+        if (datas.length == 0) {
             alert("상품을 선택해주세요.");
             return;
         }
         console.log(obj);
-        data('/order/OrderForm', { state: {obj} });
+        data('/order/OrderForm', { state: { obj } });
+    }
+
+    const onClickDeleteCartAll = async () => {
+        var delteAll = window.confirm("장바구니를 비우시겠습니까?");
+        if (!delteAll) { return; }
+        const obj = {
+            all: "all",
+            userId: sessionStorage.getItem('id')
+        };
+        await axios.post("http://localhost:4000/order/basket", obj)
+            .then((response) => {
+                if (response.data == "success") {
+                    getData();
+                    setCheckItems([]);
+                    setData([]);
+                    setBasket([]);
+                    setTotalPrice(0);
+                } else { alert("DB Error.") }
+            });
     }
 
     const onClickDeleteCartAll = async () => {
@@ -185,7 +204,7 @@ function Basket(){
     let num = -1;
     let num2 = -1;
     let totalPrice = 0;
-    return(
+    return (
         <Container>
             <Contents>
                 <Path>현재위치 -- 현재위치</Path>
@@ -194,33 +213,33 @@ function Basket(){
                 </Title>
                 <InfoTitleDiv><ControlInfo><ControlInfocontents>국내배송상품</ControlInfocontents></ControlInfo></InfoTitleDiv>
                 <OrderArea>
-                <OrderAreaTitle><OrderAreaTitleContents>일반상품</OrderAreaTitleContents>
-                <BeforeButton onClick={() => navigate(-1)}>이전페이지</BeforeButton>
-                </OrderAreaTitle>
-                
-                {/* 정보 윗 부분 */}
-                <InfoTable style={{borderTop: "0.5px solid #ebebeb"}}>
-                    <colgroup>
-                        <col style={{width:"92px"}}></col>
-                        <col style={{width:"auto"}}></col>
-                        <col style={{width:"98px"}}></col>
-                        <col style={{width:"75px"}}></col>
-                        <col style={{width:"98px"}}></col>
-                        <col style={{width:"98px"}}></col>
-                        <col style={{width:"85px"}}></col>
-                        <col style={{width:"98px"}}></col>
-                    </colgroup>
-                    <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit"}}>
+                    <OrderAreaTitle><OrderAreaTitleContents>일반상품</OrderAreaTitleContents>
+                        <BeforeButton onClick={() => navigate(-1)}>이전페이지</BeforeButton>
+                    </OrderAreaTitle>
+
+                    {/* 정보 윗 부분 */}
+                    <InfoTable style={{ borderTop: "0.5px solid #ebebeb" }}>
+                        <colgroup>
+                            <col style={{ width: "92px" }}></col>
+                            <col style={{ width: "auto" }}></col>
+                            <col style={{ width: "98px" }}></col>
+                            <col style={{ width: "75px" }}></col>
+                            <col style={{ width: "98px" }}></col>
+                            <col style={{ width: "98px" }}></col>
+                            <col style={{ width: "85px" }}></col>
+                            <col style={{ width: "98px" }}></col>
+                        </colgroup>
+                        <tr style={{ display: "table-row", verticalalign: "inherit", bordercolor: "inherit" }}>
                             <InfoTh>
-                                <input 
-                                type={'checkbox'} name='select-all'
-                                onChange={(e) => handleAllCheck(e.target.checked)}
-                                // checked={checkItems.length === data.length ? true : false} 
-                                style={{width: "13px", height: "13px", border: "0"}}>
+                                <input
+                                    type={'checkbox'} name='select-all'
+                                    onChange={(e) => handleAllCheck(e.target.checked)}
+                                    // checked={checkItems.length === data.length ? true : false} 
+                                    style={{ width: "13px", height: "13px", border: "0" }}>
                                 </input>
                             </InfoTh>
                             <InfoTh scope='col'>이미지</InfoTh>
-                            <InfoTh scope='col' style={{paddingLeft:"10px", width:"400px"}}>상품정보</InfoTh>
+                            <InfoTh scope='col' style={{ paddingLeft: "10px", width: "400px" }}>상품정보</InfoTh>
                             <InfoTh scope='col'>판매가</InfoTh>
                             <InfoTh scope='col'>수량</InfoTh>
                             <InfoTh scope='col'>적립금</InfoTh>
@@ -229,11 +248,11 @@ function Basket(){
                             <InfoTh scope='col'>합계</InfoTh>
                             <InfoTh scope='col'>선택</InfoTh>
                         </tr>
-                </InfoTable>
+                    </InfoTable>
 
-                {/* 정보 중간부분 폼 태그 넣을곳 */}
-                
-                    {   
+                    {/* 정보 중간부분 폼 태그 넣을곳 */}
+
+                    {
                         baskets.length != 0
                         ? baskets.products.map(bas => {
                             return(<>
@@ -324,41 +343,36 @@ function Basket(){
                         })
                         : <><div>장바구니가 비어있습니다.</div></>
                     }
-                
 
-                {/* 정보 밑부분 */}
-                <InfoTable style={{borderTop : 0}}>
-                <colgroup>
-                        <col style={{width:"92px"}}></col>
-                        <col style={{width:"auto"}}></col>
-                        <col style={{width:"98px"}}></col>
-                        <col style={{width:"75px"}}></col>
-                        <col style={{width:"98px"}}></col>
-                        <col style={{width:"98px"}}></col>
-                        <col style={{width:"85px"}}></col>
-                        <col style={{width:"98px"}}></col>
-                    </colgroup>
-                    <tr style={{    display: "table-row", verticalalign: "inherit", bordercolor: "inherit", verticalalign:"middle"}}>
+
+                    {/* 정보 밑부분 */}
+                    <InfoTable style={{ borderTop: 0 }}>
+                        <colgroup>
+                            <col style={{ width: "92px" }}></col>
+                            <col style={{ width: "auto" }}></col>
+                            <col style={{ width: "98px" }}></col>
+                            <col style={{ width: "75px" }}></col>
+                            <col style={{ width: "98px" }}></col>
+                            <col style={{ width: "98px" }}></col>
+                            <col style={{ width: "85px" }}></col>
+                            <col style={{ width: "98px" }}></col>
+                        </colgroup>
+                        <tr style={{ display: "table-row", verticalalign: "inherit", bordercolor: "inherit", verticalalign: "middle" }}>
                             <InfoTd colSpan={9}>
-                                <span style={{    float: "left", margin: "6px 0 0"}}>[기본배송]</span>
+                                <span style={{ float: "left", margin: "6px 0 0" }}>[기본배송]</span>
                                 <Tdcontentstext>상품구매금액</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold"}}>{
                                     totalProPrice == 0 ? (Number(totalPrice)) : (Number(totalProPrice))
                                 }</Tdcontentstext>
                                 <Tdcontentstext>+ 배송비</Tdcontentstext>
-                                <Tdcontentstext  style={{marginLeft:"6px 0 0"}}>{totalPrice == 0 ? 0 : "2,500"}</Tdcontentstext>
+                                <Tdcontentstext style={{ marginLeft: "6px 0 0" }}>{totalPrice == 0 ? 0 : "2,500"}</Tdcontentstext>
                                 <Tdcontentstext> = 합계:</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px", marginLeft: "10px" }}>
                                     {totalProPrice == 0 ? " " + ((Number(totalPrice))+Number(2500)) : " " + ((Number(totalProPrice)+Number(2500)))}</Tdcontentstext>
                                 <Tdcontentstext style={{fontWeight:"bold", fontSize: "18px",letterSpacing: "-1px"}}>원</Tdcontentstext>
                              </InfoTd>
                         </tr>
-                </InfoTable>
-
-
-
-
-
+                    </InfoTable>
                 
                 <BasketControlInfo><BasketControlInfocontents>할인 적용 금액은 주문서작성의 결제예정금액에서 확인 가능합니다.</BasketControlInfocontents></BasketControlInfo>
                 <Clearbasket><ClearButton onClick={onClickDeleteCartAll}>장바구니비우기</ClearButton></Clearbasket>
@@ -483,10 +497,9 @@ let ControlInfo = styled.ul` //안내 바
     border-bottom: 1px solid #c9c9c9;
     width: 100%;
     height: 44px;
-
     position: relative;
     font-size: 0;
-` 
+`
 
 let ControlInfocontents = styled.li` //내용
     border-left: 1px solid #c9c9c9;
@@ -515,7 +528,7 @@ let OrderArea = styled.div` //주문내역
     padding: 0;
 `
 
-let OrderAreaTitle = styled.div ` //주문내역이름박스
+let OrderAreaTitle = styled.div` //주문내역이름박스
     display: flex;
     position: relative;
     height: 38px;
@@ -528,7 +541,7 @@ let OrderAreaTitle = styled.div ` //주문내역이름박스
     background: #f6f6f6;
 `
 
-let OrderAreaTitleContents = styled.h3 ` //이름
+let OrderAreaTitleContents = styled.h3` //이름
     display: inline-block;
     vertical-align: middle;
     color: #353535;
@@ -536,7 +549,7 @@ let OrderAreaTitleContents = styled.h3 ` //이름
     font-weight: bold;
 `
 
-let BeforeButton = styled.button ` //뒤로가기 버튼
+let BeforeButton = styled.button` //뒤로가기 버튼
     float: right;
     font-size: 11px;
     line-height: 11px;
@@ -552,7 +565,6 @@ let BeforeButton = styled.button ` //뒤로가기 버튼
     -webkit-padding-after: 8px;
     margin-left: 85%;
     cursor: pointer;
-
     &:hover{  
     border: 1px solid #CCCCCC;
     color: #CCC;
@@ -560,7 +572,7 @@ let BeforeButton = styled.button ` //뒤로가기 버튼
 `
 
 
-let InfoTable = styled.table `  //정보 테이블
+let InfoTable = styled.table`  //정보 테이블
     border-top: 1px solid #ebebeb;
     line-height: 1.5;
     position: relative;
@@ -570,7 +582,7 @@ let InfoTable = styled.table `  //정보 테이블
     border-collapse: collapse;
 `
 
-let InfoTh = styled.th ` //정보테이블 th
+let InfoTh = styled.th` //정보테이블 th
     padding: 20px 0;
     font-size: 11px;
     border-bottom: 1px solitestd #ebebeb;
@@ -597,13 +609,13 @@ let InfoTd = styled.td` //정보테이블 foot td
     word-wrap: break-word;
 `
 
-let Tdcontentstext = styled.text ` //텍스트스타일
+let Tdcontentstext = styled.text` //텍스트스타일
     font-size: 11px;
     margin: 6px 0 0;
     color: #757575;
 `
 
-let TdcontentsInput = styled.input ` //텍스트스타일
+let TdcontentsInput = styled.input` //텍스트스타일
     font-size: 11px;
     margin: 6px 0 0;
     color: #757575;
@@ -611,7 +623,7 @@ let TdcontentsInput = styled.input ` //텍스트스타일
     border: none;
     pointer-events: none;
 `
-let TdcontentsInputNumber = styled.input ` //텍스트스타일
+let TdcontentsInputNumber = styled.input` //텍스트스타일
     font-size: 11px;
     margin: 6px 0 0;
     color: #757575;
@@ -627,7 +639,7 @@ let InfoTd2 = styled.td` //정보테이블 tbody td
     vertical-align: middle;
     word-break: break-all;
     word-wrap: break-word;
-` 
+`
 
 let Forimg = styled.img` //img
     max-width: 75px;
@@ -686,7 +698,7 @@ let WhiteButton = styled.button` //상품삭제버튼
 let BasketControlInfo = styled.ul` //안내 바
     margin: 0;
     padding : 0;
-` 
+`
 let BasketControlInfocontents = styled.li` //내용
     padding: 8px 0 8px 33px;
     border-bottom: 1px solid #ebebeb;
@@ -697,16 +709,13 @@ let BasketControlInfocontents = styled.li` //내용
 `
 
 let Clearbasket = styled.div` //장바구니 비우기 div
-
     margin: 0 0 40px;
     padding: 20px 0 10px;
     text-align: center;
     float: right;
     text-align: right;
-
 `
-let ClearButton = styled.button ` //장바구니비우기버튼
-
+let ClearButton = styled.button` //장바구니비우기버튼
 font-size: 11px;
     line-height: 11px;
     display: inline-block;
@@ -724,10 +733,9 @@ font-size: 11px;
     border-color: #ccc !important;
     cursor: pointer;
     }
-
 `
 
-let FinalTable = styled.table ` //결제부분 마지막 table
+let FinalTable = styled.table` //결제부분 마지막 table
     border: 0;
     border-spacing: 0;
     border-collapse: collapse;
@@ -740,7 +748,7 @@ let FinalTable = styled.table ` //결제부분 마지막 table
     width: 100%; 
 `
 
-let FinalTh = styled.th ` //결제부분 마지막 th
+let FinalTh = styled.th` //결제부분 마지막 th
     border-left: 0;
     padding: 20px 0;
     border-bottom: 1px solid #ebebeb;
@@ -753,7 +761,7 @@ let FinalTh = styled.th ` //결제부분 마지막 th
     font-size: 11px;
 `
 
-let FinalTd = styled.td ` //결제부분 마지막 td
+let FinalTd = styled.td` //결제부분 마지막 td
     display: table-cell;
     margin: 0;
     border: 0;
@@ -770,8 +778,7 @@ let FinalTd = styled.td ` //결제부분 마지막 td
     word-wrap: break-word;
 `
 
-let FinalDiv = styled.div ` //결제부분 td안에 div
-
+let FinalDiv = styled.div` //결제부분 td안에 div
     word-break: normal;
     margin: 0;
     padding: 0;
@@ -784,14 +791,14 @@ let FinalDiv = styled.div ` //결제부분 td안에 div
     letter-spacing: -1px;
 `
 
-let FinalDiv2 = styled.text ` //결제부분 td안에 text 스타일
+let FinalDiv2 = styled.text` //결제부분 td안에 text 스타일
     font-weight: bold;
     font-size: 23px;
     letter-spacing: -1px;
     color: #5a5a5a;
     word-wrap: break-word;
 `
-let PaymentDiv = styled.div `  //결제버튼이 들어갈 div
+let PaymentDiv = styled.div`  //결제버튼이 들어갈 div
     position: relative;
     margin: 10px 0 40px;
     padding: 20px 0 10px;
@@ -799,7 +806,7 @@ let PaymentDiv = styled.div `  //결제버튼이 들어갈 div
     vertical-align: middle;
 `
 
-let PaymentButton = styled.button ` //결제버튼
+let PaymentButton = styled.button` //결제버튼
     background: #333 !important;
     color: #fff !important;
     border: 1px solid #333 !important;
@@ -844,14 +851,14 @@ let InfoDivTitle = styled.h3` //이용안내 h3
     font-weight: bold;
 `
 
-let InfoDivContents = styled.div ` //이용안내 contents div
+let InfoDivContents = styled.div` //이용안내 contents div
     padding: 0 9px 12px;
     margin: 0;
     display: block;
     line-height: 18px;
 `
 
-let InfoDivh4 = styled.h4 `  //이용안내 h4
+let InfoDivh4 = styled.h4`  //이용안내 h4
     margin-top: 13px;
     margin: 22px 0 -4px;
     color: #404040;
@@ -864,7 +871,7 @@ let InfoDivh4 = styled.h4 `  //이용안내 h4
     margin-inline-start: 0px;
     margin-inline-end: 0px;
 `
-let InfoDivol = styled.ol ` //이용안내 ol
+let InfoDivol = styled.ol` //이용안내 ol
     margin: 15px 0 0 11px;
     padding: 0;
     display: block;
